@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود مدیریت - سامانه سدا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-dark:#0b4b54;
+    --teal:#23848a;
+    --teal-light:#2f9aa0;
+    --gold:#c8a94d;
+    --gold-light:#d8bd6c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;}
+  button,input,select,textarea{font-family:inherit;}
+  body{
+    background:linear-gradient(180deg,#eef8f6,#f7fbfa 40%,#fff);
+    color:#222;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+  }
+  a{text-decoration:none;color:inherit;}
+
+  .login-wrap{
+    width:100%;
+    max-width:420px;
+    text-align:center;
+  }
+
+  .login-icon{
+    width:56px;height:56px;border-radius:16px;
+    background:linear-gradient(160deg,var(--teal-light),var(--teal-dark));
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+    box-shadow:0 6px 16px rgba(11,75,84,.25);
+  }
+  .login-icon svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  .login-breadcrumb{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    font-size:12.5px;color:#8a9c9c;margin-bottom:18px;
+  }
+  .login-breadcrumb::before,
+  .login-breadcrumb::after{
+    content:"";width:28px;height:1px;background:#d8e4e4;
+  }
+
+  .login-wrap h1{
+    font-size:21px;font-weight:800;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .login-wrap > p.subtitle{
+    font-size:13px;color:#6b7d7d;margin-bottom:26px;line-height:1.8;
+  }
+
+  .login-card{
+    background:#fff;
+    border-radius:18px;
+    padding:26px 24px 24px;
+    box-shadow:0 10px 30px rgba(11,75,84,.08);
+    text-align:right;
+  }
+
+  .login-field{margin-bottom:16px;}
+  .login-field label{
+    display:block;font-size:12.5px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .login-field .input-wrap{position:relative;}
+  .login-field input{
+    width:100%;padding:12px 14px;border-radius:10px;
+    border:1.5px solid #e2eaea;background:#fbfdfd;
+    font-size:13.5px;color:#222;
+    text-align:right;
+    transition:border-color .15s, background .15s;
+  }
+  .login-field input:focus{outline:none;border-color:var(--teal);background:#fff;}
+  .login-field .toggle-pass{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;color:#9fb3b3;
+    display:flex;align-items:center;justify-content:center;padding:2px;
+  }
+  .login-field .toggle-pass svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+  .login-error{
+    font-size:12px;color:#c0392b;background:#fdecea;
+    border-radius:8px;padding:9px 12px;margin-bottom:16px;text-align:right;
+  }
+
+  .login-submit{
+    width:100%;
+    font-size:14.5px;font-weight:700;
+    color:#fff;background:linear-gradient(180deg,var(--teal-light),var(--teal-dark));
+    border:none;border-radius:12px;padding:13px 16px;cursor:pointer;
+    transition:filter .15s, transform .1s;
+  }
+  .login-submit:hover{filter:brightness(1.05);}
+  .login-submit:active{transform:translateY(1px);}
+  .login-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+  .login-below{
+    margin-top:24px;font-size:12.5px;color:#5c6e6e;line-height:2.1;
+  }
+  .login-below a{color:var(--teal);font-weight:700;}
+  .login-below a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7z"></path><path d="M9 12l2 2 4-4"></path></svg>
+  </div>
+  <div class="login-breadcrumb">ورود مدیریت</div>
+  <h1>ورود مدیر آموزش / مسئول آموزش</h1>
+  <p class="subtitle">با نام کاربری و رمز عبوری که برایتان تعریف شده وارد شوید؛ بر اساس سمت‌تان به پنل مربوطه منتقل می‌شوید</p>
+
+  <div class="login-card">
+    <div class="login-error" id="loginError" hidden></div>
+
+    <div class="login-field">
+      <label for="loginUsername">نام کاربری</label>
+      <input type="text" id="loginUsername" autocomplete="username">
+    </div>
+
+    <div class="login-field">
+      <label for="loginPassword">رمز عبور</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPassword" autocomplete="current-password">
+        <button type="button" class="toggle-pass" id="togglePass" aria-label="نمایش رمز عبور">
+          <svg viewBox="0 0 24 24" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="login-submit" id="loginSubmitBtn">ورود</button>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+  function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+  // نگاشت سمت هر کارمند به آدرس پنل مخصوص خودش - تنها جایی که این نگاشت
+  // تعریف می‌شود؛ اگر بعداً سمت/پنل جدیدی اضافه شد، فقط همین‌جا لازم است اضافه شود.
+  const STAFF_ROLE_TO_PANEL = {
+    'مدیر آموزش': '/panel',
+    'مسئول آموزش': '/officer-panel',
+  };
+
+  (function(){
+    const usernameInput = document.getElementById('loginUsername');
+    const passwordInput = document.getElementById('loginPassword');
+    const toggleBtn = document.getElementById('togglePass');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const errorEl = document.getElementById('loginError');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+
+    fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){});
+
+    toggleBtn.addEventListener('click', function(){
+      const isPass = passwordInput.type === 'password';
+      passwordInput.type = isPass ? 'text' : 'password';
+      eyeIcon.innerHTML = isPass
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.61 3.61M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+    });
+
+    function showError(msg){
+      errorEl.hidden = false;
+      errorEl.textContent = msg;
+    }
+
+    submitBtn.addEventListener('click', function(){
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      if(!username || !password){
+        showError('لطفاً نام کاربری و رمز عبور را وارد کنید.');
+        return;
+      }
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'در حال ورود…';
+
+      fetch(`${API_BASE_URL}/auth/login/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: JSON.stringify({ username, password, login_type: 'staff' })
+      })
+        .then(async function(res){
+          const data = await res.json().catch(function(){ return {}; });
+          if(!res.ok){
+            throw new Error(data.detail || 'ورود ناموفق بود.');
+          }
+          const panelUrl = STAFF_ROLE_TO_PANEL[data.employee_role];
+          if(!panelUrl){
+            throw new Error('این حساب به هیچ‌کدام از پنل‌های مدیریتی دسترسی ندارد.');
+          }
+          window.location.href = panelUrl;
+        })
+        .catch(function(err){
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'ورود';
+          showError(err.message || 'خطا در برقراری ارتباط با سرور. دوباره تلاش کنید.');
+        });
+    });
+
+    usernameInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') passwordInput.focus(); });
+    passwordInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') submitBtn.click(); });
+  })();
+</script>
+
+</body>
+</html>

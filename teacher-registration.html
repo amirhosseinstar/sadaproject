@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت‌نام اساتید - سامانه سدا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-dark:#0b4b54;
+    --teal:#23848a;
+    --teal-light:#2f9aa0;
+    --gold:#c8a94d;
+    --gold-light:#d8bd6c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;}
+  body{
+    background:linear-gradient(180deg,#eef8f6,#f7fbfa 40%,#fff);
+    color:#222;
+    min-height:100vh;
+    padding:40px 16px 60px;
+  }
+  a{text-decoration:none;color:inherit;}
+
+  .tr-wrap{
+    width:100%;
+    max-width:760px;
+    margin:0 auto;
+    text-align:center;
+  }
+
+  .login-icon{
+    width:56px;height:56px;border-radius:16px;
+    background:linear-gradient(160deg,var(--teal-light),var(--teal-dark));
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+    box-shadow:0 6px 16px rgba(11,75,84,.25);
+  }
+  .login-icon svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  .login-breadcrumb{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    font-size:12.5px;color:#8a9c9c;margin-bottom:18px;
+  }
+  .login-breadcrumb::before,
+  .login-breadcrumb::after{
+    content:"";width:28px;height:1px;background:#d8e4e4;
+  }
+
+  .tr-wrap h1{
+    font-size:21px;font-weight:800;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .tr-wrap > p.subtitle{
+    font-size:13px;color:#6b7d7d;margin-bottom:26px;line-height:1.8;
+  }
+
+  .tr-card{
+    background:#fff;
+    border-radius:18px;
+    padding:26px 24px 24px;
+    box-shadow:0 10px 30px rgba(11,75,84,.08);
+    text-align:right;
+  }
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:600px){.form-grid{grid-template-columns:1fr;}}
+  .field{margin-bottom:2px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{
+    display:block;font-size:12.5px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .field label .req-star{color:#c0392b;margin-inline-start:2px;}
+  .field input,.field select,.field textarea{
+    width:100%;padding:12px 14px;border-radius:10px;
+    border:1.5px solid #e2eaea;background:#fbfdfd;
+    font-family:inherit;font-size:13.5px;color:#222;
+    text-align:right;
+    transition:border-color .15s, background .15s;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal);background:#fff;}
+  .field textarea{resize:vertical;min-height:90px;line-height:1.8;}
+
+  .dept-branch-checklist{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+    background:#fbfdfd;border:1.5px solid #e2eaea;border-radius:10px;padding:12px;
+  }
+  @media (max-width:600px){.dept-branch-checklist{grid-template-columns:1fr 1fr;}}
+  .dept-branch-checklist label{
+    display:flex;align-items:center;gap:6px;font-size:12.5px;color:#33474a;font-weight:500;margin-bottom:0;
+    cursor:pointer;
+  }
+  .dept-branch-checklist input[type="checkbox"]{width:auto;accent-color:var(--teal);}
+
+  .upload-row{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-top:6px;}
+  .photo-col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .photo-upload-box{
+    width:84px;height:84px;border-radius:12px;border:1.5px dashed #cddcdc;
+    background:#fbfdfd;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;overflow:hidden;transition:.15s;
+  }
+  .photo-upload-box:hover{border-color:var(--teal);}
+  .photo-upload-box img{width:100%;height:100%;object-fit:cover;}
+  .photo-upload-placeholder{display:flex;flex-direction:column;align-items:center;gap:6px;color:#8a9a9a;font-size:11px;text-align:center;padding:6px;}
+  .photo-upload-placeholder svg{width:22px;height:22px;stroke:#8a9a9a;fill:none;stroke-width:1.8;}
+  .photo-hint{font-size:11px;color:#a6b3b3;text-align:center;}
+  .resume-upload-col{display:flex;flex-direction:column;gap:9px;padding-top:2px;}
+  .btn-ghost{
+    background:#eef4f4;color:var(--teal-dark);border:none;border-radius:10px;
+    padding:10px 16px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:.15s;
+  }
+  .btn-ghost:hover{background:#e2ecec;}
+  .file-name{font-size:12.5px;}
+  .file-name.empty{color:#a6b3b3;}
+  .file-name.picked{color:var(--teal-dark);font-weight:700;}
+
+  .tr-error{
+    font-size:12px;color:#c0392b;background:#fdecea;
+    border-radius:8px;padding:9px 12px;margin-bottom:16px;text-align:right;
+  }
+
+  .tr-submit{
+    width:100%;margin-top:22px;
+    font-family:inherit;font-size:14.5px;font-weight:700;
+    color:#fff;background:linear-gradient(180deg,var(--teal-light),var(--teal-dark));
+    border:none;border-radius:12px;padding:13px 16px;cursor:pointer;
+    transition:filter .15s, transform .1s;
+  }
+  .tr-submit:hover{filter:brightness(1.05);}
+  .tr-submit:active{transform:translateY(1px);}
+
+  .tr-below{
+    margin-top:24px;font-size:12.5px;color:#5c6e6e;line-height:2.1;
+  }
+  .back-link{
+    display:inline-flex;align-items:center;gap:7px;
+    color:var(--teal-dark);font-weight:700;font-size:13px;
+    background:#f2fbfb;border:1px solid #dceaea;border-radius:20px;
+    padding:8px 16px 8px 12px;transition:.15s;text-decoration:none;
+  }
+  .back-link svg{width:14px;height:14px;stroke:var(--teal-dark);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:.15s;}
+  .back-link:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .back-link:hover svg{stroke:#fff;transform:translateX(-3px);}
+
+  /* ---- موفقیت ---- */
+  .tr-success{display:none;}
+  .tr-success.active{display:block;}
+  .tr-form-section.hidden{display:none;}
+  .success-icon-wrap{
+    width:64px;height:64px;border-radius:50%;
+    background:#e5f6ee;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+  }
+  .success-icon-wrap svg{width:32px;height:32px;stroke:#1f9d5c;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  @media (max-width:480px){
+    .tr-card{padding:22px 18px 20px;}
+  }
+
+.shamsi-dp-wrap{position:relative;}
+.shamsi-dp-wrap input.shamsi-dp-input{padding-left:38px;cursor:pointer;background:#fff;}
+.shamsi-dp-icon{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:#6b7d7e;pointer-events:none;display:flex;
+}
+.shamsi-dp-icon svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.shamsi-dp-popup{
+  position:absolute;z-index:3000;display:none;
+  background:#fff;border:1px solid #dfe6e6;border-radius:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,.16);
+  padding:10px;direction:rtl;font-family:inherit;
+  min-width:300px;
+}
+.shamsi-dp-popup.open{display:flex;gap:8px;}
+
+.shamsi-dp-years-col{
+  width:70px;height:280px;overflow-y:auto;border-left:1px solid #eef2f2;padding-left:6px;
+}
+.shamsi-dp-year-item{
+  padding:6px 4px;text-align:center;border-radius:8px;cursor:pointer;font-size:13px;color:#3a4a4a;
+}
+.shamsi-dp-year-item:hover{background:#eef6f6;}
+.shamsi-dp-year-item.active{background:var(--teal,#1f7a7a);color:#fff;font-weight:700;}
+
+.shamsi-dp-main-col{flex:1;display:flex;flex-direction:column;}
+.shamsi-dp-nav{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 8px;}
+.shamsi-dp-nav-btn{
+  background:#eef6f6;border:none;border-radius:8px;width:28px;height:28px;
+  font-size:16px;cursor:pointer;color:#1f7a7a;
+}
+.shamsi-dp-nav-btn:hover{background:#dcefef;}
+.shamsi-dp-month-name{font-weight:700;font-size:13.5px;color:#243434;}
+
+.shamsi-dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:#8a9a9a;margin-bottom:4px;}
+.shamsi-dp-day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.shamsi-dp-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;font-size:12.5px;cursor:pointer;color:#243434;
+}
+.shamsi-dp-day.empty{cursor:default;}
+.shamsi-dp-day:not(.empty):hover{background:#eef6f6;}
+.shamsi-dp-day.today{border:1px solid var(--teal,#1f7a7a);}
+.shamsi-dp-day.selected{background:var(--teal,#1f7a7a);color:#fff;font-weight:700;}
+
+.shamsi-dp-footer{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #eef2f2;}
+.shamsi-dp-link{background:none;border:none;color:var(--teal,#1f7a7a);font-size:12px;cursor:pointer;font-family:inherit;}
+.shamsi-dp-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="tr-wrap">
+
+  <div class="tr-form-section" id="formSection">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path></svg>
+    </div>
+    <div class="login-breadcrumb">ثبت‌نام اساتید</div>
+    <h1>ثبت‌نام اساتید متقاضی همکاری</h1>
+    <p class="subtitle">اطلاعات خود را برای درخواست همکاری با خانه کارگر به‌عنوان مدرس تکمیل کنید. پس از بررسی توسط واحد آموزش، نتیجه به شما اطلاع داده خواهد شد.</p>
+
+    <div class="tr-card">
+      <div class="tr-error" id="trError" hidden></div>
+
+      <form id="trForm">
+        <div class="form-grid">
+          <div class="field"><label for="tr_fname">نام<span class="req-star">*</span></label><input type="text" id="tr_fname" placeholder="نام متقاضی"></div>
+          <div class="field"><label for="tr_lname">نام خانوادگی<span class="req-star">*</span></label><input type="text" id="tr_lname" placeholder="نام خانوادگی متقاضی"></div>
+          <div class="field"><label for="tr_national_id">کد ملی<span class="req-star">*</span></label><input type="text" id="tr_national_id" placeholder="۱۰ رقم" inputmode="numeric" maxlength="10"></div>
+          <div class="field"><label for="tr_education">میزان تحصیلات<span class="req-star">*</span></label>
+            <select id="tr_education">
+              <option value="">— انتخاب کنید —</option>
+              <option value="سیکل">سیکل</option>
+              <option value="دیپلم">دیپلم</option>
+              <option value="کاردانی">کاردانی</option>
+              <option value="کارشناسی">کارشناسی</option>
+              <option value="کارشناسی ارشد">کارشناسی ارشد</option>
+              <option value="دکتری">دکتری</option>
+            </select>
+          </div>
+          <div class="field"><label for="tr_father_name">نام پدر<span class="req-star">*</span></label><input type="text" id="tr_father_name" placeholder="نام پدر"></div>
+          <div class="field"><label for="tr_birth_date">تاریخ تولد<span class="req-star">*</span></label><input type="text" id="tr_birth_date" placeholder="به شمسی، مثلاً ۱۳۷۰/۰۵/۱۲" dir="ltr"></div>
+          <div class="field"><label for="tr_phone">شماره تماس<span class="req-star">*</span></label><input type="text" id="tr_phone" placeholder="09xxxxxxxxx" inputmode="numeric" maxlength="11"></div>
+          <div class="field full"><label for="tr_address">آدرس<span class="req-star">*</span></label><input type="text" id="tr_address" placeholder="آدرس محل سکونت"></div>
+
+          <div class="field full">
+            <label>دپارتمان درخواستی (امکان انتخاب چند دپارتمان)<span class="req-star">*</span></label>
+            <div class="dept-branch-checklist" id="tr_dept_checklist"></div>
+          </div>
+
+          <div class="field full"><label>نوع درخواستی (امکان انتخاب هر دو)<span class="req-star">*</span></label>
+            <div class="dept-branch-checklist" id="tr_reqtype_checklist">
+              <label><input type="checkbox" name="trReqtypePick" value="حضوری"><span>حضوری</span></label>
+              <label><input type="checkbox" name="trReqtypePick" value="مجازی"><span>مجازی</span></label>
+            </div>
+          </div>
+          <div class="field"><label for="tr_branch">شعبه<span class="req-star">*</span></label>
+            <select id="tr_branch"></select>
+          </div>
+
+          <div class="field full">
+            <label>عکس و رزومه<span class="req-star">*</span></label>
+            <div class="upload-row">
+              <div class="photo-col">
+                <div class="photo-upload-box" id="trPhotoUploadBox" title="آپلود عکس">
+                  <input type="file" id="tr_photo" accept="image/*" hidden>
+                  <div class="photo-upload-placeholder" id="trPhotoPlaceholder">
+                    <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>عکس</span>
+                  </div>
+                </div>
+                <span class="photo-hint">حداکثر حجم ۱۰۰ کیلوبایت</span>
+              </div>
+              <div class="resume-upload-col">
+                <input type="file" id="tr_resume" accept=".pdf,.doc,.docx" hidden>
+                <button type="button" class="btn-ghost" id="trBtnPickResume">انتخاب فایل رزومه</button>
+                <span class="file-name empty" id="trResumeFileName">فایلی انتخاب نشده</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field full"><label for="tr_message">توضیحات متقاضی</label><textarea id="tr_message" rows="3" placeholder="سوابق، مدارک، توضیحات متقاضی…"></textarea></div>
+        </div>
+
+        <button type="button" class="tr-submit" id="trSubmitBtn">ارسال درخواست همکاری</button>
+      </form>
+    </div>
+
+    <div class="tr-below">
+      <a class="back-link" href="/"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>بازگشت به سامانه سدا</a>
+    </div>
+  </div>
+
+  <div class="tr-success" id="successSection">
+    <div class="success-icon-wrap">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    </div>
+    <h1>درخواست شما ثبت شد</h1>
+    <p class="subtitle">درخواست همکاری شما با موفقیت برای واحد آموزش خانه کارگر ارسال شد. نتیجه‌ی بررسی از طریق شماره تماسی که وارد کردید به شما اطلاع داده خواهد شد.</p>
+    <div class="tr-below">
+      <a class="back-link" href="/"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>بازگشت به سامانه سدا</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---- تنظیمات اتصال به بک‌اند ----
+  // TODO: وقتی سایت روی دامنه‌ی واقعی قرار گرفت، این آدرس را با آدرس واقعی
+  // سرور بک‌اند عوض کنید.
+  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+  function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+  // بدون این فراخوانی، کوکی csrftoken اصلاً ست نمی‌شود و ارسال فرم با
+  // خطای «CSRF token missing» رد می‌شود
+  fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){});
+
+  // ---- دپارتمان‌ها (هماهنگ با پنل ادمین › مربیان) ----
+  const HR_DEPARTMENTS = [
+    "دوخت و دوز","کامپیوتر","هنر","آشپزی",
+    "بافتنی","فرش و گلیم","زبان‌های خارجه","حقوق",
+    "مدیریت و حسابداری","بهداشت و سلامت","فنی","قرآن"
+  ];
+
+  // ---- شعب: دیتای واقعی خانه کارگر، از بک‌اند خوانده می‌شود ----
+  // قبلاً این یک آرایه‌ی ثابت در همین فایل بود؛ الان از /api/core/branches/
+  // خوانده می‌شود تا همه‌جای سایت دقیقاً از یک منبع واحد شعب استفاده کنند.
+  function loadBranches(){
+    fetch(`${API_BASE_URL}/core/branches/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : []; })
+      .then(function(branches){
+        document.getElementById('tr_branch').innerHTML =
+          branches.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      })
+      .catch(function(){
+        document.getElementById('tr_branch').innerHTML =
+          `<option value="">خطا در دریافت لیست شعب از سرور</option>`;
+      });
+  }
+  loadBranches();
+
+  function fillDeptChecklist(){
+    const wrap = document.getElementById('tr_dept_checklist');
+    wrap.innerHTML = HR_DEPARTMENTS.map(d => `
+      <label>
+        <input type="checkbox" name="trDeptPick" value="${d}">
+        <span>${d}</span>
+      </label>
+    `).join('');
+  }
+  fillDeptChecklist();
+
+  function getCheckedDepts(){
+    return Array.from(document.querySelectorAll('input[name="trDeptPick"]:checked')).map(el => el.value);
+  }
+
+  function getCheckedReqtypes(){
+    return Array.from(document.querySelectorAll('input[name="trReqtypePick"]:checked')).map(el => el.value);
+  }
+
+  document.getElementById('tr_phone').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 11);
+  });
+  document.getElementById('tr_national_id').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+  });
+
+  // ---- آپلود عکس ----
+  let currentPhotoDataUrl = null;
+  function resetPhotoPreview(photoDataUrl){
+    currentPhotoDataUrl = photoDataUrl || null;
+    const box = document.getElementById('trPhotoUploadBox');
+    box.querySelectorAll('img').forEach(img => img.remove());
+    const placeholder = document.getElementById('trPhotoPlaceholder');
+    if(currentPhotoDataUrl){
+      placeholder.style.display = 'none';
+      const img = document.createElement('img');
+      img.src = currentPhotoDataUrl;
+      box.appendChild(img);
+    } else {
+      placeholder.style.display = '';
+    }
+  }
+  document.getElementById('trPhotoUploadBox').addEventListener('click', () => document.getElementById('tr_photo').click());
+  document.getElementById('tr_photo').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const allowedTypes = ['image/jpeg','image/png','image/webp'];
+    const maxSizeBytes = 100 * 1024; // 100KB
+
+    if(!allowedTypes.includes(file.type)){
+      showTrError('فرمت عکس باید JPG، PNG یا WebP باشد');
+      e.target.value = '';
+      return;
+    }
+    if(file.size > maxSizeBytes){
+      showTrError('حجم عکس نباید بیشتر از 100 کیلوبایت باشد');
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ev => resetPhotoPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  });
+
+  // ---- آپلود رزومه ----
+  let currentResumeName = null;
+  function resetResumePicker(resumeName){
+    currentResumeName = resumeName || null;
+    const span = document.getElementById('trResumeFileName');
+    if(currentResumeName){
+      span.textContent = currentResumeName;
+      span.className = 'file-name picked';
+    } else {
+      span.textContent = 'فایلی انتخاب نشده';
+      span.className = 'file-name empty';
+    }
+  }
+  document.getElementById('trBtnPickResume').addEventListener('click', () => document.getElementById('tr_resume').click());
+  document.getElementById('tr_resume').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    resetResumePicker(file.name);
+  });
+
+  function showTrError(msg){
+    const errorEl = document.getElementById('trError');
+    errorEl.hidden = false;
+    errorEl.textContent = msg;
+    errorEl.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  // ---- ارسال فرم به بک‌اند واقعی ----
+  // این درخواست یک رکورد واقعی در جدول «مدرسین متقاضی» می‌سازد که همان
+  // لحظه در پنل ادمین (بخش «مربیان › مدرسین متقاضی») قابل مشاهده است.
+  // چون احتمال دارد عکس/رزومه هم پیوست شده باشد، به‌جای JSON از
+  // FormData (multipart) استفاده می‌شود.
+  document.getElementById('trSubmitBtn').addEventListener('click', function(){
+    const fname = document.getElementById('tr_fname').value.trim();
+    const lname = document.getElementById('tr_lname').value.trim();
+    const depts = getCheckedDepts();
+    const reqtype = getCheckedReqtypes();
+    const branch = document.getElementById('tr_branch').value;
+    const phone = document.getElementById('tr_phone').value.trim();
+    const nationalId = document.getElementById('tr_national_id').value.trim();
+    const education = document.getElementById('tr_education').value;
+    const fatherName = document.getElementById('tr_father_name').value.trim();
+    const birthDate = document.getElementById('tr_birth_date').value.trim();
+    const address = document.getElementById('tr_address').value.trim();
+    const message = document.getElementById('tr_message').value.trim();
+    const photoFile = document.getElementById('tr_photo').files[0];
+    const resumeFile = document.getElementById('tr_resume').files[0];
+
+    // همه‌ی فیلدها الزامی‌اند به‌جز «توضیحات متقاضی»
+    if(!fname || !lname){
+      showTrError('لطفاً نام و نام خانوادگی را وارد کنید');
+      return;
+    }
+    if(depts.length === 0){
+      showTrError('لطفاً حداقل یک دپارتمان را انتخاب کنید');
+      return;
+    }
+    if(reqtype.length === 0){
+      showTrError('لطفاً حداقل یک نوع همکاری (حضوری یا مجازی) را انتخاب کنید');
+      return;
+    }
+    if(!branch){
+      showTrError('لطفاً شعبه را انتخاب کنید');
+      return;
+    }
+    if(!phone || !/^\d{11}$/.test(phone)){
+      showTrError('شماره تماس باید ۱۱ رقم باشد');
+      return;
+    }
+    if(!nationalId || !/^\d{10}$/.test(nationalId)){
+      showTrError('کد ملی باید ۱۰ رقم باشد');
+      return;
+    }
+    if(!education){
+      showTrError('لطفاً میزان تحصیلات را انتخاب کنید');
+      return;
+    }
+    if(!fatherName){
+      showTrError('لطفاً نام پدر را وارد کنید');
+      return;
+    }
+    if(!birthDate){
+      showTrError('لطفاً تاریخ تولد را وارد کنید');
+      return;
+    }
+    if(!address){
+      showTrError('لطفاً آدرس را وارد کنید');
+      return;
+    }
+    if(!photoFile){
+      showTrError('لطفاً یک عکس آپلود کنید');
+      return;
+    }
+    if(!resumeFile){
+      showTrError('لطفاً فایل رزومه را آپلود کنید');
+      return;
+    }
+    document.getElementById('trError').hidden = true;
+
+    const submitBtn = document.getElementById('trSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'در حال ارسال…';
+
+    const formData = new FormData();
+    formData.append('first_name', fname);
+    formData.append('last_name', lname);
+    formData.append('depts', JSON.stringify(depts));
+    formData.append('reqtype', JSON.stringify(reqtype));
+    formData.append('branch', branch);
+    formData.append('phone', phone);
+    formData.append('national_id', nationalId);
+    // این یعنی «منبع ثبت» - نشون می‌ده این درخواست از طریق خودِ سایت اومده
+    // (نه این‌که ادمین دستی اضافه‌اش کرده باشد)
+    formData.append('regtype', 'سایت');
+    formData.append('education_level', education);
+    formData.append('father_name', fatherName);
+    formData.append('birth_date', birthDate);
+    formData.append('address', address);
+    formData.append('message', message);
+    formData.append('photo', photoFile);
+    formData.append('resume', resumeFile);
+
+    fetch(`${API_BASE_URL}/core/teacher-applicants/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: formData
+    })
+      .then(async function(res){
+        const data = await res.json().catch(function(){ return {}; });
+        if(!res.ok){
+          const firstError = data && typeof data === 'object'
+            ? Object.values(data).flat().filter(Boolean)[0]
+            : null;
+          throw new Error(firstError || 'ارسال درخواست با خطا مواجه شد.');
+        }
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('successSection').classList.add('active');
+        window.scrollTo({ top:0, behavior:'smooth' });
+      })
+      .catch(function(err){
+        showTrError(err.message || 'خطا در برقراری ارتباط با سرور. دوباره تلاش کنید.');
+      })
+      .finally(function(){
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ارسال درخواست همکاری';
+      });
+  });
+</script>
+
+
+<script>
+// ============ ابزار انتخاب تاریخ شمسی (بدون هیچ کتابخانه‌ی خارجی) ============
+(function(){
+  const SHAMSI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const SHAMSI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج']; // شنبه تا جمعه
+
+  function toPersianDigitsDP(n){
+    return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
+  function toEnglishDigitsDP(s){
+    return String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  }
+
+  // سال کبیسه‌ی شمسی (الگوریتم متداول و به‌اندازه‌ی کافی دقیق برای این بازه‌ی زمانی)
+  function isJalaliLeap(year){
+    const r = ((year % 33) + 33) % 33;
+    return [1,5,9,13,17,22,26,30].includes(r);
+  }
+  function jalaliMonthLength(year, month){
+    if(month <= 6) return 31;
+    if(month <= 11) return 30;
+    return isJalaliLeap(year) ? 30 : 29;
+  }
+
+  // ---- تبدیل میلادی به شمسی (فقط برای دکمه‌ی «امروز») ----
+  function gregorianToJalali(gy, gm, gd){
+    const g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+    let jy = (gy <= 1600) ? 0 : 979;
+    gy -= (gy <= 1600) ? 621 : 1600;
+    const gy2 = (gm > 2) ? (gy + 1) : gy;
+    let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) +
+      Math.floor((gy2 + 399) / 400) - 80 + gd + g_d_m[gm - 1];
+    jy += 33 * Math.floor(days / 12053);
+    days %= 12053;
+    jy += 4 * Math.floor(days / 1461);
+    days %= 1461;
+    if(days > 365){
+      jy += Math.floor((days - 1) / 365);
+      days = (days - 1) % 365;
+    }
+    const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+    const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+    return { year: jy, month: jm, day: jd };
+  }
+  function todayJalali(){
+    const now = new Date();
+    return gregorianToJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  }
+
+  function attachShamsiDatePicker(inputId, opts){
+    const input = document.getElementById(inputId);
+    if(!input) return;
+    opts = opts || {};
+    const minYear = opts.minYear || 1300;
+    const maxYear = opts.maxYear || (todayJalali().year + 1);
+
+    input.readOnly = true;
+    input.classList.add('shamsi-dp-input');
+    if(!input.placeholder) input.placeholder = 'انتخاب تاریخ';
+
+    // آیکون تقویم داخل خودِ فیلد
+    let wrapper = input.parentNode;
+    if(!wrapper.classList.contains('shamsi-dp-wrap')){
+      wrapper = document.createElement('div');
+      wrapper.className = 'shamsi-dp-wrap';
+      input.parentNode.insertBefore(wrapper, input);
+      wrapper.appendChild(input);
+      const icon = document.createElement('span');
+      icon.className = 'shamsi-dp-icon';
+      icon.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+      wrapper.appendChild(icon);
+    }
+
+    const popup = document.createElement('div');
+    popup.className = 'shamsi-dp-popup';
+    document.body.appendChild(popup);
+
+    let viewYear, viewMonth, selectedDay = null;
+
+    function currentSelection(){
+      const parts = toEnglishDigitsDP(input.value || '').split('/').map(s => parseInt(s, 10));
+      if(parts.length === 3 && !parts.some(isNaN)) return { year: parts[0], month: parts[1], day: parts[2] };
+      return null;
+    }
+
+    function renderYearList(){
+      const list = popup.querySelector('.shamsi-dp-year-list');
+      let html = '';
+      for(let y = maxYear; y >= minYear; y--){
+        html += `<div class="shamsi-dp-year-item${y === viewYear ? ' active' : ''}" data-year="${y}">${toPersianDigitsDP(y)}</div>`;
+      }
+      list.innerHTML = html;
+      const activeEl = list.querySelector('.active');
+      if(activeEl && typeof activeEl.scrollIntoView === 'function') activeEl.scrollIntoView({ block: 'center' });
+    }
+
+    function renderDays(){
+      const grid = popup.querySelector('.shamsi-dp-day-grid');
+      // آفست روز اول ماه نسبت به شنبه (تقریب پایدار بر اساس ۱ فروردین ۱۳۰۰ که شنبه بوده)
+      const totalDaysFromEpoch = (function(){
+        let total = 0;
+        for(let y = 1300; y < viewYear; y++){
+          for(let m = 1; m <= 12; m++) total += jalaliMonthLength(y, m);
+        }
+        for(let m = 1; m < viewMonth; m++) total += jalaliMonthLength(viewYear, m);
+        return total;
+      })();
+      // لنگر: ۱ فروردین ۱۳۰۰ برابر با دوشنبه بوده (آفست=۲ در آرایه‌ی ش/ی/د/...)؛
+      // این عدد با چند تاریخ مستقل دیگر (مثل ۱۲ دی ۱۴۰۳=چهارشنبه، ۱۱ دی ۱۳۶۸=دوشنبه) تأیید شده است.
+      const firstDayOffset = (2 + totalDaysFromEpoch) % 7;
+      const daysInMonth = jalaliMonthLength(viewYear, viewMonth);
+      const sel = currentSelection();
+      const t = todayJalali();
+
+      let html = '';
+      for(let i = 0; i < firstDayOffset; i++) html += `<div class="shamsi-dp-day empty"></div>`;
+      for(let d = 1; d <= daysInMonth; d++){
+        const isSelected = sel && sel.year === viewYear && sel.month === viewMonth && sel.day === d;
+        const isToday = t.year === viewYear && t.month === viewMonth && t.day === d;
+        html += `<div class="shamsi-dp-day${isSelected ? ' selected' : ''}${isToday ? ' today' : ''}" data-day="${d}">${toPersianDigitsDP(d)}</div>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    function renderHeader(){
+      popup.querySelector('.shamsi-dp-month-name').textContent = SHAMSI_MONTHS[viewMonth - 1];
+    }
+
+    function render(){
+      renderHeader();
+      renderYearList();
+      renderDays();
+    }
+
+    popup.innerHTML = `
+      <div class="shamsi-dp-years-col">
+        <div class="shamsi-dp-year-list"></div>
+      </div>
+      <div class="shamsi-dp-main-col">
+        <div class="shamsi-dp-nav">
+          <button type="button" class="shamsi-dp-nav-btn" data-nav="next">‹</button>
+          <span class="shamsi-dp-month-name"></span>
+          <button type="button" class="shamsi-dp-nav-btn" data-nav="prev">›</button>
+        </div>
+        <div class="shamsi-dp-weekdays">
+          ${SHAMSI_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}
+        </div>
+        <div class="shamsi-dp-day-grid"></div>
+        <div class="shamsi-dp-footer">
+          <button type="button" class="shamsi-dp-link" data-action="clear">پاک کردن</button>
+          <button type="button" class="shamsi-dp-link" data-action="today">امروز</button>
+        </div>
+      </div>
+    `;
+
+    popup.querySelector('.shamsi-dp-year-list').addEventListener('click', (e) => {
+      const item = e.target.closest('.shamsi-dp-year-item');
+      if(!item) return;
+      viewYear = parseInt(item.dataset.year, 10);
+      render();
+    });
+    popup.querySelectorAll('.shamsi-dp-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.nav === 'next' ? 1 : -1;
+        viewMonth += dir;
+        if(viewMonth > 12){ viewMonth = 1; viewYear++; }
+        if(viewMonth < 1){ viewMonth = 12; viewYear--; }
+        render();
+      });
+    });
+    popup.querySelector('.shamsi-dp-day-grid').addEventListener('click', (e) => {
+      const cell = e.target.closest('.shamsi-dp-day:not(.empty)');
+      if(!cell) return;
+      const d = parseInt(cell.dataset.day, 10);
+      input.value = `${toPersianDigitsDP(viewYear)}/${toPersianDigitsDP(String(viewMonth).padStart(2,'0'))}/${toPersianDigitsDP(String(d).padStart(2,'0'))}`;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      closePopup();
+    });
+    popup.querySelector('[data-action="clear"]').addEventListener('click', () => {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      closePopup();
+    });
+    popup.querySelector('[data-action="today"]').addEventListener('click', () => {
+      const t = todayJalali();
+      input.value = `${toPersianDigitsDP(t.year)}/${toPersianDigitsDP(String(t.month).padStart(2,'0'))}/${toPersianDigitsDP(String(t.day).padStart(2,'0'))}`;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      closePopup();
+    });
+
+    function positionPopup(){
+      const rect = input.getBoundingClientRect();
+      const top = rect.bottom + window.scrollY + 6;
+      let left = rect.left + window.scrollX;
+      popup.style.top = top + 'px';
+      popup.style.left = left + 'px';
+      // اگه از سمت چپ صفحه بیرون زد، بچسبونش به لبه
+      requestAnimationFrame(() => {
+        const pw = popup.offsetWidth;
+        if(left + pw > window.innerWidth - 8){
+          popup.style.left = Math.max(8, window.innerWidth - pw - 8) + 'px';
+        }
+      });
+    }
+
+    function openPopup(){
+      const sel = currentSelection();
+      const t = todayJalali();
+      viewYear = sel ? sel.year : t.year;
+      viewMonth = sel ? sel.month : t.month;
+      render();
+      positionPopup();
+      popup.classList.add('open');
+      document.addEventListener('mousedown', onOutsideClick);
+    }
+    function closePopup(){
+      popup.classList.remove('open');
+      document.removeEventListener('mousedown', onOutsideClick);
+    }
+    function onOutsideClick(e){
+      if(!popup.contains(e.target) && e.target !== input && !wrapper.contains(e.target)) closePopup();
+    }
+
+    input.addEventListener('click', () => {
+      if(popup.classList.contains('open')) closePopup();
+      else openPopup();
+    });
+    window.addEventListener('resize', () => { if(popup.classList.contains('open')) positionPopup(); });
+  }
+
+  window.attachShamsiDatePicker = attachShamsiDatePicker;
+})();
+
+</script>
+<script>
+  if(document.getElementById('tr_birth_date')) attachShamsiDatePicker('tr_birth_date');
+</script>
+</body>
+</html>

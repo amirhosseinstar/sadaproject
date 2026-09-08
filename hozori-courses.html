@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دوره‌های حضوری - سامانه سدا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-dark:#0b4b54;
+    --teal:#23848a;
+    --teal-light:#2f9aa0;
+    --gold:#c8a94d;
+    --gold-light:#d8bd6c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;}
+  html.no-scroll{overflow:hidden;}
+  body.no-scroll{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
+  body{background:#f4f6f6;color:#222;}
+  a{text-decoration:none;color:inherit;}
+
+  /* ===== HEADER ===== */
+  header.page-header{
+    background:var(--teal);
+    padding:16px 20px;
+  }
+  .header-inner{
+    max-width:900px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .brand{color:#fff;font-weight:700;font-size:16px;}
+  .back-link{
+    display:inline-flex;align-items:center;gap:6px;
+    color:#fff;font-size:13px;font-weight:600;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    border-radius:18px;padding:7px 16px;transition:.15s;
+  }
+  .back-link svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:.15s;}
+  .back-link:hover{background:rgba(255,255,255,.28);}
+  .back-link:hover svg{transform:translateX(-3px);}
+
+  main{max-width:1100px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* ===== PAGE TITLE / PATH ===== */
+  .page-title-box{
+    background:#fff;border-radius:14px;padding:20px 22px;margin-bottom:22px;
+    box-shadow:0 4px 16px rgba(0,60,65,.06);
+  }
+  .page-title-box h1{font-size:19px;color:var(--teal-dark);margin-bottom:12px;}
+  .path-chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .path-chip{
+    font-size:12px;font-weight:600;color:var(--teal-dark);
+    background:#eef4f4;border-radius:14px;padding:5px 12px;
+  }
+
+  /* ===== COURSE SECTIONS ===== */
+  .course-section{margin-bottom:26px;}
+  .course-section-title{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .course-section-title .bar{width:4px;height:17px;background:var(--gold);border-radius:2px;}
+  .course-section-title h2{font-size:15px;font-weight:700;color:var(--teal-dark);}
+  .course-section-title .badge{
+    font-size:10.5px;font-weight:700;color:#fff;background:var(--teal);
+    border-radius:12px;padding:2px 10px;
+  }
+  .course-section-title.national .badge{background:var(--gold);color:#3a2f0d;}
+
+  .course-card{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    background:#fff;border:1px solid #e7eeee;border-radius:12px;
+    padding:14px 16px;margin-bottom:10px;
+    box-shadow:0 2px 8px rgba(0,60,65,.05);flex-wrap:wrap;
+  }
+  .course-card .cc-info{flex:1;min-width:200px;}
+  .course-card .cc-title{font-size:14px;font-weight:700;color:#22302f;margin-bottom:6px;}
+  .course-card .cc-meta{font-size:12px;color:#6b7d7d;display:flex;gap:14px;flex-wrap:wrap;}
+  .course-card .cc-prereq{font-size:11.5px;color:#a06a00;background:#fff6e5;border-radius:8px;padding:4px 10px;margin-top:8px;display:inline-block;}
+  .course-card .cc-exam-badge{font-size:11.5px;color:#1f7a7a;background:#eaf6f6;border-radius:8px;padding:4px 10px;margin-top:8px;margin-inline-start:6px;display:inline-block;}
+  .cc-enroll-btn{
+    font-family:inherit;font-size:12.5px;font-weight:700;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold));
+    color:#3a2f0d;border:none;border-radius:8px;
+    padding:9px 20px;cursor:pointer;transition:.15s;flex-shrink:0;
+  }
+  .cc-enroll-btn:hover{filter:brightness(1.05);}
+  .cc-enroll-btn.enrolled{background:#e2ecec;color:var(--teal-dark);cursor:default;}
+  .course-empty{
+    font-size:12.5px;color:#8a9c9c;text-align:center;padding:18px;
+    background:#f8fbfb;border-radius:10px;
+  }
+
+  /* ===== TWO-COLUMN LAYOUT: COURSE LIST + ANNOUNCEMENTS ===== */
+  .course-layout{
+    display:flex;
+    align-items:flex-start;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .course-content-col{
+    flex:1 1 520px;
+    min-width:0;
+    background:#fff;border-radius:14px;padding:20px 22px;
+    box-shadow:0 4px 16px rgba(0,60,65,.06);
+  }
+  .course-content-col .course-section:last-child{margin-bottom:0;}
+  .announce-col{
+    flex:1 1 280px;
+    min-width:0;
+    background:#fff;border-radius:14px;padding:20px 22px;
+    box-shadow:0 4px 16px rgba(0,60,65,.06);
+  }
+  .announce-col .col-heading{
+    display:flex;align-items:center;gap:10px;
+    font-size:15px;font-weight:700;color:#1f2a2a;
+    margin-bottom:14px;
+  }
+  .announce-col .col-heading .bar{
+    width:4px;height:17px;background:var(--gold);border-radius:2px;
+  }
+  .announce-scope-note{
+    font-size:11.5px;color:#8a9c9c;margin-bottom:14px;line-height:1.8;
+  }
+  .announce-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .announce-item{
+    background:#f2fbfb;
+    border-radius:12px;
+    padding:14px 16px;
+    border-inline-start:3px solid var(--gold);
+  }
+  .announce-item .announce-title{
+    font-size:13px;
+    font-weight:700;
+    color:#1f2a2a;
+    margin-bottom:4px;
+  }
+  .announce-item .announce-text{
+    font-size:11.5px;
+    color:#6b7d7d;
+    line-height:1.8;
+    margin-bottom:6px;
+  }
+  .announce-item .announce-date{
+    font-size:11px;
+    color:var(--teal);
+    font-weight:600;
+  }
+  .announce-empty{
+    font-size:12px;color:#8a9c9c;text-align:center;padding:14px;
+    background:#f8fbfb;border-radius:10px;
+  }
+  @media (max-width:760px){
+    .announce-col{flex-basis:100%;}
+  }
+
+  /* ===== MODAL BASE (calendar-modal style) ===== */
+  .calendar-modal-overlay{
+    position:fixed;inset:0;background:rgba(10,30,32,.55);
+    display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;
+    opacity:0;visibility:hidden;transition:opacity .25s ease;
+  }
+  .calendar-modal-overlay.open{opacity:1;visibility:visible;}
+  .calendar-modal{
+    width:100%;max-width:460px;max-height:88vh;overflow-y:auto;
+    background:#fff;border-radius:16px;position:relative;
+    padding:26px 28px 30px;transform:translateY(14px) scale(.97);
+    transition:transform .25s ease;box-shadow:0 20px 50px rgba(0,0,0,.35);
+  }
+  .calendar-modal-overlay.open .calendar-modal{transform:translateY(0) scale(1);}
+  .calendar-modal-close{
+    position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;
+    background:#f0f4f4;border:none;color:#33403f;font-size:15px;line-height:1;
+    cursor:pointer;z-index:2;transition:background .15s;
+  }
+  .calendar-modal-close:hover{background:#e2e9e9;}
+
+  /* ===== ENROLLMENT MODAL (ثبت‌نام کلاس مجازی) ===== */
+  .enroll-modal{max-width:460px;text-align:center;}
+  .enroll-icon-wrap{
+    width:60px;height:60px;border-radius:50%;
+    background:#eef4f4;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+  }
+  .enroll-icon-wrap svg{width:30px;height:30px;stroke:var(--teal-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .enroll-icon-wrap.success{background:#e5f6ee;}
+  .enroll-icon-wrap.success svg{stroke:#1f9d5c;}
+  .prereq-link-btn{
+    display:inline-block;margin-top:10px;
+    background:var(--teal);color:#fff;font-family:inherit;font-weight:700;font-size:13px;
+    border:none;border-radius:10px;padding:10px 20px;cursor:pointer;transition:.15s;
+  }
+  .prereq-link-btn:hover{background:var(--teal-dark);}
+  .course-card.prereq-highlight{outline:2px solid var(--teal);outline-offset:2px;}
+  .enroll-step{display:none;}
+  .enroll-step.active{display:block;}
+  .enroll-step h4{font-size:16px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;}
+  .enroll-step p{font-size:12.5px;line-height:1.9;color:#5c6e6e;margin-bottom:18px;}
+  .enroll-field{margin-bottom:14px;text-align:right;}
+  .enroll-field label{display:block;font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:6px;}
+  .enroll-field input{
+    width:100%;padding:11px 12px;border-radius:10px;
+    border:1.5px solid #dce8e8;background:#fff;
+    font-family:inherit;font-size:13px;color:#222;
+    text-align:right;
+  }
+  .enroll-field input:focus{outline:none;border-color:var(--teal);}
+  .enroll-error{
+    font-size:11.5px;color:#c0392b;background:#fdecea;
+    border-radius:8px;padding:8px 10px;margin-bottom:14px;text-align:right;
+  }
+  .enroll-btn{
+    font-family:inherit;font-size:13.5px;font-weight:700;
+    border-radius:10px;padding:11px 20px;cursor:pointer;
+    border:none;transition:.15s;width:100%;
+  }
+  .enroll-btn:disabled{opacity:.6;cursor:not-allowed;}
+  .enroll-btn-primary{background:var(--teal);color:#fff;}
+  .enroll-btn-primary:hover:not(:disabled){background:var(--teal-dark);}
+  .enroll-btn-ghost{background:#eef4f4;color:var(--teal-dark);margin-top:8px;}
+  .enroll-btn-ghost:hover{background:#e2ecec;}
+  .enroll-spinner{
+    width:34px;height:34px;border-radius:50%;
+    border:3px solid #dce8e8;border-top-color:var(--teal);
+    margin:0 auto 16px;animation:enroll-spin .8s linear infinite;
+  }
+  @keyframes enroll-spin{to{transform:rotate(360deg);}}
+  .enroll-summary{
+    background:#f2fbfb;border:1px solid #dceaea;border-radius:10px;
+    padding:14px 16px;margin-bottom:18px;text-align:right;
+  }
+  .enroll-summary .es-row{
+    display:flex;justify-content:space-between;gap:10px;
+    font-size:12.5px;padding:5px 0;border-bottom:1px dashed #d9e6e6;
+  }
+  .enroll-summary .es-row:last-child{border-bottom:none;}
+  .enroll-summary .es-row span{color:#6b7d7d;}
+  .enroll-summary .es-row b{color:#22302f;font-weight:700;}
+  .enroll-actions-row{display:flex;gap:10px;}
+  .enroll-actions-row .enroll-btn{width:auto;flex:1;}
+
+  #printArea{display:none;}
+  @media print{
+    body > *:not(#printArea){display:none !important;}
+    #printArea{display:block !important;padding:30px;direction:rtl;}
+  }
+
+  @media (max-width:520px){
+    .course-card{flex-direction:column;align-items:stretch;}
+    .cc-enroll-btn{width:100%;}
+  }
+  .btn-login{
+    display:inline-flex;align-items:center;
+    color:#2a2108;font-size:13px;font-weight:700;
+    background:linear-gradient(180deg,#f0d98a,#dcb84a);
+    border-radius:18px;padding:7px 18px;transition:.15s;
+  }
+  .btn-login[hidden]{display:none;}
+  .btn-login:hover{filter:brightness(1.05);}
+  .nav-actions{display:flex;align-items:center;gap:10px;}
+  .user-badge{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    border-radius:18px;padding:5px 6px 5px 12px;color:#fff;font-size:12.5px;font-weight:600;
+  }
+  .user-badge[hidden]{display:none;}
+  .user-badge #userGreeting{white-space:nowrap;direction:ltr;}
+  .user-badge button{
+    font-family:inherit;font-size:11px;font-weight:700;color:#fff;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);
+    border-radius:12px;padding:4px 10px;cursor:pointer;transition:background .15s;
+  }
+  .user-badge button:hover{background:rgba(255,255,255,.32);}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-inner">
+    <span class="brand">سامانه سدا — خانه کارگر</span>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <a class="back-link" href="/"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>بازگشت به سامانه سدا</a>
+      <div class="nav-actions">
+        <a href="/login?returnUrl=/hozori-courses" class="btn-login" id="loginBtn">ورود</a>
+        <div class="user-badge" id="userBadge" hidden>
+          <span id="userGreeting"></span>
+          <button type="button" id="logoutBtn">خروج</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-title-box">
+    <h1>دوره‌های آموزشی حضوری</h1>
+    <div class="path-chips">
+      <span class="path-chip" id="pathDept"></span>
+      <span class="path-chip" id="pathProvince"></span>
+      <span class="path-chip" id="pathBranch"></span>
+      <span class="path-chip" id="pathPeriod" hidden></span>
+    </div>
+  </div>
+
+  <div class="course-layout">
+    <div class="course-content-col">
+      <div class="course-section">
+        <div class="course-section-title">
+          <span class="bar"></span><h2>کلاس‌های حضوری شعبه</h2><span class="badge">شعبه‌ای</span>
+        </div>
+        <div id="branchCourseList"></div>
+      </div>
+    </div>
+
+    <div class="announce-col">
+      <div class="col-heading"><span class="bar"></span><span>اطلاعیه‌ها</span></div>
+      <div class="announce-scope-note" id="announceScopeNote"></div>
+      <div class="announce-list" id="announceList"></div>
+    </div>
+  </div>
+</main>
+
+<div class="calendar-modal-overlay" id="enrollModalOverlay">
+  <div class="calendar-modal enroll-modal" id="enrollModal">
+    <button class="calendar-modal-close" id="enrollModalClose" aria-label="بستن">✕</button>
+
+    <!-- STEP: احراز هویت (کد ملی + کد عضویت/هواداری) -->
+    <div class="enroll-step" data-estep="identity">
+      <div class="enroll-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <h4>ورود برای ثبت‌نام</h4>
+      <p>برای ثبت‌نام در این دوره، ابتدا کد ملی و کد عضویت / کد هواداری خود را وارد کنید.</p>
+      <div class="enroll-error" id="enrollIdentityError" hidden></div>
+      <div class="enroll-field">
+        <label for="enrollNationalId">کد ملی</label>
+        <input type="text" id="enrollNationalId" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم">
+      </div>
+      <div class="enroll-field">
+        <label for="enrollMembershipCode">کد عضویت / کد هواداری</label>
+        <input type="text" id="enrollMembershipCode" inputmode="numeric" maxlength="14" placeholder="۱۴ رقم">
+      </div>
+      <button type="button" class="enroll-btn enroll-btn-primary" id="enrollIdentitySubmit">ورود و ادامه ثبت‌نام</button>
+    </div>
+
+    <!-- STEP: بررسی عضویت در سامانه سما -->
+    <div class="enroll-step" data-estep="checking">
+      <div class="enroll-spinner"></div>
+      <h4>در حال بررسی عضویت</h4>
+      <p>وضعیت عضویت شما در سامانه سما در حال بررسی است، لطفاً چند لحظه صبر کنید…</p>
+    </div>
+
+    <!-- STEP: فرد عضو نیست -->
+    <div class="enroll-step" data-estep="become-member">
+      <div class="enroll-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+      </div>
+      <h4>عضو خانه کارگر نیستید</h4>
+      <p>طبق بررسی سامانه سما، شما هنوز عضو خانه کارگر نشده‌اید. برای ادامه‌ی ثبت‌نام، ابتدا باید عضو شوید.</p>
+      <button type="button" class="enroll-btn enroll-btn-primary" id="enrollBecomeMemberBtn">عضویت در خانه کارگر</button>
+    </div>
+
+    <!-- STEP: عضویت منقضی شده -->
+    <div class="enroll-step" data-estep="renew-member">
+      <div class="enroll-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+      </div>
+      <h4>عضویت شما منقضی شده است</h4>
+      <p>طبق بررسی سامانه سما، عضویت شما در خانه کارگر منقضی شده. برای ادامه‌ی ثبت‌نام، ابتدا عضویت خود را تمدید کنید.</p>
+      <button type="button" class="enroll-btn enroll-btn-primary" id="enrollRenewBtn">تمدید عضویت</button>
+    </div>
+
+    <!-- STEP: محروم شده -->
+    <div class="enroll-step" data-estep="banned">
+      <div class="enroll-icon-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+      </div>
+      <h4>امکان ثبت‌نام برای شما وجود ندارد</h4>
+      <p id="enrollBannedReason">متأسفانه شما از ثبت‌نام در کلاس‌ها محروم شده‌اید. برای اطلاعات بیشتر با شعبه‌ی مربوطه تماس بگیرید.</p>
+    </div>
+
+    <!-- STEP: قبلاً ثبت‌نام کرده -->
+    <div class="enroll-step" data-estep="already-enrolled">
+      <div class="enroll-icon-wrap success">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h4>شما قبلاً در این کلاس ثبت‌نام کرده‌اید</h4>
+      <p>نیازی به ثبت‌نام دوباره نیست؛ نام شما از قبل در لیست دانش‌پژوهان این کلاس ثبت شده است.</p>
+    </div>
+
+    <!-- STEP: کلاس پیش‌نیاز دارد -->
+    <div class="enroll-step" data-estep="prerequisite-required">
+      <div class="enroll-icon-wrap">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+      <h4>این کلاس دارای پیش‌نیاز است</h4>
+      <p>برای ثبت‌نام در این کلاس، ابتدا باید در کلاس زیر ثبت‌نام کنید:</p>
+      <button type="button" class="prereq-link-btn" id="prereqLinkBtn"></button>
+      <p id="prereqNotAvailable" hidden style="color:#c0392b;font-size:13px;margin-top:10px;">این کلاس در این ترم وجود ندارد.</p>
+    </div>
+
+    <!-- STEP: موفقیت -->
+    <div class="enroll-step" data-estep="success">
+      <div class="enroll-icon-wrap success">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h4>ثبت‌نام کلاس با موفقیت انجام شد</h4>
+      <div class="enroll-summary" id="enrollSuccessSummary"></div>
+      <div class="enroll-actions-row">
+        <button type="button" class="enroll-btn enroll-btn-primary" id="enrollPrintBtn">پرینت ثبت‌نام</button>
+        <button type="button" class="enroll-btn enroll-btn-ghost" id="enrollCloseSuccessBtn">بستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printArea"></div>
+
+<script>
+  // ---- تنظیمات اتصال به بک‌اند ----
+  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+  function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+  function toPersianDigits(n){
+    return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
+  // کوکی CSRF را از همین ابتدا می‌گیریم تا موقع ثبت‌نام (POST به
+  // /members/verify/ و /classmgmt/classes/<id>/enroll/) آماده باشد
+  fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){});
+
+  // ---- قفل اسکرول صفحه بدون پرش هنگام باز شدن پاپ‌آپ‌ها ----
+  let __scrollLockY = 0;
+  function lockBodyScroll(){
+    __scrollLockY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = (-__scrollLockY) + 'px';
+    document.documentElement.classList.add('no-scroll');
+    document.body.classList.add('no-scroll');
+  }
+  function unlockBodyScroll(){
+    document.documentElement.classList.remove('no-scroll');
+    document.body.classList.remove('no-scroll');
+    document.body.style.top = '';
+    window.scrollTo(0, __scrollLockY);
+  }
+</script>
+
+<script>
+  // ---- تبدیل میلادی به شمسی و تشخیص «دوره‌ی فعال فعلی» - دقیقاً همان
+  // منطقی که تو تقویم آموزشی پنل ادمین، دوره‌ی فعلی را هایلایت می‌کند
+  // (یعنی امروز بین شروع ثبت‌نام تا پایان آزمون نهایی آن دوره باشد) ----
+  function gregorianToJalali(gy, gm, gd){
+    const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    let jy = (gy <= 1600) ? 0 : 979;
+    gy -= (gy <= 1600) ? 621 : 1600;
+    const gy2 = (gm > 2) ? (gy + 1) : gy;
+    let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) +
+      Math.floor((gy2 + 399) / 400) - 80 + gd + g_d_m[gm - 1];
+    jy += 33 * Math.floor(days / 12053);
+    days %= 12053;
+    jy += 4 * Math.floor(days / 1461);
+    days %= 1461;
+    if(days > 365){
+      jy += Math.floor((days - 1) / 365);
+      days = (days - 1) % 365;
+    }
+    const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+    const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+    return { year: jy, month: jm, day: jd };
+  }
+  function getTodayJalali(){
+    const now = new Date();
+    return gregorianToJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  }
+
+  // برمی‌گرداند: order همان دوره‌ای که الان (طبق تاریخ امروز) فعال است، یا
+  // null اگر هیچ دوره‌ای الان فعال نباشد
+  function getActiveTermOrder(){
+    return fetch(`${API_BASE_URL}/calendar/terms/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(terms => {
+        const todayJ = getTodayJalali();
+        const todayValue = todayJ.year * 10000 + todayJ.month * 100 + todayJ.day;
+        const active = (terms || []).find(t => {
+          const startValue = t.year * 10000 + t.registration.start.m * 100 + t.registration.start.d;
+          const endValue = t.year * 10000 + t.exam.end.m * 100 + t.exam.end.d;
+          return todayValue >= startValue && todayValue <= endValue;
+        });
+        return active ? active.order : null;
+      })
+      .catch(() => null);
+  }
+</script>
+
+<script>
+  // ---- کلاس‌های حضوری این شعبه: حالا واقعاً از بک‌اند خوانده می‌شود ----
+  // نکته: قبلاً اینجا داده‌های نمونه‌ی هاردکد بود؛ الان از
+  // /api/classmgmt/classes/ با فیلتر شعبه+دپارتمان+منتشرشده خوانده می‌شود.
+  function loadBranchHozoriCourses(branchName, deptName){
+    const params = new URLSearchParams();
+    if(branchName) params.set('branch', branchName);
+    if(deptName) params.set('department_name', deptName);
+    params.set('type', 'حضوری');
+    params.set('published', 'true');
+    return getActiveTermOrder().then(activeTermOrder =>
+      fetch(`${API_BASE_URL}/classmgmt/classes/?${params.toString()}`, { credentials: 'include' })
+        .then(res => res.ok ? res.json() : [])
+        .then(list => (list || [])
+          // فقط کلاس‌های همان دوره‌ای که الان تو تقویم آموزشی فعال/هایلایت
+          // است نشان داده می‌شود؛ اگر الان هیچ دوره‌ای فعال نباشد، هیچ
+          // کلاسی نشان داده نمی‌شود (نه همه‌ی کلاس‌ها بدون فیلتر)
+          .filter(c => activeTermOrder !== null && Number(c.term_order) === activeTermOrder)
+          .map(c => ({
+            id: c.id,
+            title: c.name,
+            teacher: c.teacher_name || 'هنوز مدرس تعیین نشده',
+            schedule: [c.day, c.start_time && c.entry_time ? `${c.start_time} الی ${c.entry_time}` : c.start_time].filter(Boolean).join(' - '),
+            price: 'رایگان',
+            location: 'سالن آموزشی شعبه ' + branchName,
+            isFull: !!c.is_full,
+            capacity: c.capacity,
+            enrolledCount: c.enrolled_count,
+            prerequisiteId: c.prerequisite,
+            prerequisiteName: c.prerequisite_name,
+            hasOnlineExam: c.has_online_exam,
+            lessonId: c.lesson,
+          })))
+        .catch(() => [])
+    );
+  }
+
+  // ---- داده‌های نمونه‌ی اطلاعیه‌ها بر اساس استان/شعبه (Mock — تا اتصال به بک‌اند) ----
+  // TODO: وقتی بک‌اند آماده شد، این داده‌ها از API واقعی اطلاعیه‌ها (فیلترشده بر اساس
+  // شناسه‌ی استان و شعبه) دریافت شود. اطلاعیه‌های عمومی (بدون شعبه) هم باید از همان API بیایند.
+  function getAnnouncementsForBranch(provinceName, branchName){
+    const announcements = [];
+    if(branchName){
+      announcements.push({
+        title: "برگزاری کلاس‌های حضوری شعبه " + branchName,
+        text: "ثبت‌نام کلاس‌های حضوری این دوره در شعبه " + branchName + " آغاز شده است.",
+        date: "۱۴۰۴/۰۵/۰۶"
+      });
+      announcements.push({
+        title: "تغییر ساعت کاری شعبه " + branchName,
+        text: "ساعت کاری شعبه " + branchName + " تا اطلاع ثانوی یک ساعت زودتر خواهد بود.",
+        date: "۱۴۰۴/۰۴/۲۸"
+      });
+    }
+    announcements.push({
+      title: "اطلاعیه‌ی عمومی سامانه سدا",
+      text: "اطلاعیه‌ها به‌زودی تکمیل می‌شود.",
+      date: "۱۴۰۴/۰۴/۱۵"
+    });
+    return announcements;
+  }
+
+  // ---- احراز هویت و بررسی عضویت ----
+  // currentUser از نشست واقعی ورود (session) پر می‌شود - اگر کاربر از قبل
+  // در سایت (login.html) وارد شده باشد، دیگر لازم نیست کد ملی/کد عضویت را
+  // اینجا دوباره تایپ کند.
+  let currentUser = null; // { nationalId, membershipCode }
+  const currentUserReady = fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
+    .then(function(res){ return res.ok ? res.json() : null; })
+    .then(function(profile){
+      if(profile && profile.is_member){
+        currentUser = { nationalId: profile.national_id, membershipCode: profile.membership_code };
+      }
+      return currentUser;
+    })
+    .catch(function(){ return null; });
+
+  // TODO: وقتی اتصال به سامانه سما آماده شد، این تابع باید با یک fetch واقعی
+  // به API استعلام عضویت جایگزین شود و پاسخ واقعی isMember/isValid را برگرداند.
+  // نکته: تابع mockCheckSamaMembership قبلاً اینجا بود و یک شبیه‌سازی
+  // تصادفی بود؛ حالا runCheck() بالاتر مستقیم از API واقعی
+  // (/api/members/verify/) استفاده می‌کند.
+</script>
+
+<script>
+  // ---- خواندن پارامترهای صفحه (دپارتمان / استان / شعبه) و نمایش لیست دوره‌ها ----
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const deptName = params.get('deptName') || '';
+    const provinceName = params.get('provinceName') || '';
+    const branchName = params.get('branch') || '';
+    // دوره‌ای که کاربر از تقویم آموزشی صفحه‌ی اصلی انتخاب کرده (اختیاری).
+    // TODO: وقتی بک‌اند آماده شد، این period باید برای فیلتر کردن دوره‌های
+    // متعلق به همین بازه‌ی زمانی، به API لیست دوره‌ها ارسال شود.
+    const selectedPeriod = params.get('period') || '';
+
+    document.getElementById('pathDept').textContent = 'دپارتمان: ' + (deptName || '—');
+    document.getElementById('pathProvince').textContent = 'استان: ' + (provinceName || '—');
+    document.getElementById('pathBranch').textContent = 'شعبه: ' + (branchName || '—');
+    const pathPeriodEl = document.getElementById('pathPeriod');
+    if(selectedPeriod && pathPeriodEl){
+      pathPeriodEl.textContent = 'دوره: ' + selectedPeriod;
+      pathPeriodEl.hidden = false;
+    }
+
+    const courseLookup = {};
+    window.courseLookup = courseLookup; // برای دسترسی از IIFE دیگر (ویزارد ثبت‌نام) لازم است
+
+    function renderCourseList(container, courses, emptyText){
+      if(!courses || courses.length === 0){
+        container.innerHTML = `<div class="course-empty">${emptyText}</div>`;
+        return;
+      }
+      courses.forEach(c => {
+        courseLookup[c.id] = Object.assign({}, c, {
+          isNational: false,
+          branchName: branchName,
+          deptName: deptName,
+          period: selectedPeriod
+        });
+      });
+      container.innerHTML = courses.map(c => `
+        <div class="course-card" data-course-id="${c.id}">
+          <div class="cc-info">
+            <div class="cc-title">${c.title}</div>
+            <div class="cc-meta">
+              <span>👤 ${c.teacher}</span>
+              <span>🕒 ${c.schedule}</span>
+              <span>📍 ${c.location}</span>
+              <span>💳 ${c.price}</span>
+              <span>👥 ${toPersianDigits(c.enrolledCount || 0)} از ${toPersianDigits(c.capacity || 0)} نفر</span>
+            </div>
+            ${c.prerequisiteName ? `<div class="cc-prereq">پیش‌نیاز: ${c.prerequisiteName}</div>` : ''}
+            ${c.hasOnlineExam ? `<div class="cc-exam-badge">آزمون آنلاین دارد</div>` : ''}
+          </div>
+          ${c.isFull
+            ? `<button type="button" class="cc-enroll-btn" disabled>ظرفیت تکمیل</button>`
+            : `<button type="button" class="cc-enroll-btn" data-enroll-id="${c.id}">ثبت‌نام</button>`}
+        </div>
+      `).join('');
+    }
+
+    const branchListEl = document.getElementById('branchCourseList');
+
+    // اول باید مطمئن شویم دسترسی همگان به دیدن/ثبت‌نام کلاس‌ها (سراسری،
+    // از پنل مدیر آموزش) اصلاً باز است - اگر بسته باشد، حتی لیست کلاس‌ها
+    // هم نشان داده نمی‌شود.
+    fetch(`${API_BASE_URL}/classmgmt/site-settings/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : { public_registration_enabled: false })
+      .then(settings => {
+        if(!settings || !settings.public_registration_enabled){
+          branchListEl.innerHTML = `
+            <div class="course-empty">
+              از هفته‌ی ثبت‌نام گذشته است. برای اطلاع از هفته‌ی ثبت‌نام دوره‌ی بعدی به تقویم آموزشی در سایت مراجعه فرمایید.
+              <div style="margin-top:14px;">
+                <a href="/?openCalendar=1" class="cc-enroll-btn" style="text-decoration:none;display:inline-block;padding:10px 24px;">رفتن به تقویم آموزشی</a>
+              </div>
+            </div>`;
+          return;
+        }
+        loadBranchHozoriCourses(branchName, deptName).then(courses => {
+          renderCourseList(branchListEl, courses, 'هیچ کلاس فعالی برای این دپارتمان وجود ندارد.');
+          // اگر از صفحه‌ی ورود برگشته‌ایم (بعد از این‌که برای همین دوره
+          // «ثبت‌نام» زده بودیم ولی هنوز وارد نشده بودیم)، ویزارد ثبت‌نام
+          // را خودکار دوباره برای همان دوره باز کن.
+          const resumeId = new URLSearchParams(window.location.search).get('enrollClassId');
+          if(resumeId && courseLookup[resumeId] && window.openEnrollModal){
+            window.openEnrollModal(courseLookup[resumeId]);
+            // پاک‌کردن پارامتر از URL تا با رفرش دستی صفحه، دوباره باز نشود
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('enrollClassId');
+            window.history.replaceState({}, '', cleanUrl);
+          }
+        });
+      })
+      .catch(() => {
+        branchListEl.innerHTML = `<div class="course-empty">در حال حاضر امکان مشاهده و ثبت‌نام در کلاس‌ها وجود ندارد.</div>`;
+      });
+
+    // ---- نمایش اطلاعیه‌های مربوط به همین استان/شعبه ----
+    const announceScopeNote = document.getElementById('announceScopeNote');
+    const announceListEl = document.getElementById('announceList');
+    if(announceScopeNote){
+      announceScopeNote.textContent = branchName
+        ? 'اطلاعیه‌های مربوط به شعبه ' + branchName + (provinceName ? ' (استان ' + provinceName + ')' : '')
+        : 'اطلاعیه‌های عمومی سامانه سدا';
+    }
+    if(announceListEl){
+      const announcements = getAnnouncementsForBranch(provinceName, branchName);
+      if(!announcements.length){
+        announceListEl.innerHTML = '<div class="announce-empty">در حال حاضر اطلاعیه‌ای ثبت نشده است.</div>';
+      } else {
+        announceListEl.innerHTML = announcements.map(a => `
+          <div class="announce-item">
+            <div class="announce-title">${a.title}</div>
+            <div class="announce-text">${a.text}</div>
+            <div class="announce-date">${a.date}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('.cc-enroll-btn');
+      if(!btn || btn.classList.contains('enrolled')) return;
+      const course = courseLookup[btn.dataset.enrollId];
+      if(!course) return;
+      window.openEnrollModal(course, btn);
+    });
+  })();
+</script>
+
+<script>
+  // ---- ویزارد ثبت‌نام دوره مجازی (احراز هویت › بررسی سما › نتیجه) ----
+  (function(){
+    const overlay = document.getElementById('enrollModalOverlay');
+    const closeBtn = document.getElementById('enrollModalClose');
+    const steps = overlay.querySelectorAll('.enroll-step');
+
+    const nationalIdInput = document.getElementById('enrollNationalId');
+    const membershipInput = document.getElementById('enrollMembershipCode');
+    const identityError = document.getElementById('enrollIdentityError');
+    const identitySubmit = document.getElementById('enrollIdentitySubmit');
+
+    const becomeMemberBtn = document.getElementById('enrollBecomeMemberBtn');
+    const renewBtn = document.getElementById('enrollRenewBtn');
+
+    const summaryEl = document.getElementById('enrollSuccessSummary');
+    const printBtn = document.getElementById('enrollPrintBtn');
+    const closeSuccessBtn = document.getElementById('enrollCloseSuccessBtn');
+
+    let course = null;
+    let triggerBtn = null;
+
+    nationalIdInput.addEventListener('input', function(e){
+      e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+    membershipInput.addEventListener('input', function(e){
+      e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 14);
+    });
+
+    function showStep(name){
+      steps.forEach(s => s.classList.toggle('active', s.dataset.estep === name));
+    }
+
+    function runCheck(){
+      showStep('checking');
+      fetch(`${API_BASE_URL}/members/verify/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+        body: JSON.stringify({ national_id: currentUser.nationalId, membership_code: currentUser.membershipCode })
+      })
+        .then(function(res){ return res.ok ? res.json() : Promise.reject(); })
+        .then(function(result){
+          if(!result.is_member){
+            showStep('become-member');
+          } else if(result.is_banned){
+            document.getElementById('enrollBannedReason').textContent = result.ban_reason
+              ? `متأسفانه شما به دلیل «${result.ban_reason}» از ثبت‌نام در کلاس‌ها محروم شده‌اید. برای اطلاعات بیشتر با شعبه‌ی مربوطه تماس بگیرید.`
+              : 'متأسفانه شما از ثبت‌نام در کلاس‌ها محروم شده‌اید. برای اطلاعات بیشتر با شعبه‌ی مربوطه تماس بگیرید.';
+            showStep('banned');
+          } else if(!result.is_valid){
+            showStep('renew-member');
+          } else {
+            enrollAndShowSuccess();
+          }
+        })
+        .catch(function(){
+          showStep('identity');
+          identityError.hidden = false;
+          identityError.textContent = 'خطا در برقراری ارتباط با سرور؛ دوباره تلاش کنید.';
+        });
+    }
+
+    identitySubmit.addEventListener('click', function(){
+      const nid = nationalIdInput.value.trim();
+      const mc = membershipInput.value.trim();
+      if(!/^\d{10}$/.test(nid) || !/^\d{14}$/.test(mc)){
+        identityError.hidden = false;
+        identityError.textContent = 'کد ملی باید ۱۰ رقم و کد عضویت/هواداری باید ۱۴ رقم باشد.';
+        return;
+      }
+      identityError.hidden = true;
+      // TODO: وقتی بک‌اند لاگین آماده شد، اینجا اعتبارسنجی واقعی هویت کاربر (ورود) انجام شود.
+      currentUser = { nationalId: nid, membershipCode: mc };
+      runCheck();
+    });
+
+    becomeMemberBtn.addEventListener('click', function(){
+      // TODO: وقتی بک‌اند و اتصال به سامانه سما آماده شد، اینجا درخواست عضویت واقعی ارسال و نتیجه دریافت شود.
+      becomeMemberBtn.disabled = true;
+      becomeMemberBtn.textContent = 'در حال ثبت عضویت…';
+      setTimeout(function(){
+        becomeMemberBtn.disabled = false;
+        becomeMemberBtn.textContent = 'عضویت در خانه کارگر';
+        showSuccess();
+      }, 900);
+    });
+
+    renewBtn.addEventListener('click', function(){
+      // TODO: وقتی بک‌اند و اتصال به سامانه سما آماده شد، اینجا درخواست تمدید عضویت واقعی ارسال و نتیجه دریافت شود.
+      renewBtn.disabled = true;
+      renewBtn.textContent = 'در حال تمدید…';
+      setTimeout(function(){
+        renewBtn.disabled = false;
+        renewBtn.textContent = 'تمدید عضویت';
+        showSuccess();
+      }, 900);
+    });
+
+    function showSuccess(){
+      summaryEl.innerHTML = `
+        <div class="es-row"><span>عنوان دوره</span><b>${course.title}</b></div>
+        <div class="es-row"><span>استاد</span><b>${course.teacher}</b></div>
+        <div class="es-row"><span>زمان‌بندی</span><b>${course.schedule}</b></div>
+        <div class="es-row"><span>${course.isNational ? 'نوع دوره' : 'شعبه'}</span><b>${course.isNational ? 'سراسری (ملی)' : (course.branchName || '-')}</b></div>
+      `;
+      showStep('success');
+      if(triggerBtn){
+        triggerBtn.textContent = 'ثبت‌نام شد ✓';
+        triggerBtn.classList.add('enrolled');
+        triggerBtn.disabled = true;
+      }
+    }
+
+    // ---- ثبت‌نام واقعی: هم‌زمان هویت/محرومیت/اعتبار/ظرفیت را دوباره چک
+    // می‌کند و رکورد ثبت‌نام واقعی می‌سازد؛ فقط بعد از موفقیت واقعی است که
+    // مرحله‌ی «موفقیت» نشان داده می‌شود ----
+    function enrollAndShowSuccess(){
+      showStep('checking');
+      fetch(`${API_BASE_URL}/classmgmt/classes/${course.id}/enroll/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+        body: JSON.stringify({ national_id: currentUser.nationalId, membership_code: currentUser.membershipCode })
+      })
+        .then(function(res){ return res.json().then(function(data){ return { ok: res.ok, data: data }; }); })
+        .then(function(result){
+          if(!result.ok){
+            if(result.data.already_enrolled){
+              showStep('already-enrolled');
+              return;
+            }
+            if(result.data.prerequisite_required){
+              showPrerequisiteStep(result.data.prerequisite_id, result.data.prerequisite_name);
+              return;
+            }
+            showStep('identity');
+            identityError.hidden = false;
+            identityError.textContent = result.data.detail || 'ثبت‌نام انجام نشد؛ دوباره تلاش کنید.';
+            return;
+          }
+          showSuccess();
+        })
+        .catch(function(){
+          showStep('identity');
+          identityError.hidden = false;
+          identityError.textContent = 'خطا در برقراری ارتباط با سرور؛ دوباره تلاش کنید.';
+        });
+    }
+
+    // ---- نمایش مرحله‌ی «این کلاس پیش‌نیاز دارد» - و اگر خودِ کلاس
+    // پیش‌نیاز الان (در همین لیست/ترم) موجود باشد، دکمه به آن لینک/اسکرول
+    // می‌شود؛ اگر موجود نباشد، پیام «در این ترم وجود ندارد» نشان داده می‌شود ----
+    function showPrerequisiteStep(prereqLessonId, prereqName){
+      showStep('prerequisite-required');
+      const btn = document.getElementById('prereqLinkBtn');
+      const notAvailable = document.getElementById('prereqNotAvailable');
+      // پیش‌نیاز به «درس» وصل است نه یک کلاس خاص - پس دنبال هر کلاسی از
+      // همان درس که همین الان (همین ترم/شعبه) قابل مشاهده باشد می‌گردیم
+      const lookup = window.courseLookup || {};
+      const prereqCourse = Object.values(lookup).find(function(course){ return course.lessonId === prereqLessonId; });
+
+      if(prereqCourse){
+        notAvailable.hidden = true;
+        btn.hidden = false;
+        btn.textContent = 'مشاهده‌ی کلاس «' + (prereqCourse.title || prereqName) + '»';
+        btn.onclick = function(){
+          closeEnroll();
+          const cardEl = document.querySelector('.course-card[data-course-id="' + prereqCourse.id + '"]');
+          if(cardEl){
+            cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            cardEl.classList.add('prereq-highlight');
+            setTimeout(function(){ cardEl.classList.remove('prereq-highlight'); }, 2500);
+          }
+        };
+      } else {
+        btn.hidden = true;
+        notAvailable.hidden = false;
+        notAvailable.textContent = 'کلاس «' + prereqName + '» در این ترم وجود ندارد.';
+      }
+    }
+
+    function buildPrintHtml(){
+      const rows = [
+        ['عنوان دوره', course.title],
+        ['استاد', course.teacher],
+        ['زمان‌بندی', course.schedule],
+        ['هزینه', course.price],
+        ['دپارتمان', course.deptName || '-'],
+        [course.isNational ? 'نوع دوره' : 'شعبه', course.isNational ? 'سراسری (ملی)' : (course.branchName || '-')],
+        ['کد ملی دانش‌پژوه', currentUser.nationalId],
+        ['کد عضویت / هواداری', currentUser.membershipCode],
+        ['تاریخ ثبت‌نام', new Date().toLocaleDateString('fa-IR')]
+      ];
+      const rowsHtml = rows.map(r => `
+        <tr>
+          <td style="padding:9px 12px;border:1px solid #ccc;font-weight:700;background:#f2fbfb;width:35%;">${r[0]}</td>
+          <td style="padding:9px 12px;border:1px solid #ccc;">${r[1]}</td>
+        </tr>
+      `).join('');
+      return `
+        <div style="text-align:center;margin-bottom:22px;">
+          <h2 style="margin:0 0 4px;">رسید ثبت‌نام دوره مجازی</h2>
+          <div style="font-size:12px;color:#666;">سامانه سدا — خانه کارگر</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;">${rowsHtml}</table>
+        <div style="margin-top:24px;font-size:11.5px;color:#666;text-align:center;">این رسید توسط سامانه سدا صادر شده است.</div>
+      `;
+    }
+
+    printBtn.addEventListener('click', function(){
+      const printArea = document.getElementById('printArea');
+      printArea.innerHTML = buildPrintHtml();
+      window.print();
+    });
+
+    function openEnroll(c, btn){
+      course = c;
+      triggerBtn = btn || null;
+      nationalIdInput.value = '';
+      membershipInput.value = '';
+      identityError.hidden = true;
+      identitySubmit.disabled = false;
+
+      currentUserReady.then(function(){
+        if(currentUser){
+          overlay.classList.add('open');
+          lockBodyScroll();
+          runCheck();
+        } else {
+          // هنوز وارد نشده - اول به صفحه‌ی ورود دانش‌پژوهان فرستاده می‌شود؛
+          // بعد از ورود موفق، دقیقاً به همین صفحه با همین دوره برمی‌گردد
+          // (enrollClassId پایین همین فایل خوانده می‌شود) تا خودکار ادامه پیدا کند.
+          const params = new URLSearchParams(window.location.search);
+          params.set('enrollClassId', c.id);
+          const returnUrl = window.location.pathname + '?' + params.toString();
+          window.location.href = '/login?returnUrl=' + encodeURIComponent(returnUrl);
+        }
+      });
+    }
+
+    function closeEnroll(){
+      overlay.classList.remove('open');
+      unlockBodyScroll();
+    }
+
+    window.openEnrollModal = openEnroll;
+
+    closeSuccessBtn.addEventListener('click', closeEnroll);
+    closeBtn.addEventListener('click', closeEnroll);
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) closeEnroll();
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && overlay.classList.contains('open')) closeEnroll();
+    });
+  })();
+</script>
+
+
+<script>
+  // ---- نوار کاربر (نام + خروج) - اگر از قبل دانش‌پژوه وارد شده، اینجا هم نشان داده می‌شود ----
+  (function(){
+    function renderLoggedInState(profile){
+      const loginBtn = document.getElementById('loginBtn');
+      const userBadge = document.getElementById('userBadge');
+      const userGreeting = document.getElementById('userGreeting');
+      loginBtn.hidden = true;
+      userBadge.hidden = false;
+      const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+      const maskedId = profile.national_id ? ('••' + String(profile.national_id).slice(-4)) : '';
+      userGreeting.textContent = fullName || maskedId || profile.username;
+    }
+    function renderLoggedOutState(){
+      const loginBtn = document.getElementById('loginBtn');
+      const userBadge = document.getElementById('userBadge');
+      if(!loginBtn) return;
+      loginBtn.hidden = false;
+      userBadge.hidden = true;
+    }
+    fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(profile){
+        if(profile && profile.is_member) renderLoggedInState(profile);
+        else renderLoggedOutState();
+      })
+      .catch(function(){ renderLoggedOutState(); });
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if(logoutBtn){
+      logoutBtn.addEventListener('click', function(){
+        fetch(`${API_BASE_URL}/auth/logout/`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') || '' }
+        }).finally(function(){ renderLoggedOutState(); });
+      });
+    }
+  })();
+</script>
+</body>
+</html>
+
+
+
+
+<script>
+  // ---- نوار کاربر (نام + خروج) - اگر از قبل دانش‌پژوه وارد شده، اینجا هم نشان داده می‌شود ----
+  (function(){
+    function renderLoggedInState(profile){
+      const loginBtn = document.getElementById('loginBtn');
+      const userBadge = document.getElementById('userBadge');
+      const userGreeting = document.getElementById('userGreeting');
+      loginBtn.hidden = true;
+      userBadge.hidden = false;
+      const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+      const maskedId = profile.national_id ? ('••' + String(profile.national_id).slice(-4)) : '';
+      userGreeting.textContent = fullName || maskedId || profile.username;
+    }
+    function renderLoggedOutState(){
+      const loginBtn = document.getElementById('loginBtn');
+      const userBadge = document.getElementById('userBadge');
+      if(!loginBtn) return;
+      loginBtn.hidden = false;
+      userBadge.hidden = true;
+    }
+    fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(profile){
+        if(profile && profile.is_member) renderLoggedInState(profile);
+        else renderLoggedOutState();
+      })
+      .catch(function(){ renderLoggedOutState(); });
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if(logoutBtn){
+      logoutBtn.addEventListener('click', function(){
+        fetch(`${API_BASE_URL}/auth/logout/`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') || '' }
+        }).finally(function(){ renderLoggedOutState(); });
+      });
+    }
+  })();
+</script>
+</body>
+</html>

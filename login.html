@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود به حساب کاربری - سامانه سدا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-dark:#0b4b54;
+    --teal:#23848a;
+    --teal-light:#2f9aa0;
+    --gold:#c8a94d;
+    --gold-light:#d8bd6c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;}
+  body{
+    background:linear-gradient(180deg,#eef8f6,#f7fbfa 40%,#fff);
+    color:#222;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+  }
+  a{text-decoration:none;color:inherit;}
+
+  .login-wrap{
+    width:100%;
+    max-width:420px;
+    text-align:center;
+  }
+
+  .login-icon{
+    width:56px;height:56px;border-radius:16px;
+    background:linear-gradient(160deg,var(--teal-light),var(--teal-dark));
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+    box-shadow:0 6px 16px rgba(11,75,84,.25);
+  }
+  .login-icon svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  .login-breadcrumb{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    font-size:12.5px;color:#8a9c9c;margin-bottom:18px;
+  }
+  .login-breadcrumb::before,
+  .login-breadcrumb::after{
+    content:"";width:28px;height:1px;background:#d8e4e4;
+  }
+
+  .login-wrap h1{
+    font-size:21px;font-weight:800;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .login-wrap > p.subtitle{
+    font-size:13px;color:#6b7d7d;margin-bottom:26px;line-height:1.8;
+  }
+
+  .login-card{
+    background:#fff;
+    border-radius:18px;
+    padding:26px 24px 24px;
+    box-shadow:0 10px 30px rgba(11,75,84,.08);
+    text-align:right;
+  }
+
+  .login-field{margin-bottom:16px;}
+
+  .login-type-toggle{
+    display:flex;
+    background:#f2f6f6;
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:20px;
+    gap:4px;
+  }
+  .login-type-btn{
+    flex:1;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    color:#5c6e6e;
+    background:transparent;
+    border:none;
+    border-radius:9px;
+    padding:10px 8px;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .login-type-btn:hover{color:var(--teal-dark);}
+  .login-type-btn.active{
+    background:#fff;
+    color:var(--teal-dark);
+    box-shadow:0 2px 6px rgba(11,75,84,.12);
+  }
+  .login-field label{
+    display:block;font-size:12.5px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;
+  }
+  .login-field .input-wrap{position:relative;}
+  .login-field input{
+    width:100%;padding:12px 14px;border-radius:10px;
+    border:1.5px solid #e2eaea;background:#fbfdfd;
+    font-family:inherit;font-size:13.5px;color:#222;
+    text-align:right;
+    transition:border-color .15s, background .15s;
+  }
+  .login-field input:focus{outline:none;border-color:var(--teal);background:#fff;}
+  .login-field .toggle-pass{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;color:#9fb3b3;
+    display:flex;align-items:center;justify-content:center;padding:2px;
+  }
+  .login-field .toggle-pass svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+  .login-links-row{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:12px;margin-bottom:18px;flex-wrap:wrap;gap:8px;
+  }
+  .login-links-row a{color:var(--teal);font-weight:600;}
+  .login-links-row a:hover{text-decoration:underline;}
+  .login-links-row .forgot-link{color:#8a9c9c;font-weight:500;}
+  .login-links-row .forgot-link:hover{color:var(--teal);}
+
+  .login-hint{
+    display:flex;align-items:flex-start;gap:8px;
+    background:#f2fbfb;border:1px solid #dceaea;border-radius:10px;
+    padding:12px 14px;margin-bottom:20px;
+    font-size:11.5px;line-height:2;color:#3e5555;text-align:right;
+  }
+  .login-hint svg{width:16px;height:16px;stroke:var(--teal);fill:none;stroke-width:2;flex-shrink:0;margin-top:3px;}
+  .login-hint b{color:var(--teal-dark);font-weight:700;}
+
+  .login-error{
+    font-size:12px;color:#c0392b;background:#fdecea;
+    border-radius:8px;padding:9px 12px;margin-bottom:16px;text-align:right;
+  }
+  .login-success{
+    font-size:12px;color:#1e7e5b;background:#e8f7f0;
+    border-radius:8px;padding:9px 12px;margin-bottom:16px;text-align:right;
+  }
+
+  .login-submit{
+    width:100%;
+    font-family:inherit;font-size:14.5px;font-weight:700;
+    color:#fff;background:linear-gradient(180deg,var(--teal-light),var(--teal-dark));
+    border:none;border-radius:12px;padding:13px 16px;cursor:pointer;
+    transition:filter .15s, transform .1s;
+  }
+  .login-submit:hover{filter:brightness(1.05);}
+  .login-submit:active{transform:translateY(1px);}
+  .login-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+  .login-below{
+    margin-top:24px;font-size:12.5px;color:#5c6e6e;line-height:2.1;
+  }
+  .login-below a{color:var(--teal);font-weight:700;}
+  .login-below a:hover{text-decoration:underline;}
+
+  @media (max-width:480px){
+    .login-card{padding:22px 18px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-icon">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+  </div>
+  <div class="login-breadcrumb">ورود</div>
+  <h1>ورود به حساب کاربری</h1>
+  <p class="subtitle">برای استفاده از خدمات اعضا وارد حساب خود شوید</p>
+
+  <div class="login-card">
+    <div class="login-error" id="loginError" hidden></div>
+    <div class="login-success" id="loginSuccess" hidden></div>
+
+    <div class="login-type-toggle" id="loginTypeToggle">
+      <button type="button" class="login-type-btn active" data-login-type="student">دانش‌پژوه</button>
+      <button type="button" class="login-type-btn" data-login-type="teacher">مدرس</button>
+    </div>
+
+    <div id="studentLoginFields">
+      <div class="login-field">
+        <label for="loginUsername">نام کاربری: کد ملی</label>
+        <input type="text" id="loginUsername" inputmode="numeric" autocomplete="username" maxlength="10" placeholder="کد ملی ۱۰ رقمی">
+      </div>
+
+      <div class="login-field">
+        <label for="loginPassword">گذرواژه: کد عضویت یا شماره موبایل</label>
+        <div class="input-wrap">
+          <input type="password" id="loginPassword" inputmode="numeric" autocomplete="current-password" maxlength="14">
+          <button type="button" class="toggle-pass" id="togglePass" aria-label="نمایش گذرواژه">
+            <svg viewBox="0 0 24 24" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-links-row">
+        <a href="#" id="openOtpLoginLink">ورود با رمز یکبارمصرف</a>
+        <a href="#" class="forgot-link" id="openForgotPasswordLink">فراموشی رمز عبور؟</a>
+      </div>
+
+      <div class="login-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <div><b>راهنمای ورود:</b> نام کاربری شما «کد ملی» است. گذرواژه‌ی شما «کد عضویت» است؛ اگر با «شماره موبایل» ثبت‌نام کرده‌اید، گذرواژه‌تان همان شماره موبایل است. همچنین می‌توانید با «ورود با رمز یکبارمصرف» وارد شوید.</div>
+      </div>
+    </div>
+
+    <!-- ---- فراموشی رمز عبور: مرحله ۱ (کد ملی) و مرحله ۲ (کد پیامکی + رمز جدید) ---- -->
+    <div id="forgotPasswordFields" hidden>
+      <div id="fpStep1">
+        <div class="login-field">
+          <label for="fpNationalId">کد ملی</label>
+          <input type="text" id="fpNationalId" inputmode="numeric" maxlength="10" placeholder="کد ملی ۱۰ رقمی">
+        </div>
+        <div class="login-hint">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <div>یک کد ۶ رقمی به شماره موبایل ثبت‌شده‌ی شما پیامک می‌شود.</div>
+        </div>
+      </div>
+      <div id="fpStep2" hidden>
+        <div class="login-field">
+          <label for="fpCode">کد پیامکی</label>
+          <input type="text" id="fpCode" inputmode="numeric" maxlength="6" placeholder="کد ۶ رقمی">
+        </div>
+        <div class="login-field">
+          <label for="fpNewPassword">رمز عبور جدید</label>
+          <input type="password" id="fpNewPassword" placeholder="حداقل ۴ کاراکتر">
+        </div>
+      </div>
+      <div class="login-links-row">
+        <a href="#" id="backFromForgotLink">بازگشت به ورود</a>
+      </div>
+    </div>
+
+    <!-- ---- ورود با رمز یکبارمصرف: مرحله ۱ (کد ملی) و مرحله ۲ (کد پیامکی) ---- -->
+    <div id="otpLoginFields" hidden>
+      <div id="otpStep1">
+        <div class="login-field">
+          <label for="otpNationalId">کد ملی</label>
+          <input type="text" id="otpNationalId" inputmode="numeric" maxlength="10" placeholder="کد ملی ۱۰ رقمی">
+        </div>
+        <div class="login-hint">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <div>یک کد ۶ رقمی برای ورود، به شماره موبایل ثبت‌شده‌ی شما پیامک می‌شود.</div>
+        </div>
+      </div>
+      <div id="otpStep2" hidden>
+        <div class="login-field">
+          <label for="otpCode">کد پیامکی</label>
+          <input type="text" id="otpCode" inputmode="numeric" maxlength="6" placeholder="کد ۶ رقمی">
+        </div>
+      </div>
+      <div class="login-links-row">
+        <a href="#" id="backFromOtpLink">بازگشت به ورود</a>
+      </div>
+    </div>
+
+    <button type="button" class="login-submit" id="loginSubmitBtn">ورود</button>
+  </div>
+
+  <div class="login-below">
+    عضو نیستید؟ <a href="https://workerhouse.ir/sama" target="_blank" rel="noopener">ثبت‌نام</a><br>
+    صاحب کسب‌وکار هستید و هنوز همکار نشده‌اید؟ <a href="/teacher-registration">ثبت درخواست همکاری</a>
+  </div>
+</div>
+
+<script>
+  // ---- تنظیمات اتصال به بک‌اند ----
+  // TODO: وقتی سایت روی دامنه‌ی واقعی قرار گرفت، این آدرس را با آدرس واقعی
+  // سرور بک‌اند (مثلاً https://api.sada-khanekargar.ir/api) عوض کنید.
+  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+  // خواندن مقدار یک کوکی با نام مشخص (روش استاندارد جنگو برای خواندن csrftoken)
+  function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+  // ---- ورود کاربر، فراموشی رمز عبور، ورود با رمز یکبارمصرف ----
+  (function(){
+    const usernameInput = document.getElementById('loginUsername');
+    const passwordInput = document.getElementById('loginPassword');
+    const toggleBtn = document.getElementById('togglePass');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const errorEl = document.getElementById('loginError');
+    const successEl = document.getElementById('loginSuccess');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+
+    const studentLoginFields = document.getElementById('studentLoginFields');
+    const forgotPasswordFields = document.getElementById('forgotPasswordFields');
+    const otpLoginFields = document.getElementById('otpLoginFields');
+    const fpStep1 = document.getElementById('fpStep1');
+    const fpStep2 = document.getElementById('fpStep2');
+    const otpStep1 = document.getElementById('otpStep1');
+    const otpStep2 = document.getElementById('otpStep2');
+    const loginTypeToggle = document.getElementById('loginTypeToggle');
+
+    // اول از سرور یک کوکی امنیتی (csrftoken) می‌گیریم که برای ارسال فرم لازم است
+    fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){
+      // اگر بک‌اند در دسترس نبود، بی‌سروصدا رد می‌شویم؛ خطای واقعی موقع ارسال فرم نشان داده می‌شود
+    });
+
+    // ---- نوع ورود: دانش‌پژوه یا مدرس ----
+    const TEACHER_LOGIN_URL = '/teacher-login';
+    let loginType = 'student';
+
+    loginTypeToggle.addEventListener('click', function(e){
+      const btn = e.target.closest('.login-type-btn');
+      if(!btn) return;
+      loginType = btn.dataset.loginType;
+      loginTypeToggle.querySelectorAll('.login-type-btn').forEach(b => b.classList.toggle('active', b === btn));
+      studentLoginFields.hidden = (loginType === 'teacher');
+      hideMessages();
+      submitBtn.textContent = 'ورود';
+    });
+
+    toggleBtn.addEventListener('click', function(){
+      const isPass = passwordInput.type === 'password';
+      passwordInput.type = isPass ? 'text' : 'password';
+      eyeIcon.innerHTML = isPass
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.61 3.61M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+    });
+
+    function getReturnUrl(){
+      const params = new URLSearchParams(window.location.search);
+      return params.get('returnUrl') || '/';
+    }
+
+    function hideMessages(){
+      errorEl.hidden = true;
+      successEl.hidden = true;
+    }
+    function showError(msg){
+      successEl.hidden = true;
+      errorEl.hidden = false;
+      errorEl.textContent = msg;
+    }
+    function showSuccess(msg){
+      errorEl.hidden = true;
+      successEl.hidden = false;
+      successEl.textContent = msg;
+    }
+
+    // ---- مدیریت state صفحه: کدام «نما» (ورود عادی / فراموشی رمز / رمز یکبارمصرف)
+    // و در نمای فراموشی رمز و رمز یکبارمصرف، کدام مرحله (۱ یا ۲) نشان داده شود ----
+    let view = 'login';   // 'login' | 'forgot' | 'otp'
+    let step = 1;         // فقط برای forgot/otp کاربرد دارد
+
+    function renderView(){
+      hideMessages();
+      studentLoginFields.hidden = !(view === 'login' && loginType === 'student');
+      forgotPasswordFields.hidden = (view !== 'forgot');
+      otpLoginFields.hidden = (view !== 'otp');
+      loginTypeToggle.style.display = (view === 'login') ? '' : 'none';
+
+      if(view === 'forgot'){
+        fpStep1.hidden = (step !== 1);
+        fpStep2.hidden = (step !== 2);
+        submitBtn.textContent = (step === 1) ? 'ارسال کد پیامکی' : 'تغییر رمز عبور';
+      } else if(view === 'otp'){
+        otpStep1.hidden = (step !== 1);
+        otpStep2.hidden = (step !== 2);
+        submitBtn.textContent = (step === 1) ? 'ارسال کد پیامکی' : 'ورود';
+      } else {
+        submitBtn.textContent = 'ورود';
+      }
+      submitBtn.disabled = false;
+    }
+
+    document.getElementById('openForgotPasswordLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'forgot'; step = 1;
+      renderView();
+    });
+    document.getElementById('openOtpLoginLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'otp'; step = 1;
+      renderView();
+    });
+    document.getElementById('backFromForgotLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'login'; step = 1;
+      renderView();
+    });
+    document.getElementById('backFromOtpLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'login'; step = 1;
+      renderView();
+    });
+
+    function postJSON(path, body){
+      return fetch(`${API_BASE_URL}${path}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: JSON.stringify(body)
+      }).then(async function(res){
+        const data = await res.json().catch(function(){ return {}; });
+        if(!res.ok) throw new Error(data.detail || 'خطایی رخ داد.');
+        return data;
+      });
+    }
+
+    function doNormalLogin(){
+      // اگر «مدرس» انتخاب شده باشد، فعلاً فقط به صفحه‌ی جداگانه‌ی ورود مدرسین منتقل می‌شویم
+      if(loginType === 'teacher'){
+        window.location.href = TEACHER_LOGIN_URL;
+        return;
+      }
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+      if(!username || !password){
+        showError('لطفاً نام کاربری و گذرواژه را وارد کنید.');
+        return;
+      }
+      if(!/^\d+$/.test(username) || !/^\d+$/.test(password)){
+        showError('نام کاربری و گذرواژه باید فقط شامل عدد باشند.');
+        return;
+      }
+      if(username.length !== 10){
+        showError('کد ملی باید دقیقاً ۱۰ رقم باشد.');
+        return;
+      }
+      hideMessages();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'در حال ورود…';
+      postJSON('/auth/login/', { username, password, login_type: 'student' })
+        .then(function(){ window.location.href = getReturnUrl(); })
+        .catch(function(err){
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'ورود';
+          showError(err.message || 'خطا در برقراری ارتباط با سرور. دوباره تلاش کنید.');
+        });
+    }
+
+    function doForgotPasswordStep(){
+      if(step === 1){
+        const nationalId = document.getElementById('fpNationalId').value.trim();
+        if(!/^\d{10}$/.test(nationalId)){
+          showError('کد ملی باید دقیقاً ۱۰ رقم باشد.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ارسال…';
+        postJSON('/auth/forgot-password/request/', { national_id: nationalId })
+          .then(function(data){
+            step = 2;
+            renderView();
+            showSuccess(data.detail);
+          })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ارسال کد پیامکی';
+            showError(err.message);
+          });
+      } else {
+        const nationalId = document.getElementById('fpNationalId').value.trim();
+        const code = document.getElementById('fpCode').value.trim();
+        const newPassword = document.getElementById('fpNewPassword').value;
+        if(!code || !newPassword){
+          showError('کد پیامکی و رمز عبور جدید را وارد کنید.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال بررسی…';
+        postJSON('/auth/forgot-password/confirm/', { national_id: nationalId, code, new_password: newPassword })
+          .then(function(data){
+            view = 'login'; step = 1;
+            renderView();
+            usernameInput.value = nationalId;
+            showSuccess(data.detail);
+          })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'تغییر رمز عبور';
+            showError(err.message);
+          });
+      }
+    }
+
+    function doOtpLoginStep(){
+      if(step === 1){
+        const nationalId = document.getElementById('otpNationalId').value.trim();
+        if(!/^\d{10}$/.test(nationalId)){
+          showError('کد ملی باید دقیقاً ۱۰ رقم باشد.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ارسال…';
+        postJSON('/auth/otp-login/request/', { national_id: nationalId })
+          .then(function(data){
+            step = 2;
+            renderView();
+            showSuccess(data.detail);
+          })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ارسال کد پیامکی';
+            showError(err.message);
+          });
+      } else {
+        const nationalId = document.getElementById('otpNationalId').value.trim();
+        const code = document.getElementById('otpCode').value.trim();
+        if(!code){
+          showError('کد پیامکی را وارد کنید.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ورود…';
+        postJSON('/auth/otp-login/verify/', { national_id: nationalId, code })
+          .then(function(){ window.location.href = getReturnUrl(); })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ورود';
+            showError(err.message);
+          });
+      }
+    }
+
+    submitBtn.addEventListener('click', function(){
+      if(view === 'forgot') return doForgotPasswordStep();
+      if(view === 'otp') return doOtpLoginStep();
+      return doNormalLogin();
+    });
+
+    usernameInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') passwordInput.focus(); });
+    passwordInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') submitBtn.click(); });
+
+    renderView();
+  })();
+</script>
+
+</body>
+</html>

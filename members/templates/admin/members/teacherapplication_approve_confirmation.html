@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<p>
+  برای تأیید «{{ applicant }}» و ساخته‌شدن حساب ورودش، یک نام کاربری و رمز
+  عبور برایش تعیین کنید. بعد از تأیید، هم یک نیروی انسانی واقعی (مدرس) ساخته
+  می‌شود و هم می‌تواند با همین نام‌کاربری/رمز در «ورود مدرسین» وارد شود.
+</p>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="approve_selected">
+  <input type="hidden" name="{{ action_checkbox_name }}" value="{{ applicant.pk }}">
+  <input type="hidden" name="confirm_approve" value="1">
+
+  <fieldset class="module aligned">
+    <div class="form-row">
+      <div>
+        <label for="id_username" class="required">نام کاربری:</label>
+        <input type="text" name="username" id="id_username" required autofocus style="width: 20em;">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="id_password" class="required">رمز عبور:</label>
+        <input type="password" name="password" id="id_password" required style="width: 20em;">
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="submit-row">
+    <input type="submit" value="تأیید و ساخت حساب" class="default">
+    <a href="../" class="button cancel-link">انصراف</a>
+  </div>
+</form>
+{% endblock %}
