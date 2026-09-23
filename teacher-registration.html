@@ -72,6 +72,11 @@
     display:block;font-size:12.5px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;
   }
   .field label .req-star{color:#c0392b;margin-inline-start:2px;}
+  .field input.persian-invalid{border-color:#c0392b;}
+  .persian-only-hint{
+    color:#c0392b;font-size:11px;margin-top:5px;display:none;line-height:1.6;
+  }
+  .persian-only-hint.show{display:block;}
   .field input,.field select,.field textarea{
     width:100%;padding:12px 14px;border-radius:10px;
     border:1.5px solid #e2eaea;background:#fbfdfd;
@@ -277,6 +282,7 @@
                 <input type="file" id="tr_resume" accept=".pdf,.doc,.docx" hidden>
                 <button type="button" class="btn-ghost" id="trBtnPickResume">انتخاب فایل رزومه</button>
                 <span class="file-name empty" id="trResumeFileName">فایلی انتخاب نشده</span>
+                <span class="photo-hint">حداکثر حجم ۵ مگابایت</span>
               </div>
             </div>
           </div>
@@ -323,11 +329,6 @@
   fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){});
 
   // ---- دپارتمان‌ها (هماهنگ با پنل ادمین › مربیان) ----
-  const HR_DEPARTMENTS = [
-    "دوخت و دوز","کامپیوتر","هنر","آشپزی",
-    "بافتنی","فرش و گلیم","زبان‌های خارجه","حقوق",
-    "مدیریت و حسابداری","بهداشت و سلامت","فنی","قرآن"
-  ];
 
   // ---- شعب: دیتای واقعی خانه کارگر، از بک‌اند خوانده می‌شود ----
   // قبلاً این یک آرایه‌ی ثابت در همین فایل بود؛ الان از /api/core/branches/
@@ -346,16 +347,27 @@
   }
   loadBranches();
 
-  function fillDeptChecklist(){
+  // دپارتمان‌ها: مثل شعب، از بک‌اند واقعی خوانده می‌شود (نه فهرست ثابت) تا اگر مدیر
+  // دپارتمان تازه‌ای اضافه کرد، همین‌جا هم فوراً قابل‌انتخاب باشد.
+  function fillDeptChecklist(departments){
     const wrap = document.getElementById('tr_dept_checklist');
-    wrap.innerHTML = HR_DEPARTMENTS.map(d => `
+    wrap.innerHTML = departments.map(d => `
       <label>
-        <input type="checkbox" name="trDeptPick" value="${d}">
-        <span>${d}</span>
+        <input type="checkbox" name="trDeptPick" value="${d.name}">
+        <span>${d.name}</span>
       </label>
     `).join('');
   }
-  fillDeptChecklist();
+  function loadDepartments(){
+    fetch(`${API_BASE_URL}/classmgmt/departments/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : []; })
+      .then(function(departments){ fillDeptChecklist(departments || []); })
+      .catch(function(){
+        document.getElementById('tr_dept_checklist').innerHTML =
+          `<p style="color:#c0392b;font-size:12.5px;">خطا در دریافت لیست دپارتمان‌ها از سرور.</p>`;
+      });
+  }
+  loadDepartments();
 
   function getCheckedDepts(){
     return Array.from(document.querySelectorAll('input[name="trDeptPick"]:checked')).map(el => el.value);
@@ -429,6 +441,13 @@
   document.getElementById('tr_resume').addEventListener('change', e => {
     const file = e.target.files[0];
     if(!file) return;
+    const maxResumeSizeBytes = 5 * 1024 * 1024; // 5MB
+    if(file.size > maxResumeSizeBytes){
+      showTrError('حجم رزومه نباید بیشتر از ۵ مگابایت باشد');
+      e.target.value = '';
+      resetResumePicker(null);
+      return;
+    }
     resetResumePicker(file.name);
   });
 
@@ -438,6 +457,47 @@
     errorEl.textContent = msg;
     errorEl.scrollIntoView({ behavior:'smooth', block:'center' });
   }
+
+  // ---- اعتبارسنجی زنده‌ی «فقط حروف فارسی» - همان لحظه‌ی تایپ خطا نشان
+  // می‌دهد تا خودِ فرد در همان لحظه اصلاح کند، نه فقط موقع ارسال فرم ----
+  function enforcePersianOnly(inputId, options){
+    const input = document.getElementById(inputId);
+    if(!input) return;
+    const allowDigits = !!(options && options.allowDigits);
+    // فیلدهای معمولی (نام، نام خانوادگی، نام پدر): هیچ حرف انگلیسی و هیچ نوع
+    // عددی (انگلیسی/فارسی/عربی) مجاز نیست.
+    // فیلد آدرس (allowDigits): فقط حروف انگلیسی بسته می‌شود، چون آدرس به‌طور
+    // طبیعی به شماره‌ی پلاک/خیابان/واحد نیاز دارد.
+    const forbiddenPattern = allowDigits ? /[a-zA-Z]/g : /[a-zA-Z0-9۰-۹٠-٩]/g;
+    const hint = document.createElement('div');
+    hint.className = 'persian-only-hint';
+    // برای آدرس (که عدد هم مجاز است) پیام فقط از حروف انگلیسی می‌گوید، نه «فقط فارسی»
+    hint.textContent = allowDigits ? 'حروف انگلیسی مجاز نیست (عدد مجاز است)' : 'فقط حروف فارسی مجاز است';
+    input.insertAdjacentElement('afterend', hint);
+    input.addEventListener('input', () => {
+      // کاراکترهای غیرمجاز این فیلد (طبق forbiddenPattern بالا) حذف می‌شوند
+      const cleaned = input.value.replace(forbiddenPattern, '');
+      if(cleaned === input.value){
+        hint.classList.remove('show');
+        input.classList.remove('persian-invalid');
+        return;
+      }
+      // حرف انگلیسی همون لحظه از مقدار فیلد حذف می‌شود تا اصلاً اجازه‌ی
+      // تایپ نداشته باشد، نه اینکه فقط بعداً هشدار بدهیم
+      const caret = input.selectionStart - (input.value.length - cleaned.length);
+      input.value = cleaned;
+      input.setSelectionRange(caret, caret);
+      input.classList.add('persian-invalid');
+      hint.classList.add('show');
+      clearTimeout(input._persianHideTimer);
+      input._persianHideTimer = setTimeout(() => {
+        hint.classList.remove('show');
+        input.classList.remove('persian-invalid');
+      }, 1800);
+    });
+  }
+  ['tr_fname', 'tr_lname', 'tr_father_name'].forEach(id => enforcePersianOnly(id));
+  enforcePersianOnly('tr_address', { allowDigits: true });   // آدرس: عدد مجاز است
 
   // ---- ارسال فرم به بک‌اند واقعی ----
   // این درخواست یک رکورد واقعی در جدول «مدرسین متقاضی» می‌سازد که همان
@@ -463,6 +523,10 @@
     // همه‌ی فیلدها الزامی‌اند به‌جز «توضیحات متقاضی»
     if(!fname || !lname){
       showTrError('لطفاً نام و نام خانوادگی را وارد کنید');
+      return;
+    }
+    if(/[a-zA-Z]/.test(fname) || /[a-zA-Z]/.test(lname)){
+      showTrError('لطفاً فقط حروف فارسی وارد کنید');
       return;
     }
     if(depts.length === 0){
@@ -493,12 +557,20 @@
       showTrError('لطفاً نام پدر را وارد کنید');
       return;
     }
+    if(/[a-zA-Z]/.test(fatherName)){
+      showTrError('لطفاً فقط حروف فارسی وارد کنید');
+      return;
+    }
     if(!birthDate){
       showTrError('لطفاً تاریخ تولد را وارد کنید');
       return;
     }
     if(!address){
       showTrError('لطفاً آدرس را وارد کنید');
+      return;
+    }
+    if(/[a-zA-Z]/.test(address)){
+      showTrError('لطفاً فقط حروف فارسی وارد کنید');
       return;
     }
     if(!photoFile){

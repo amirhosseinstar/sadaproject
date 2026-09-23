@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.models import Employee
-from .models import BranchDepartment, Class, Department, Enrollment, Lesson, SiteSettings
+from .models import BranchDepartment, Class, Department, Enrollment, Lesson, Question, SiteSettings
 
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
@@ -12,7 +12,7 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteSettings
-        fields = ['registration_mode', 'public_registration_enabled']
+        fields = ['registration_mode', 'public_registration_enabled', 'feedback_enabled']
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -58,8 +58,38 @@ class ClassSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'lesson', 'lesson_name', 'class_type', 'is_national', 'department', 'department_name', 'branch',
             'branch_province', 'teacher', 'teacher_name', 'term', 'term_order', 'capacity', 'duration_hours_raw', 'start_date', 'day', 'start_time',
-            'entry_time', 'gender', 'prerequisite', 'prerequisite_name', 'is_published', 'has_online_exam', 'enrolled_count', 'is_full', 'created_at',
+            'entry_time', 'gender', 'prerequisite', 'prerequisite_name', 'is_published', 'has_online_exam', 'age_limit_enabled', 'min_age', 'max_age', 'enrolled_count', 'is_full', 'created_at',
         ]
+
+    def validate(self, attrs):
+        """
+        رده سنی: اگر فعال است، حداقل و حداکثر سن الزامی‌اند، هر دو بین ۰ تا ۱۰۰ و
+        حداقل نباید از حداکثر بیشتر باشد. اگر غیرفعال است، هر دو مقدار پاک می‌شوند.
+        در ویرایش جزئی (PATCH) که به رده سنی ربطی ندارد (مثلاً فقط «منتشر شود»)
+        هیچ‌چیز بررسی/عوض نمی‌شود.
+        """
+        age_keys = ('age_limit_enabled', 'min_age', 'max_age')
+        if not any(k in attrs for k in age_keys):
+            return attrs
+
+        instance = self.instance
+        enabled = attrs.get('age_limit_enabled', instance.age_limit_enabled if instance else False)
+        min_age = attrs.get('min_age', instance.min_age if instance else None)
+        max_age = attrs.get('max_age', instance.max_age if instance else None)
+
+        if not enabled:
+            attrs['age_limit_enabled'] = False
+            attrs['min_age'] = None
+            attrs['max_age'] = None
+            return attrs
+
+        if min_age is None or max_age is None:
+            raise serializers.ValidationError({'min_age': 'برای رده سنی، حداقل و حداکثر سن را وارد کنید.'})
+        if not (0 <= min_age <= 100 and 0 <= max_age <= 100):
+            raise serializers.ValidationError({'min_age': 'سن باید عددی بین ۰ تا ۱۰۰ باشد.'})
+        if min_age > max_age:
+            raise serializers.ValidationError({'min_age': 'حداقل سن نباید از حداکثر سن بیشتر باشد.'})
+        return attrs
 
     def get_duration_hours_raw(self, obj):
         return obj.duration_hours_raw
@@ -159,3 +189,33 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
     def get_ban_reason(self, obj):
         return obj.member.ban.reason if hasattr(obj.member, 'ban') else ''
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    lesson_name = serializers.CharField(source='lesson.name', read_only=True)
+
+    class Meta:
+        model = Question
+        fields = ['id', 'lesson', 'lesson_name', 'text', 'options', 'created_at']
+
+    def validate_options(self, value):
+        if not isinstance(value, list) or not (2 <= len(value) <= 4):
+            raise serializers.ValidationError('تعداد گزینه‌ها باید بین ۲ تا ۴ باشد.')
+        correct_count = 0
+        for opt in value:
+            if not isinstance(opt, dict) or not str(opt.get('text', '')).strip():
+                raise serializers.ValidationError('متن همه‌ی گزینه‌ها باید پر شده باشد.')
+            if opt.get('is_correct'):
+                correct_count += 1
+        # می‌تواند یک یا چند گزینه‌ی صحیح داشته باشد (سؤال چندجوابی)، اما
+        # نه صفر گزینه (بی‌پاسخ) و نه همه‌ی گزینه‌ها (که دیگر سؤال نیست)
+        if correct_count < 1:
+            raise serializers.ValidationError('باید حداقل یک گزینه به‌عنوان پاسخ صحیح مشخص شود.')
+        if correct_count == len(value):
+            raise serializers.ValidationError('همه‌ی گزینه‌ها نمی‌توانند صحیح باشند.')
+        return value
+
+    def validate_text(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError('متن سؤال نمی‌تواند خالی باشد.')
+        return value

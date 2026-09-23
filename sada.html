@@ -38,9 +38,21 @@
   html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;overflow-x:hidden;}
   html.no-scroll{overflow:hidden;}
   body.no-scroll{position:fixed;left:0;right:0;width:100%;overflow:hidden;}
-  body{background:#f4f6f6;color:#222;zoom:0.88;}
+  body{background:#f4f6f6;color:#222;font-size:16px;line-height:1.5;}
   a{text-decoration:none;color:inherit;}
   ul{list-style:none;}
+
+  /* Accessible focus baseline: never remove focus indication for keyboard users */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible{
+    outline:2px solid var(--gold-light,#d8bd6c);
+    outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
 
   /* ===== HEADER ===== */
   header.site-header{
@@ -50,10 +62,10 @@
     position:relative;
   }
   .header-inner{
-    max-width:1180px;
+    max-width:1386px;
     margin:0 auto;
     display:flex;
-    align-items:center;
+    align-items:flex-end;
     flex-wrap:wrap;
     gap:32px;
   }
@@ -77,13 +89,14 @@
     line-height:1.5;
   }
   .logo-text .title{
-    font-size:19px;
+    font-size:18px;
     font-weight:700;
   }
   .logo-text .subtitle{
-    font-size:12px;
+    font-size:13px;
     font-weight:400;
     color:var(--text-muted);
+    line-height:1.9;
   }
 
   nav.main-nav{
@@ -145,24 +158,35 @@
   .has-dropdown:hover .dropdown-menu{display:block;}
 
   .btn-login{
-    background:linear-gradient(180deg,var(--gold-light),var(--gold));
-    color:#000;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    color:#3a2d05;
+    border:none;
+    border-radius:10px;
+    padding:11px 22px;
+    font-family:inherit;
+    font-size:13.5px;
     font-weight:700;
-    font-size:16.5px;
-    padding:12px 28px;
-    border-radius:8px;
-    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    cursor:pointer;
+    transition:.15s;
+    white-space:nowrap;
+    text-decoration:none;
+    box-shadow:0 4px 14px rgba(200,169,77,.35);
   }
+  .btn-login:hover{filter:brightness(.94);transform:translateY(-1px);box-shadow:0 6px 18px rgba(200,169,77,.5);}
+  .btn-login svg{width:18px;height:18px;stroke:#3a2d05;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
   .btn-login[hidden]{display:none;}
-  nav.main-nav a.btn-login{color:#000;}
-  nav.main-nav a.btn-login:hover{color:#000;}
+  nav.main-nav a.btn-login{color:#3a2d05;font-size:13.5px;font-weight:700;}
+  nav.main-nav a.btn-login:hover{color:#3a2d05;}
 
   .nav-actions{
     display:flex;
     align-items:center;
     gap:10px;
-    margin-inline-start:auto;
-    margin-inline-end:60px;
+    margin-right:auto;
+    margin-left:32px;
   }
   .user-badge{
     display:flex;
@@ -209,7 +233,7 @@
     justify-content:space-between;
     flex-wrap:wrap;
     gap:36px;
-    max-width:1180px;
+    max-width:1386px;
     margin:0 auto;
   }
   .footer-col{
@@ -305,8 +329,20 @@
       box-shadow:0 12px 24px rgba(0,0,0,.25);
     }
     nav.main-nav.open{display:flex;}
+    nav.main-nav a{
+      width:100%;
+      padding:12px 4px;
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      box-sizing:border-box;
+    }
     .mobile-toggle{
-      display:block;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:44px;
+      height:44px;
       background:none;
       border:none;
       color:#fff;
@@ -747,6 +783,24 @@
   .service-card .card-mode-btn:hover,
   .dept-slide .card-mode-btn:hover{background:rgba(255,255,255,.32);}
 
+  .service-card .content-soon-btn{
+    width:100%;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:600;
+    color:#fff;
+    background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);
+    padding:5px 4px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:6px;
+    position:relative;
+    z-index:1;
+    transition:background .15s;
+  }
+  .service-card .content-soon-btn:hover{background:rgba(255,255,255,.32);}
+
   /* ===== DEPARTMENT MODAL POPUP ===== */
   .dept-modal-overlay{
     position:fixed;
@@ -1118,13 +1172,29 @@
   }
   .dept-slide .dept-cta:hover{opacity:1;text-decoration:underline;}
   .dept-slide .dept-cta-sep{opacity:.5;font-size:11px;}
+  .dept-slide .dept-content-row{margin-top:6px;position:relative;z-index:1;}
+  .dept-slide .dept-content-soon{
+    font-family:inherit;
+    font-size:11.5px;
+    opacity:.9;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:none;
+    border:none;
+    color:#fff;
+    cursor:pointer;
+    padding:0;
+    transition:opacity .15s;
+  }
+  .dept-slide .dept-content-soon:hover{opacity:1;text-decoration:underline;}
 
   .slider-arrow{
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    width:38px;
-    height:38px;
+    width:44px;
+    height:44px;
     border-radius:50%;
     border:none;
     background:rgba(255,255,255,.85);
@@ -1138,6 +1208,7 @@
     z-index:5;
   }
   .slider-arrow:hover{background:#fff;}
+  .slider-arrow:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
   .slider-arrow.prev{left:14px;}
   .slider-arrow.next{right:14px;}
 
@@ -1190,12 +1261,19 @@
   .feedback-field textarea{
     width:100%;border:1px solid #dfe6e6;border-radius:10px;
     padding:11px 14px;font-family:inherit;font-size:13.5px;color:#1f2a2a;
-    outline:none;transition:.15s;background:#fff;
+    transition:.15s;background:#fff;
   }
   .feedback-field textarea{resize:vertical;min-height:110px;line-height:1.8;}
   .feedback-field input:focus,
   .feedback-field select:focus,
-  .feedback-field textarea:focus{border-color:var(--teal);}
+  .feedback-field textarea:focus{
+    border-color:var(--teal);
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+  }
+  .feedback-field input:focus:not(:focus-visible),
+  .feedback-field select:focus:not(:focus-visible),
+  .feedback-field textarea:focus:not(:focus-visible){outline:none;}
   .feedback-submit{
     display:flex;align-items:center;gap:8px;
     background:var(--teal);color:#fff;border:none;border-radius:10px;
@@ -1212,6 +1290,20 @@
   .feedback-success.show{display:flex;}
   .feedback-success svg{width:22px;height:22px;stroke:var(--teal);fill:none;stroke-width:2;flex-shrink:0;}
   .feedback-form.hide{display:none;}
+  .feedback-error{
+    display:none;margin-top:12px;padding:10px 14px;border-radius:10px;
+    background:#fdecec;border:1px solid #f3c1c1;color:#a12a2a;font-size:13px;line-height:1.9;
+  }
+  .feedback-error.show{display:block;}
+  .feedback-submit:disabled{opacity:.6;cursor:not-allowed;}
+  /* دکمه‌ی «انتقادات و پیشنهادات» تا وقتی مطمئن نشویم بخش فعال است نمایش داده نمی‌شود */
+  .feedback-open-btn[hidden]{display:none !important;}
+  .feedback-login-prompt{
+    display:none;padding:18px 20px;border-radius:12px;background:#f3f8f8;
+    border:1px solid #d6e6e6;color:#33474a;font-size:13.5px;line-height:2;
+  }
+  .feedback-login-prompt.show{display:block;}
+  .feedback-login-prompt a.feedback-submit{display:inline-flex;text-decoration:none;margin-top:10px;}
 
   .feedback-type-choice{display:flex;gap:16px;flex-wrap:wrap;}
   .feedback-type-choice.hide{display:none;}
@@ -1257,7 +1349,9 @@
 
   <button class="mobile-toggle" onclick="document.querySelector('.main-nav').classList.toggle('open')">☰</button>
 
-  <a href="/login?returnUrl=/" class="btn-login btn-login-mobile" id="loginBtnMobile">ورود</a>
+  <a href="/login" class="btn-login btn-login-mobile" id="loginBtnMobile">
+    ورود
+  </a>
 
   <div class="user-badge user-badge-mobile" id="userBadgeMobile" hidden>
     <span id="userGreetingMobile"></span>
@@ -1271,7 +1365,9 @@
     <a href="#">لیست شعب</a>
     <a href="#">شبکه‌های اجتماعی</a>
     <div class="nav-actions">
-      <a href="/login?returnUrl=/" class="btn-login" id="loginBtn">ورود</a>
+      <a href="/login" class="btn-login" id="loginBtn">
+        ورود
+      </a>
       <div class="user-badge" id="userBadge" hidden>
         <span id="userGreeting"></span>
         <button type="button" id="logoutBtn">خروج</button>
@@ -1291,7 +1387,7 @@
           <svg viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path></svg>
           ثبت‌نام اساتید
         </a>
-        <a href="#" class="panel-gold-btn">
+        <a href="/certificate" class="panel-gold-btn">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"></circle><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"></path></svg>
           گواهینامه
         </a>
@@ -1335,7 +1431,7 @@
               <div class="announce-date">۱۴۰۴/۰۴/۱۵</div>
             </div>
           </div>
-          <button type="button" class="feedback-open-btn" id="openFeedbackBtn">
+          <button type="button" class="feedback-open-btn" id="openFeedbackBtn" hidden>
             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             انتقادات و پیشنهادات
           </button>
@@ -1587,6 +1683,11 @@
       </button>
     </div>
 
+    <div class="feedback-login-prompt" id="feedbackLoginPrompt">
+      <div id="feedbackLoginText">برای ثبت انتقاد یا پیشنهاد، ابتدا باید وارد حساب کاربری خود شوید.</div>
+      <a class="feedback-submit" id="feedbackLoginLink" href="/login?returnUrl=/">ورود به حساب کاربری</a>
+    </div>
+
     <form class="feedback-form hide" id="feedbackForm">
       <div class="feedback-form-header">
         <span id="feedbackFormTitle">فرم ثبت</span>
@@ -1690,6 +1791,7 @@
           <textarea id="fb_message" placeholder="توضیحات خود را بنویسید…" required></textarea>
         </div>
       </div>
+      <div class="feedback-error" id="feedbackError" role="alert"></div>
       <button type="submit" class="feedback-submit">
         <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         ارسال پیام
@@ -1829,11 +1931,20 @@
           <span class="dept-cta-sep">|</span>
           <button type="button" class="dept-cta" data-id="${d.id}" data-go-mode="majazi">مجازی ‹</button>
         </div>
+        <div class="dept-content-row">
+          <button type="button" class="dept-content-soon" data-content-soon="1">محتوای آموزشی ‹</button>
+        </div>
         <div class="dept-index">${i+1} / ${DEPARTMENTS.length}</div>
       </div>
     `).join('');
 
     track.addEventListener('click', function(e){
+      const soonBtn = e.target.closest('.dept-content-soon');
+      if(soonBtn){
+        e.preventDefault();
+        showSadaToast('این بخش به‌زودی راه‌اندازی می‌شود');
+        return;
+      }
       const modeBtn = e.target.closest('.dept-cta');
       if(!modeBtn) return;
       e.preventDefault();
@@ -1889,6 +2000,7 @@
           <button type="button" class="card-mode-btn" data-id="${d.id}" data-go-mode="hozori">حضوری</button>
           <button type="button" class="card-mode-btn" data-id="${d.id}" data-go-mode="majazi">مجازی</button>
         </div>
+        <button type="button" class="content-soon-btn" data-content-soon="1">محتوای آموزشی</button>
       </div>
     `).join('');
 
@@ -2021,6 +2133,12 @@
     window.openDeptModal = openModal;
 
     grid.addEventListener('click', function(e){
+      const soonBtn = e.target.closest('.content-soon-btn');
+      if(soonBtn){
+        e.preventDefault();
+        showSadaToast('این بخش به‌زودی راه‌اندازی می‌شود');
+        return;
+      }
       const modeBtn = e.target.closest('.card-mode-btn');
       if(!modeBtn) return;
       e.preventDefault();
@@ -2423,24 +2541,95 @@
 </script>
 
 <script>
-  // ---- انتقادات و پیشنهادات (فرانت‌اند فقط — بدون بک‌اند) ----
+  // ---- انتقادات و پیشنهادات: ارسال به بک‌اند (POST /api/feedback/) ----
+  // پیام‌های ثبت‌شده در پنل مدیر آموزش / مسئول آموزش (بخش «بررسی و پاسخ») دیده می‌شوند.
+  // قواعد این بخش:
+  //  - اگر مدیر آموزش بخش را غیرفعال کرده باشد، دکمه‌اش اصلاً نمایش داده نمی‌شود
+  //  - ثبت پیام فقط برای دانش‌پژوهِ واردشده ممکن است (وگرنه پیام «ابتدا وارد شوید»)
+  //  - انتقادِ هر شعبه فقط برای مسئول آموزشِ همان شعبه (و مدیر آموزش) دیده می‌شود
   const feedbackForm = document.getElementById('feedbackForm');
   const feedbackSuccess = document.getElementById('feedbackSuccess');
   const feedbackTypeChoice = document.getElementById('feedbackTypeChoice');
   const feedbackFormTitle = document.getElementById('feedbackFormTitle');
+  const feedbackError = document.getElementById('feedbackError');
   const fbTypeInput = document.getElementById('fb_type');
+  const openFeedbackBtn = document.getElementById('openFeedbackBtn');
+  const feedbackLoginPrompt = document.getElementById('feedbackLoginPrompt');
+
+  // دکمه فقط وقتی نشان داده می‌شود که بک‌اند بگوید بخش فعال است. اگر پاسخ
+  // سرور نیامد، دکمه پنهان می‌ماند (بدون سرور، ثبت پیام هم ممکن نیست).
+  fetch(`${API_BASE_URL}/classmgmt/site-settings/`, { credentials: 'include' })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => { openFeedbackBtn.hidden = !(data && data.feedback_enabled); })
+    .catch(() => { openFeedbackBtn.hidden = true; });
+
+  // لیست شعب از جدول واقعی شعب خوانده می‌شود (نه آرایه‌ی ثابت)؛ اگر خواندن
+  // شکست بخورد، همان لیست پیش‌فرض داخل HTML باقی می‌ماند.
+  fetch(`${API_BASE_URL}/core/branches/`, { credentials: 'include' })
+    .then(res => res.ok ? res.json() : null)
+    .then(list => {
+      if(!Array.isArray(list) || !list.length) return;
+      const sel = document.getElementById('fb_branch');
+      while(sel.options.length > 1) sel.remove(1);   // گزینه‌ی اول «بدون شعبه» می‌ماند
+      list.forEach(b => sel.add(new Option(b.name, b.name)));
+    })
+    .catch(() => {});
+
+  // با هر بار باز شدن پنجره، وضعیت ورود کاربر را از سرور می‌پرسیم: دانش‌پژوهِ
+  // واردشده فرم را می‌بیند، بقیه پیام «ابتدا وارد شوید». (باز شدن خود پنجره در
+  // اسکریپت قبلی انجام می‌شود و این کنترل بلافاصله بعد از آن اجرا می‌شود.)
+  openFeedbackBtn.addEventListener('click', () => {
+    feedbackTypeChoice.classList.add('hide');
+    feedbackLoginPrompt.classList.remove('show');
+    fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(profile => {
+        if(profile && profile.is_member){
+          feedbackTypeChoice.classList.remove('hide');
+          // شماره‌ی ثبت‌شده‌ی عضویت به‌عنوان مقدار پیش‌فرض (قابل تغییر) پر می‌شود
+          document.getElementById('fb_phone').value = profile.phone || '';
+          return;
+        }
+        const loggedInButNotMember = !!(profile && !profile.is_member);
+        document.getElementById('feedbackLoginText').textContent = loggedInButNotMember
+          ? 'ثبت انتقاد و پیشنهاد فقط با حساب دانش‌پژوه امکان‌پذیر است.'
+          : 'برای ثبت انتقاد یا پیشنهاد، ابتدا باید وارد حساب کاربری خود شوید.';
+        document.getElementById('feedbackLoginLink').style.display = loggedInButNotMember ? 'none' : '';
+        feedbackLoginPrompt.classList.add('show');
+      })
+      .catch(() => {
+        document.getElementById('feedbackLoginText').textContent = 'ارتباط با سرور برقرار نشد؛ لطفاً دوباره تلاش کنید.';
+        document.getElementById('feedbackLoginLink').style.display = 'none';
+        feedbackLoginPrompt.classList.add('show');
+      });
+  });
+
+
+  // نوع نمایشی (فارسی) -> کدی که بک‌اند می‌شناسد
+  const FEEDBACK_KIND_CODES = { 'انتقاد': 'complaint', 'پیشنهاد': 'suggestion' };
+
+  function showFeedbackError(msg){
+    feedbackError.textContent = msg;
+    feedbackError.classList.add('show');
+  }
+  function clearFeedbackError(){
+    feedbackError.textContent = '';
+    feedbackError.classList.remove('show');
+  }
 
   document.querySelectorAll('.feedback-type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const type = btn.dataset.type;
       fbTypeInput.value = type;
       feedbackFormTitle.textContent = 'فرم ثبت ' + type;
+      clearFeedbackError();
       feedbackTypeChoice.classList.add('hide');
       feedbackForm.classList.remove('hide');
     });
   });
 
   document.getElementById('feedbackBack').addEventListener('click', () => {
+    clearFeedbackError();
     feedbackForm.classList.add('hide');
     feedbackTypeChoice.classList.remove('hide');
   });
@@ -2449,15 +2638,57 @@
     e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 12);
   });
 
+  // خطای برگشتی از سرور را به یک پیام فارسی قابل‌فهم تبدیل می‌کند
+  function feedbackErrorText(status, data){
+    if((status === 401 || status === 403) && data && data.detail) return data.detail;
+    if(status === 429) return 'تعداد ارسال‌های شما زیاد بوده است؛ لطفاً کمی بعد دوباره تلاش کنید.';
+    if(status === 400 && data){
+      if(data.phone) return [].concat(data.phone)[0];
+      if(data.message) return 'لطفاً متن پیام را وارد کنید (حداکثر ۲۰۰۰ کاراکتر).';
+    }
+    return 'ارسال پیام با خطا مواجه شد؛ لطفاً دوباره تلاش کنید.';
+  }
+
   feedbackForm.addEventListener('submit', function(e){
     e.preventDefault();
-    const type = fbTypeInput.value;
     const message = document.getElementById('fb_message').value.trim();
     if(!message) return;
 
-    // TODO: وقتی بک‌اند آماده شد، اینجا داده‌ی فرم (نوع: type، تلفن، شعبه، پیام) به سرور ارسال شود.
-    feedbackForm.classList.add('hide');
-    feedbackSuccess.classList.add('show');
+    const submitBtn = feedbackForm.querySelector('.feedback-submit');
+    submitBtn.disabled = true;   // جلوگیری از ثبت دوباره با کلیک پشت‌سرهم
+    clearFeedbackError();
+
+    const payload = {
+      kind: FEEDBACK_KIND_CODES[fbTypeInput.value],
+      phone: document.getElementById('fb_phone').value.trim(),
+      branch: document.getElementById('fb_branch').value,
+      message: message
+    };
+
+    // اگر کاربر وارد شده باشد، جنگو برای POST توکن CSRF می‌خواهد؛ پس اول
+    // کوکی را می‌گیریم (برای کاربر ناشناس هم بی‌ضرر است).
+    fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' })
+      .catch(() => {})
+      .then(() => fetch(`${API_BASE_URL}/feedback/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: JSON.stringify(payload)
+      }))
+      .then(async res => {
+        if(res.ok){
+          feedbackForm.classList.add('hide');
+          feedbackSuccess.classList.add('show');
+          return;
+        }
+        const data = await res.json().catch(() => null);
+        showFeedbackError(feedbackErrorText(res.status, data));
+      })
+      .catch(() => showFeedbackError('ارتباط با سرور برقرار نشد؛ اتصال اینترنت خود را بررسی کنید.'))
+      .finally(() => { submitBtn.disabled = false; });
   });
 </script>
 

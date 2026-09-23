@@ -140,6 +140,12 @@ class Class(models.Model):
         ),
     )
     is_published = models.BooleanField('منتشرشده در سایت', default=False)
+    # رده سنی کلاس (اختیاری): فقط وقتی age_limit_enabled=True باشد min_age/max_age
+    # معنی دارند (هر دو بین ۰ تا ۱۰۰ و min_age <= max_age)؛ اعتبارسنجی در
+    # ClassSerializer.validate انجام می‌شود. اگر غیرفعال شود هر دو مقدار پاک می‌شوند.
+    age_limit_enabled = models.BooleanField('رده سنی دارد', default=False)
+    min_age = models.PositiveSmallIntegerField('حداقل سن', null=True, blank=True)
+    max_age = models.PositiveSmallIntegerField('حداکثر سن', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -217,6 +223,10 @@ class SiteSettings(models.Model):
     registration_mode = models.CharField(
         'وضعیت دسترسی همگان به ثبت‌نام', max_length=10, choices=MODE_CHOICES, default='auto',
     )
+    # کلید «فعال/غیرفعال بودن بخش انتقادات و پیشنهادات در سایت» - فقط مدیر آموزش
+    # می‌تواند آن را عوض کند (نگاه کنید به SiteSettingsView.patch). اگر False باشد،
+    # دکمه‌ی این بخش در سایت اصلی اصلاً نمایش داده نمی‌شود و ثبت پیام هم در سرور رد می‌شود.
+    feedback_enabled = models.BooleanField('بخش انتقادات و پیشنهادات در سایت فعال است', default=True)
 
     class Meta:
         verbose_name = 'تنظیمات سایت'
@@ -267,3 +277,62 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return 'تنظیمات سراسری سایت'
+
+
+class Question(models.Model):
+    """
+    یک سؤال تستی در «بانک سوالات» یک درس - همیشه به یک درس (Lesson) وصل
+    است، نه یک کلاس خاص؛ چون کلاس‌ها هر ترم عوض می‌شوند ولی بانک سوالات
+    درس ثابت می‌ماند (دقیقاً همان منطقی که برای پیش‌نیاز هم استفاده شده).
+
+    گزینه‌ها در options ذخیره می‌شوند: لیستی از ۲ تا ۴ آبجکت به‌شکل
+    {"text": "...", "is_correct": true/false} که دقیقاً یکی از آن‌ها
+    is_correct=True دارد.
+    """
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, related_name='questions',
+        verbose_name='درس',
+    )
+    text = models.TextField('متن سؤال')
+    options = models.JSONField(
+        'گزینه‌ها', default=list,
+        help_text='لیستی ۲ تا ۴ عضوی از {"text": "...", "is_correct": true/false}',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'سؤال'
+        verbose_name_plural = 'بانک سوالات'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.text[:60]
+
+
+class TeacherLessonPermission(models.Model):
+    """
+    مجوز تدریس: وجود یک رکورد یعنی این مدرس «اجازه‌ی تدریس» این درس را دارد (فعال است)؛
+    نبودنش یعنی مجوز ندارد (غیرفعال). مدیر/مسئول آموزش این مجوزها را از پنل («مدرسین
+    تأییدشده» ← «ویرایش مجوزها») تعیین می‌کند.
+
+    نکته‌ی مهم: درس‌ها به شعبه وابسته‌اند (Lesson.branch)، پس مجوز فقط برای درس‌های «شعبه‌ی
+    خودِ مدرس» معنی دارد؛ این را API موقع ذخیره اجبار می‌کند. فعلاً این مجوزها فقط ذخیره
+    می‌شوند و هنگام درج کلاس اجبار نمی‌شوند.
+    """
+    teacher = models.ForeignKey(
+        'core.Employee', on_delete=models.CASCADE, related_name='lesson_permissions',
+        verbose_name='مدرس',
+    )
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, related_name='teacher_permissions', verbose_name='درس',
+    )
+    created_at = models.DateTimeField('تاریخ صدور مجوز', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'مجوز تدریس'
+        verbose_name_plural = 'مجوزهای تدریس'
+        unique_together = [('teacher', 'lesson')]
+        ordering = ['teacher_id', 'lesson_id']
+
+    def __str__(self):
+        return f'{self.teacher.name} ← {self.lesson.name}'

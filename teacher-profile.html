@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پیشخوان مدرس - سامانه سدا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-dark:#0b4b54;
+    --teal:#23848a;
+    --teal-light:#2f9aa0;
+    --gold:#c8a94d;
+    --gold-light:#d8bd6c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Vazirmatn',Tahoma,sans-serif;width:100%;margin:0;padding:0;}
+  body{background:#f4f6f6;color:#222;min-height:100vh;}
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;}
+
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--gold-light);outline-offset:2px;
+  }
+
+  header.page-header{
+    background:var(--teal);
+    padding:16px 20px;
+  }
+  .header-inner{
+    max-width:1000px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .brand{color:#fff;font-weight:700;font-size:16px;}
+  .teacher-name-tag{
+    color:#fff;font-size:13px;background:rgba(255,255,255,.16);
+    border-radius:16px;padding:6px 14px;
+  }
+  .header-actions{display:flex;align-items:center;gap:10px;}
+  .back-link, .logout-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    color:#fff;font-size:13px;font-weight:600;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    border-radius:18px;padding:7px 16px;transition:.15s;
+    min-height:38px;cursor:pointer;
+  }
+  .back-link:hover, .logout-btn:hover{background:rgba(255,255,255,.28);}
+  .back-link svg, .logout-btn svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+
+  .page-main{max-width:1000px;margin:0 auto;padding:36px 20px 60px;}
+
+  .state-box{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;padding:80px 20px;color:#5a6b6b;font-size:14px;
+  }
+  .spinner{
+    width:34px;height:34px;border-radius:50%;
+    border:3px solid #d8e2e2;border-top-color:var(--teal);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .hub-title{font-size:20px;font-weight:800;color:var(--teal-dark);margin-bottom:6px;}
+  .hub-sub{font-size:13.5px;color:#657878;margin-bottom:26px;}
+
+  .summary-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
+  .summary-card{
+    flex:1;min-width:140px;background:#fff;border:1px solid #e3e9e9;border-radius:14px;
+    padding:18px 20px;text-align:center;
+  }
+  .summary-card .num{font-size:26px;font-weight:800;color:var(--teal-dark);}
+  .summary-card .label{font-size:12.5px;color:#748585;margin-top:4px;}
+
+  .class-list{display:flex;flex-direction:column;gap:14px;}
+  .class-card{
+    background:#fff;border:1px solid #e3e9e9;border-radius:16px;
+    padding:20px 22px;transition:.15s;
+  }
+  .class-card:hover{border-color:var(--teal-light);box-shadow:0 6px 18px rgba(20,60,60,.08);}
+  .class-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .class-title{font-size:16px;font-weight:700;color:#1f2a2a;}
+  .class-badges{display:flex;gap:6px;flex-wrap:wrap;}
+  .badge{
+    font-size:11px;font-weight:700;border-radius:8px;padding:4px 10px;white-space:nowrap;
+  }
+  .badge.published{background:#e5f6ea;color:#1e8a4c;}
+  .badge.unpublished{background:#fdeeee;color:#c14848;}
+  .badge.online{background:#eef4ff;color:#2f5bb8;}
+  .class-meta{
+    display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:#657878;
+  }
+  .class-meta span{display:flex;align-items:center;gap:5px;}
+  .class-meta svg{width:14px;height:14px;stroke:#8a9c9c;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .class-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .capacity-text{font-size:12.5px;color:#5a6b6b;}
+  .roster-toggle-btn{
+    background:none;border:1px solid var(--teal-light);color:var(--teal);
+    border-radius:9px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;
+  }
+  .roster-toggle-btn:hover{background:var(--teal);color:#fff;}
+
+  .roster-wrap{margin-top:14px;border-top:1px solid #eef2f2;padding-top:14px;display:none;}
+  .roster-wrap.open{display:block;}
+  .roster-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .roster-hint{font-size:11.5px;color:#8a9a9a;}
+  .save-scores-btn{
+    background:var(--teal);color:#fff;border:none;border-radius:9px;
+    padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .save-scores-btn:hover{background:var(--teal-dark);}
+  .save-scores-btn:disabled{opacity:.6;cursor:default;}
+  .attendance-btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .mini-btn{
+    border:1px solid #dfe6e6;background:#fff;color:#5a6b6b;border-radius:8px;
+    padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;
+  }
+  .mini-btn.score-btn.active{background:#e5f6ea;border-color:#8fd4a8;color:#1e8a4c;}
+  .mini-btn.absent-btn.active{background:#fdeeee;border-color:#e8a8a8;color:#c14848;}
+  .status-text{font-weight:700;font-size:12px;}
+  .status-text.scored{color:#1e8a4c;}
+  .status-text.absent{color:#c14848;}
+  .status-text.pending{color:#a67c1e;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,30,30,.45);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:.15s;z-index:1000;padding:20px;
+  }
+  .modal-overlay.open{opacity:1;pointer-events:auto;}
+  .modal-box{background:#fff;border-radius:16px;width:100%;max-width:380px;overflow:hidden;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #eef2f2;}
+  .modal-head h3{font-size:15px;color:#1f2a2a;}
+  .modal-close{background:none;border:none;cursor:pointer;color:#8a9a9a;padding:4px;}
+  .modal-close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+  .modal-body{padding:20px;}
+  .modal-body .student-name{font-size:13.5px;font-weight:700;color:var(--teal-dark);margin-bottom:14px;}
+  .modal-body label{display:block;font-size:12.5px;font-weight:600;color:#1f2a2a;margin-bottom:8px;}
+  .modal-body input{
+    width:100%;border:1px solid #dfe6e6;border-radius:10px;padding:11px 14px;
+    font-family:inherit;font-size:14px;text-align:center;
+  }
+  .modal-body input:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .modal-foot{display:flex;gap:10px;padding:16px 20px;border-top:1px solid #eef2f2;}
+  .modal-foot button{flex:1;border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;}
+  .modal-foot .btn-cancel{background:#f0f4f4;color:#5a6b6b;}
+  .modal-foot .btn-save{background:var(--teal);color:#fff;}
+  table.roster-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.roster-table thead th{
+    background:#eef4f4;color:#3a4c4c;font-weight:700;font-size:11.5px;
+    padding:9px 8px;text-align:right;
+  }
+  table.roster-table tbody td{padding:9px 8px;border-top:1px solid #eef2f2;color:#2a3838;}
+  .empty-row td{text-align:center;color:#8a9a9a;padding:20px 8px;}
+
+  .empty-classes{
+    background:#fff;border:1px solid #e3e9e9;border-radius:16px;
+    padding:40px 20px;text-align:center;color:#8a9a9a;font-size:13.5px;
+  }
+
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="brand">سامانه سدا - خانه کارگر</span>
+      <span class="teacher-name-tag" id="teacherNameTag" hidden></span>
+    </div>
+    <div class="header-actions">
+      <a href="/" class="back-link">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M5 12l6-6M5 12l6 6"></path></svg>
+        بازگشت به صفحه اصلی
+      </a>
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        خروج
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="page-main">
+
+  <div class="state-box" id="loadingState">
+    <div class="spinner"></div>
+    <div>در حال بررسی ورود شما...</div>
+  </div>
+
+  <div id="profileView" hidden>
+    <div class="hub-title">پیشخوان مدرس</div>
+    <div class="hub-sub" id="welcomeLine"></div>
+
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="num" id="summaryClassCount">۰</div>
+        <div class="label">کلاس فعال</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" id="summaryStudentCount">۰</div>
+        <div class="label">مجموع دانش‌پژوهان</div>
+      </div>
+    </div>
+
+    <div class="hub-title" style="font-size:16px;margin-bottom:16px;">کلاس‌های من</div>
+    <div class="class-list" id="classList">
+      <div class="state-box"><div class="spinner"></div><div>در حال بارگذاری کلاس‌ها...</div></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="scoreEntryModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>درج نمره</h3>
+      <button class="modal-close" id="scoreEntryModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="student-name" id="scoreEntryStudentName"></div>
+      <label for="scoreEntryInput">نمره (از <span id="scoreEntryMaxLabel">۱۰۰</span>)</label>
+      <input type="text" id="scoreEntryInput" inputmode="numeric" maxlength="3" placeholder="مثلاً ۸۵">
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn-cancel" id="scoreEntryModalCancel">انصراف</button>
+      <button type="button" class="btn-save" id="scoreEntryModalSave">ذخیره</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+  function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+  function toPersianDigits(n){
+    return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
+
+  let CURRENT_PROFILE = null;
+
+  // ---- گارد ورود: این صفحه فقط برای مدرسِ واردشده است ----
+  fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
+    .then(res => res.ok ? res.json() : null)
+    .then(profile => {
+      if(!profile || !profile.is_employee || profile.employee_role !== 'مدرس'){
+        window.location.href = '/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      CURRENT_PROFILE = profile;
+      document.getElementById('loadingState').hidden = true;
+      document.getElementById('profileView').hidden = false;
+
+      const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.username;
+      document.getElementById('welcomeLine').textContent = `خوش آمدید، ${fullName}`;
+      const tag = document.getElementById('teacherNameTag');
+      tag.textContent = fullName;
+      tag.hidden = false;
+
+      loadMyClasses();
+    })
+    .catch(() => {
+      window.location.href = '/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname);
+    });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    fetch(`${API_BASE_URL}/auth/logout/`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
+    }).finally(() => { window.location.href = '/login?type=teacher'; });
+  });
+
+  const DAY_ICON = '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+  const CLOCK_ICON = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+  const PIN_ICON = '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+  const USERS_ICON = '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
+
+  let MY_CLASSES = [];
+
+  function loadMyClasses(){
+    const listEl = document.getElementById('classList');
+    fetch(`${API_BASE_URL}/classmgmt/classes/?mine=1`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(list => {
+        MY_CLASSES = list || [];
+        renderSummary();
+        renderClassList();
+      })
+      .catch(() => {
+        listEl.innerHTML = `<div class="empty-classes">خطا در دریافت اطلاعات؛ دوباره تلاش کنید</div>`;
+      });
+  }
+
+  function renderSummary(){
+    document.getElementById('summaryClassCount').textContent = toPersianDigits(MY_CLASSES.length);
+    const totalStudents = MY_CLASSES.reduce((sum, c) => sum + (c.enrolled_count || 0), 0);
+    document.getElementById('summaryStudentCount').textContent = toPersianDigits(totalStudents);
+  }
+
+  function renderClassList(){
+    const listEl = document.getElementById('classList');
+    if(MY_CLASSES.length === 0){
+      listEl.innerHTML = `<div class="empty-classes">در حال حاضر کلاسی به شما اختصاص داده نشده است.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = MY_CLASSES.map((c, i) => `
+      <div class="class-card" data-index="${i}">
+        <div class="class-head">
+          <div class="class-title">${c.name}</div>
+          <div class="class-badges">
+            <span class="badge ${c.is_published ? 'published' : 'unpublished'}">${c.is_published ? 'منتشرشده' : 'عدم انتشار'}</span>
+            ${c.has_online_exam ? '<span class="badge online">آزمون آنلاین</span>' : ''}
+          </div>
+        </div>
+        <div class="class-meta">
+          <span>${PIN_ICON} ${c.department_name || '—'} ${c.branch ? '· ' + c.branch : ''}</span>
+          ${c.day ? `<span>${DAY_ICON} ${c.day}</span>` : ''}
+          ${c.start_time ? `<span>${CLOCK_ICON} ${toPersianDigits(c.start_time)} تا ${toPersianDigits(c.entry_time || '')}</span>` : ''}
+          <span>${USERS_ICON} ${toPersianDigits(c.enrolled_count || 0)} از ${toPersianDigits(c.capacity)} نفر</span>
+        </div>
+        <div class="class-footer">
+          <span class="capacity-text">${c.term_order ? 'دوره ' + toPersianDigits(c.term_order) : ''}</span>
+          <button type="button" class="roster-toggle-btn" data-index="${i}">مشاهده لیست دانش‌پژوهان</button>
+        </div>
+        <div class="roster-wrap" id="roster-${i}">
+          <div class="roster-toolbar">
+            <span class="roster-hint">برای هر دانش‌پژوه نمره ثبت کنید یا در صورت عدم حضور، غیبت را بزنید.</span>
+            <button type="button" class="save-scores-btn" data-index="${i}">ذخیره نمرات</button>
+          </div>
+          <table class="roster-table">
+            <thead><tr><th>#</th><th>نام</th><th>کد ملی</th><th>وضعیت</th><th style="width:230px;">عملیات</th></tr></thead>
+            <tbody id="rosterBody-${i}"><tr class="empty-row"><td colspan="5">در حال بارگذاری...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.roster-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => toggleRoster(Number(btn.dataset.index)));
+    });
+    listEl.querySelectorAll('.save-scores-btn').forEach(btn => {
+      btn.addEventListener('click', () => saveScoresForClass(Number(btn.dataset.index)));
+    });
+  }
+
+  // classIndex -> [{ id, member_name, member_national_id, score, absent }]
+  const rosterData = {};
+  // classIndex -> { enrollmentId: { score, absent } }  (تغییرات محلی تا زدن «ذخیره نمرات»)
+  const pendingScoreChanges = {};
+
+  const loadedRosters = new Set();
+  function toggleRoster(index){
+    const wrap = document.getElementById(`roster-${index}`);
+    wrap.classList.toggle('open');
+    if(wrap.classList.contains('open') && !loadedRosters.has(index)){
+      refreshRoster(index);
+    }
+  }
+
+  function maxScoreFor(index){
+    return MY_CLASSES[index].has_online_exam ? 50 : 100;
+  }
+
+  function renderRosterRows(index){
+    const body = document.getElementById(`rosterBody-${index}`);
+    const visible = rosterData[index] || [];
+    if(visible.length === 0){
+      body.innerHTML = `<tr class="empty-row"><td colspan="5">دانش‌پژوهی ثبت‌نام نکرده است</td></tr>`;
+      return;
+    }
+    const maxScore = maxScoreFor(index);
+    body.innerHTML = visible.map((s, i) => `
+      <tr data-enrollment-id="${s.id}">
+        <td>${toPersianDigits(i + 1)}</td>
+        <td>${s.member_name}</td>
+        <td dir="ltr" style="text-align:right;">${toPersianDigits(s.member_national_id)}</td>
+        <td class="status-cell">${statusPreview(index, s.id, maxScore)}</td>
+        <td>${attendanceButtons(index, s.id)}</td>
+      </tr>
+    `).join('');
+
+    body.querySelectorAll('.score-btn').forEach(btn => {
+      btn.addEventListener('click', () => openScoreEntryModal(Number(btn.dataset.classIndex), btn.dataset.enrollmentId));
+    });
+    body.querySelectorAll('.absent-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ci = Number(btn.dataset.classIndex);
+        const eid = btn.dataset.enrollmentId;
+        pendingScoreChanges[ci][eid] = { score: 0, absent: true };
+        updateRosterRow(ci, eid);
+      });
+    });
+  }
+
+  function statusPreview(classIndex, enrollmentId, maxScore){
+    const state = pendingScoreChanges[classIndex][enrollmentId] || { score: null, absent: false };
+    if(state.absent) return '<span class="status-text absent">غایب</span>';
+    if(state.score !== null && state.score !== undefined) return `<span class="status-text scored">${toPersianDigits(state.score)} از ${toPersianDigits(maxScore)}</span>`;
+    return '<span class="status-text pending">ثبت‌نشده</span>';
+  }
+
+  function attendanceButtons(classIndex, enrollmentId){
+    const state = pendingScoreChanges[classIndex][enrollmentId] || { score: null, absent: false };
+    return `
+      <div class="attendance-btn-group">
+        <button type="button" class="mini-btn score-btn ${!state.absent ? 'active' : ''}" data-class-index="${classIndex}" data-enrollment-id="${enrollmentId}">درج نمره</button>
+        <button type="button" class="mini-btn absent-btn ${state.absent ? 'active' : ''}" data-class-index="${classIndex}" data-enrollment-id="${enrollmentId}">عدم حضور</button>
+      </div>
+    `;
+  }
+
+  function updateRosterRow(classIndex, enrollmentId){
+    const row = document.querySelector(`#rosterBody-${classIndex} tr[data-enrollment-id="${enrollmentId}"]`);
+    if(!row) return;
+    const maxScore = maxScoreFor(classIndex);
+    row.querySelector('.status-cell').innerHTML = statusPreview(classIndex, enrollmentId, maxScore);
+    row.querySelector('td:last-child').innerHTML = attendanceButtons(classIndex, enrollmentId);
+    row.querySelector('.score-btn').addEventListener('click', () => openScoreEntryModal(classIndex, enrollmentId));
+    row.querySelector('.absent-btn').addEventListener('click', () => {
+      pendingScoreChanges[classIndex][enrollmentId] = { score: 0, absent: true };
+      updateRosterRow(classIndex, enrollmentId);
+    });
+  }
+
+  // ---- مودال درج نمره ----
+  let scoreEntryClassIndex = null;
+  let scoreEntryEnrollmentId = null;
+  const scoreEntryOverlay = document.getElementById('scoreEntryModalOverlay');
+  const scoreEntryInputEl = document.getElementById('scoreEntryInput');
+
+  function openScoreEntryModal(classIndex, enrollmentId){
+    scoreEntryClassIndex = classIndex;
+    scoreEntryEnrollmentId = enrollmentId;
+    const student = (rosterData[classIndex] || []).find(s => String(s.id) === String(enrollmentId));
+    const maxScore = maxScoreFor(classIndex);
+    document.getElementById('scoreEntryStudentName').textContent = student ? student.member_name : '';
+    document.getElementById('scoreEntryMaxLabel').textContent = toPersianDigits(maxScore);
+    const state = pendingScoreChanges[classIndex][enrollmentId] || {};
+    scoreEntryInputEl.value = (!state.absent && state.score !== null && state.score !== undefined) ? toPersianDigits(state.score) : '';
+    scoreEntryOverlay.classList.add('open');
+    scoreEntryInputEl.focus();
+  }
+  function closeScoreEntryModal(){ scoreEntryOverlay.classList.remove('open'); }
+  document.getElementById('scoreEntryModalClose').addEventListener('click', closeScoreEntryModal);
+  document.getElementById('scoreEntryModalCancel').addEventListener('click', closeScoreEntryModal);
+  scoreEntryOverlay.addEventListener('click', (e) => { if(e.target === scoreEntryOverlay) closeScoreEntryModal(); });
+
+  function toEnglishDigits(str){
+    return String(str).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  }
+  scoreEntryInputEl.addEventListener('input', () => {
+    let v = toEnglishDigits(scoreEntryInputEl.value).replace(/[^0-9]/g, '');
+    const maxScore = maxScoreFor(scoreEntryClassIndex);
+    if(v !== '' && Number(v) > maxScore) v = String(maxScore);
+    scoreEntryInputEl.value = v;
+  });
+
+  document.getElementById('scoreEntryModalSave').addEventListener('click', () => {
+    const v = toEnglishDigits(scoreEntryInputEl.value).replace(/[^0-9]/g, '');
+    if(v === ''){
+      alert('لطفاً یک نمره وارد کنید');
+      return;
+    }
+    pendingScoreChanges[scoreEntryClassIndex][scoreEntryEnrollmentId] = { score: Number(v), absent: false };
+    updateRosterRow(scoreEntryClassIndex, scoreEntryEnrollmentId);
+    closeScoreEntryModal();
+  });
+
+  // ---- ذخیره‌ی نمرات یک کلاس: فقط ثبت‌نامی‌هایی که واقعاً تغییر کرده‌اند
+  // ارسال می‌شوند؛ هر کسی که «عدم حضور» بخورد، خودکار وارد سیستم
+  // محرومیت هم می‌شود (دقیقاً همان کاری که پنل مدیر/مسئول انجام می‌دهد) ----
+  function saveScoresForClass(classIndex){
+    const cls = MY_CLASSES[classIndex];
+    const original = rosterData[classIndex] || [];
+    const pending = pendingScoreChanges[classIndex] || {};
+
+    const updates = original.map(s => {
+      const p = pending[s.id] || {};
+      const changed = p.score !== s.score || !!p.absent !== !!s.absent;
+      return { enrollmentId: s.id, memberId: s.member, score: p.score, absent: !!p.absent, changed };
+    }).filter(u => u.changed);
+
+    if(updates.length === 0){
+      alert('تغییری برای ذخیره وجود ندارد');
+      return;
+    }
+
+    const btn = document.querySelector(`.save-scores-btn[data-index="${classIndex}"]`);
+    if(btn) btn.disabled = true;
+
+    Promise.all(updates.map(u => fetch(`${API_BASE_URL}/classmgmt/enrollments/${u.enrollmentId}/`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: JSON.stringify({ score: u.score, absent: u.absent }),
+    }).then(res => {
+      if(!res.ok) throw new Error('خطا در ذخیره‌ی نمره');
+      if(u.absent && u.memberId){
+        return fetch(`${API_BASE_URL}/members/${u.memberId}/ban/`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+          body: JSON.stringify({ reason: `عدم حضور در کلاس «${cls.name}»` }),
+        }).catch(() => {});
+      }
+    })))
+      .then(() => {
+        loadedRosters.delete(classIndex);
+        refreshRoster(classIndex);
+      })
+      .catch(() => alert('خطا در ذخیره‌ی نمرات؛ دوباره تلاش کنید'))
+      .finally(() => { if(btn) btn.disabled = false; });
+  }
+
+  function refreshRoster(index){
+    const cls = MY_CLASSES[index];
+    document.getElementById(`rosterBody-${index}`).innerHTML = `<tr class="empty-row"><td colspan="5">در حال بارگذاری...</td></tr>`;
+    fetch(`${API_BASE_URL}/classmgmt/classes/${cls.id}/students/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(students => {
+        const visible = (students || []).filter(s => s.class_exists !== false);
+        rosterData[index] = visible;
+        pendingScoreChanges[index] = {};
+        visible.forEach(s => { pendingScoreChanges[index][s.id] = { score: s.score, absent: !!s.absent }; });
+        loadedRosters.add(index);
+        renderRosterRows(index);
+      })
+      .catch(() => {
+        document.getElementById(`rosterBody-${index}`).innerHTML = `<tr class="empty-row"><td colspan="5">خطا در دریافت لیست</td></tr>`;
+      });
+  }
+</script>
+</body>
+</html>

@@ -19,46 +19,14 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import AdminAccount, Member, OTPCode
+from .models import AdminAccount, Member, OTPCode, EmployeeOTPCode
+from .provinces import PROVINCES
 
 User = get_user_model()
 
 # دقیقاً همان ۳۱ استانی که در سایت اصلی (province.html) برای انتخاب استان
 # استفاده می‌شود - تا نام استانِ دانش‌پژوه با نام استانِ ثبت‌شده روی شعب یکی باشد
-PROVINCE_CHOICES = [
-    ('', '— انتخاب استان —'),
-    ('آذربایجان غربی', 'آذربایجان غربی'),
-    ('آذربایجان شرقی', 'آذربایجان شرقی'),
-    ('اردبیل', 'اردبیل'),
-    ('گیلان', 'گیلان'),
-    ('مازندران', 'مازندران'),
-    ('گلستان', 'گلستان'),
-    ('خراسان شمالی', 'خراسان شمالی'),
-    ('خراسان رضوی', 'خراسان رضوی'),
-    ('خراسان جنوبی', 'خراسان جنوبی'),
-    ('زنجان', 'زنجان'),
-    ('قزوین', 'قزوین'),
-    ('البرز', 'البرز'),
-    ('تهران', 'تهران'),
-    ('قم', 'قم'),
-    ('سمنان', 'سمنان'),
-    ('مرکزی', 'مرکزی'),
-    ('همدان', 'همدان'),
-    ('کردستان', 'کردستان'),
-    ('کرمانشاه', 'کرمانشاه'),
-    ('ایلام', 'ایلام'),
-    ('لرستان', 'لرستان'),
-    ('خوزستان', 'خوزستان'),
-    ('چهارمحال و بختیاری', 'چهارمحال و بختیاری'),
-    ('کهگیلویه و بویراحمد', 'کهگیلویه و بویراحمد'),
-    ('بوشهر', 'بوشهر'),
-    ('اصفهان', 'اصفهان'),
-    ('یزد', 'یزد'),
-    ('فارس', 'فارس'),
-    ('کرمان', 'کرمان'),
-    ('هرمزگان', 'هرمزگان'),
-    ('سیستان و بلوچستان', 'سیستان و بلوچستان'),
-]
+PROVINCE_CHOICES = [('', '— انتخاب استان —')] + [(p, p) for p in PROVINCES]
 
 
 # ---------------------------------------------------------------------------
@@ -156,6 +124,17 @@ class OTPCodeAdmin(admin.ModelAdmin):
     list_filter = ('purpose', 'is_used')
     search_fields = ('member__national_id', 'code')
     readonly_fields = ('member', 'code', 'purpose', 'created_at', 'expires_at', 'is_used')
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(EmployeeOTPCode)
+class EmployeeOTPCodeAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'code', 'purpose', 'created_at', 'expires_at', 'is_used')
+    list_filter = ('purpose', 'is_used')
+    search_fields = ('employee__name', 'employee__phone', 'code')
+    readonly_fields = ('employee', 'code', 'purpose', 'created_at', 'expires_at', 'is_used')
 
     def has_add_permission(self, request):
         return False

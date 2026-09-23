@@ -20,6 +20,8 @@
 - /hozori-courses       -> دوره‌های حضوری (hozori-courses.html)
 - /majazi-courses       -> دوره‌های مجازی (majazi-courses.html)
 - /majazi-courses-ostan -> دوره‌های مجازی بر اساس استان (majazi-courses-ostan.html)
+- /certificate          -> آزمون آنلاین و گواهینامه/مشاهده نمرات دانش‌پژوه (certificate.html)
+- /teacher-profile      -> پیشخوان مدرس: لیست کلاس‌ها و دانش‌پژوهان خودش (teacher-profile.html)
 """
 
 from pathlib import Path
@@ -36,6 +38,9 @@ urlpatterns = [
     path('api/calendar/', include('academic_calendar.urls')),
     path('api/core/', include('core.urls')),
     path('api/classmgmt/', include('class_management.urls')),
+    path('api/feedback/', include('feedback.urls')),
+    path('api/finance/', include('finance.urls')),
+    path('api/logs/', include('logs.urls')),
 ]
 
 # فایل‌های آپلودی (عکس/رزومه‌ی متقاضیان) در حالت توسعه از همین سرور جنگو
@@ -72,6 +77,8 @@ FRONTEND_ROUTES = {
     'hozori-courses': 'hozori-courses.html',
     'majazi-courses': 'majazi-courses.html',
     'majazi-courses-ostan': 'majazi-courses-ostan.html',
+    'certificate': 'certificate.html',
+    'teacher-profile': 'teacher-profile.html',
 }
 
 

@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: academic_calendar/views.py (کنار manage.py) =====
 """
 API تقویم آموزشی.
 
@@ -16,6 +17,8 @@ API تقویم آموزشی.
   POST /api/calendar/pdf/          -> آپلود/جایگزینی فایل PDF (فرم: year, pdf)
 """
 
+from logs.mixins import AuditedMixin, audit
+from logs.recorder import record
 from rest_framework import permissions, viewsets
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
@@ -54,7 +57,12 @@ class CalendarYearsView(APIView):
         return Response({'years': years})
 
 
-class AcademicTermViewSet(viewsets.ModelViewSet):
+@audit('settings', 'دوره‌ی تقویم آموزشی', {
+    'create': ('term_create', 'افزودن دوره‌ی تقویم آموزشی'),
+    'update': ('term_update', 'ویرایش دوره‌ی تقویم آموزشی'),
+    'destroy': ('term_delete', 'حذف دوره‌ی تقویم آموزشی'),
+}, label_func=lambda t: str(t))
+class AcademicTermViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
     CRUD کامل روی دوره‌های تقویم آموزشی - همان چیزی که دکمه‌ی
     «ویرایش تقویم» در پنل ادمین استفاده می‌کند.
@@ -107,5 +115,10 @@ class CalendarPdfView(APIView):
         if not pdf.name.lower().endswith('.pdf'):
             return Response({'detail': 'فقط فایل با فرمت PDF مجاز است.'}, status=400)
 
-        doc, _ = CalendarDocument.objects.update_or_create(year=year, defaults={'pdf': pdf})
+        doc, created = CalendarDocument.objects.update_or_create(year=year, defaults={'pdf': pdf})
+        # آپلود/جایگزینی PDF رسمی تقویم در لاگ ثبت می‌شود (فقط نام فایل، نه محتوا)
+        record(request, 'settings', 'calendar_pdf_upload',
+               f'{"آپلود" if created else "جایگزینی"} فایل PDF تقویم آموزشی سال {year}',
+               target_type='تقویم آموزشی', target_label=f'سال {year}',
+               changes=[{'field': 'نام فایل', 'old': '', 'new': pdf.name}])
         return Response(CalendarDocumentSerializer(doc, context={'request': request}).data, status=201)

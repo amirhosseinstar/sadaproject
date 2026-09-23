@@ -45,3 +45,80 @@ def today_jalali():
     """تاریخ امروز (بر اساس ساعت سرور) به شمسی، به‌صورت (سال, ماه, روز)."""
     now = datetime.date.today()
     return gregorian_to_jalali(now.year, now.month, now.day)
+
+
+# رقم‌های فارسی (۰-۹) و عربی (٠-٩) -> انگلیسی
+_DIGIT_MAP = str.maketrans('۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩', '01234567890123456789')
+
+
+def to_english_digits(text):
+    """همه‌ی رقم‌های فارسی/عربی یک متن را به انگلیسی تبدیل می‌کند."""
+    return str(text or '').translate(_DIGIT_MAP)
+
+
+def parse_jalali_date(text, allow_future=False):
+    """
+    یک تاریخ شمسی متنی مثل «۱۳۷۰/۰۵/۱۲» یا «1370-5-12» را به (سال, ماه, روز) تبدیل
+    می‌کند؛ اگر متن خالی یا نامعتبر باشد None برمی‌گرداند.
+
+    قواعد: رقم فارسی/عربی/انگلیسی، جداکننده‌ی / یا - یا . ؛ سال چهاررقمی بین ۱۲۰۰ تا
+    سال جاری (تاریخ آینده معتبر نیست)؛ ماه ۱ تا ۱۲؛ روز ۱ تا ۳۱ برای شش ماه اول و ۱ تا
+    ۳۰ برای شش ماه دوم. (روزِ ۳۰ اسفند عمداً بدون بررسی کبیسه پذیرفته می‌شود تا یک
+    تاریخ تولد واقعی به‌خاطر تقریبِ الگوریتم کبیسه اشتباهاً رد نشود.)
+    """
+    import re
+
+    cleaned = to_english_digits(text).strip().replace('\u200f', '').replace('\u200e', '')
+    match = re.fullmatch(r'(\d{4})\s*[/\-.]\s*(\d{1,2})\s*[/\-.]\s*(\d{1,2})', cleaned)
+    if not match:
+        return None
+    year, month, day = (int(g) for g in match.groups())
+    if not 1 <= month <= 12:
+        return None
+    if not 1 <= day <= (31 if month <= 6 else 30):
+        return None
+    today = today_jalali()
+    # تاریخ آینده به‌طور پیش‌فرض نامعتبر است (مثلاً تاریخ تولد)؛ برای فیلتر بازه‌ی تاریخ می‌شود allow_future=True داد
+    if year < 1200 or (not allow_future and (year, month, day) > today):
+        return None
+    return year, month, day
+
+
+def jalali_age(birth, today=None):
+    """
+    سنِ کامل (به سال) کسی که در تاریخ شمسی birth=(سال, ماه, روز) به دنیا آمده، در
+    تاریخ today (پیش‌فرض: امروز). اگر تولد هنوز «امسال» نرسیده باشد، یک سال کمتر است.
+    """
+    today = today or today_jalali()
+    age = today[0] - birth[0]
+    if (today[1], today[2]) < (birth[1], birth[2]):
+        age -= 1
+    return age
+
+
+def jalali_to_gregorian(jy, jm, jd):
+    """تاریخ شمسی (سال، ماه، روز) را به میلادی (سال، ماه، روز) تبدیل می‌کند (معکوس gregorian_to_jalali)."""
+    jy += 1595
+    days = -355668 + (365 * jy) + ((jy // 33) * 8) + (((jy % 33) + 3) // 4) + jd
+    days += ((jm - 1) * 31) if jm < 7 else (((jm - 7) * 30) + 186)
+    gy = 400 * (days // 146097)
+    days %= 146097
+    if days > 36524:
+        days -= 1
+        gy += 100 * (days // 36524)
+        days %= 36524
+        if days >= 365:
+            days += 1
+    gy += 4 * (days // 1461)
+    days %= 1461
+    if days > 365:
+        gy += (days - 1) // 365
+        days = (days - 1) % 365
+    gd = days + 1
+    leap = (gy % 4 == 0 and gy % 100 != 0) or (gy % 400 == 0)
+    month_lengths = [0, 31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    gm = 0
+    while gm < 13 and gd > month_lengths[gm]:
+        gd -= month_lengths[gm]
+        gm += 1
+    return gy, gm, gd

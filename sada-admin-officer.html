@@ -225,6 +225,21 @@
   .card-feedback{background:linear-gradient(150deg,#d64545,#8e1f1f);}
   .card-branches{background:linear-gradient(150deg,#3fa77a,#1f6b4d);}
   .card-announcements{background:linear-gradient(150deg,#8a5fc8,#4a2f80);}
+  /* ---- کارت‌های «به‌زودی» داشبورد و منوی کناری ---- */
+  .card-finance{background:linear-gradient(150deg,#1fa3a3,#0f5f66);}
+  .card-logs{background:linear-gradient(150deg,#6b7f95,#36475a);}
+  .card-reports{background:linear-gradient(150deg,#e0823d,#9a4b12);}
+  .card-slideshow{background:linear-gradient(150deg,#d8508a,#8a2456);}
+  .card-soon-badge{
+    position:absolute;top:16px;left:16px;padding:3px 12px;border-radius:20px;
+    background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);
+    font-size:11.5px;font-weight:700;color:#fff;
+  }
+  .side-link.is-soon{opacity:.78;}
+  .side-soon{
+    margin-right:auto;font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;
+    background:rgba(255,255,255,.12);color:#f5d98a;white-space:nowrap;
+  }
   .rec-person-card{
     display:flex;flex-wrap:wrap;gap:10px 28px;background:#f3f8f8;border:1px solid #dfe9e9;
     border-radius:12px;padding:14px 18px;margin:14px 0 4px;font-size:13.5px;color:#33474a;
@@ -498,6 +513,110 @@
     color:#5a6b6c;cursor:pointer;transition:.15s;user-select:none;
   }
   .review-subtab.active{background:#fff;color:var(--teal-dark);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.review-badge{display:inline-block;min-width:18px;margin-right:6px;padding:0 6px;border-radius:9px;background:#d64545;color:#fff;font-size:11px;line-height:18px;text-align:center;}
+.review-badge:empty{display:none;}
+  /* ---- ویرایش اطلاعات اعضا ---- */
+  .member-incomplete-tag{display:inline-block;margin-right:8px;padding:1px 8px;border-radius:999px;background:#fdecec;border:1px solid #f3c1c1;color:#a12a2a;font-size:11px;font-weight:700;cursor:help;white-space:nowrap;}
+  .member-edit-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12.5px;white-space:nowrap;}
+  .member-edit-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .member-edit-missing{margin-bottom:14px;padding:10px 14px;border-radius:10px;background:#fdf1dc;border:1px solid #f0d7a3;color:#8a5b0e;font-size:12.5px;line-height:1.9;}
+  .member-edit-note{margin-top:14px;font-size:12px;color:#8a9a9a;line-height:1.9;}
+  .member-edit-error{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;background:#fdecec;border:1px solid #f3c1c1;color:#a12a2a;font-size:13px;line-height:1.9;}
+  .member-edit-error.show{display:block;}
+  /* ---- ویرایش مجوزهای مدرس ---- */
+  .teacher-perm-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12.5px;white-space:nowrap;}
+  .tp-branch{margin-bottom:12px;font-size:13px;color:#4f6466;}
+  .tp-hint{margin-top:12px;font-size:12.5px;color:#8a9a9a;line-height:1.9;}
+  .tp-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:340px;overflow-y:auto;}
+  .tp-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid #e3ecec;border-radius:10px;background:#fff;}
+  .tp-row.is-on{border-color:#b9dcdc;background:#f3fafa;}
+  .tp-name{flex:1;min-width:0;font-size:13.5px;font-weight:600;color:#1f3437;word-break:break-word;}
+  .tp-state{font-size:12px;color:#8a9a9a;white-space:nowrap;}
+  .tp-row.is-on .tp-state{color:#1f7a55;font-weight:700;}
+  /* ---- امور مالی: پرداخت به مدرسین ---- */
+  .fin-cards .stat-number{font-size:22px;}
+  .fin-sub{font-size:11.5px;color:#8a9a9a;margin-top:6px;}
+  .fin-h{font-size:15px;font-weight:700;color:var(--teal-dark);margin:26px 0 12px;}
+  .fin-filters{display:flex;gap:10px;flex-wrap:wrap;}
+  .fin-select{padding:9px 12px;border:1px solid #dfe6e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13px;color:#33474a;}
+  .fin-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .fin-btn{padding:6px 12px;font-size:12.5px;white-space:nowrap;}
+  .fin-info{background:#f3f8f8;border:1px solid #dfe9e9;border-radius:10px;padding:10px 14px;font-size:13px;line-height:2;margin-bottom:14px;color:#33474a;}
+  .fin-amount-hint{font-size:12px;color:#1f7a55;margin-top:4px;min-height:16px;}
+  .fin-hist-card{border:1px solid #e3ecec;border-radius:12px;padding:12px 14px;margin-bottom:12px;background:#fff;}
+  .fin-hist-card.canceled{background:#fbf6f6;border-color:#f0dede;}
+  .fin-hist-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:#33474a;}
+  .fin-log{font-size:12.5px;color:#4f6466;line-height:1.9;border-top:1px dashed #e3ecec;padding-top:6px;margin-top:6px;}
+  .fin-log b{color:#1f3437;}
+  /* انتخاب نوع حق‌الزحمه: دایره‌ی رادیو کنار متن (استایل عمومی فیلدها آن را بالای متن می‌انداخت) */
+  .field .svq-kind-pick label{display:flex;align-items:center;gap:8px;margin:0;font-weight:500;}
+  .field .svq-kind-pick input[type=radio]{width:auto;padding:0;margin:0;}
+  /* فیلد چپ‌به‌راست است (متن انگلیسی)، پس آیکون چشم سمت راست می‌آید تا با رشدِ متن قاطی نشود */
+  .approve-pw-wrap{position:relative;}
+  .approve-pw-wrap input{padding-right:38px;}
+  .approve-pw-wrap .toggle-pass{
+    position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;color:#9fb3b3;
+    display:flex;align-items:center;justify-content:center;padding:2px;
+  }
+  .approve-pw-wrap .toggle-pass svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .approve-pw-wrap .toggle-pass.hide{display:none;}
+  /* ---- لاگ سامانه ---- */
+  .log-filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .log-alert{padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.9;margin-bottom:14px;}
+  .log-alert.warn{background:#fdf1dc;border:1px solid #f0d7a3;color:#8a5b0e;}
+  .log-alert.danger{background:#fdecec;border:1px solid #f3c1c1;color:#a12a2a;}
+  .log-pager{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:16px;font-size:13px;color:#4f6466;}
+  .log-cat{display:inline-block;padding:2px 10px;border-radius:999px;background:#eef4f4;color:#33474a;font-size:11.5px;white-space:nowrap;}
+  .log-blocked{display:inline-block;padding:2px 10px;border-radius:999px;background:#fdecec;border:1px solid #f3c1c1;color:#a12a2a;font-size:11.5px;font-weight:700;white-space:nowrap;}
+  tr.log-row{cursor:pointer;}
+  tr.log-row:hover td{background:#f6fafa;}
+  tr.log-row-blocked td{background:#fdf6f6;}
+  .log-sub{display:block;font-size:11.5px;color:#8a9a9a;margin-top:2px;}
+  .log-change{font-size:12.5px;line-height:1.9;border-top:1px dashed #e3ecec;padding:6px 0;word-break:break-word;}
+  .log-change b{color:#1f3437;}
+  /* ---- نتایج نظرسنجی کلی (زیر لیست سؤال‌ها) ---- */
+  .svr-card{background:#fff;border:1px solid #e3ecec;border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+  .svr-qtitle{font-size:13.5px;font-weight:700;color:#1f3437;line-height:1.9;}
+  .svr-meta{font-size:11.5px;color:#7b8b8b;margin:2px 0 10px;}
+  .svr-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12.5px;}
+  .svr-label{width:130px;flex-shrink:0;color:#33474a;}
+  .svr-track{flex:1;height:10px;background:#eef4f4;border-radius:6px;overflow:hidden;}
+  .svr-fill{height:100%;background:linear-gradient(90deg,var(--teal-light,#2f9aa0),var(--teal,#23848a));border-radius:6px;}
+  .svr-count{width:78px;text-align:left;color:#4a5c5c;flex-shrink:0;font-size:12px;}
+  .svr-answer{border-top:1px solid #eef2f2;padding:9px 2px;font-size:13px;line-height:1.9;white-space:pre-wrap;word-break:break-word;}
+  .svr-answer:first-child{border-top:none;}
+  .svr-answer small{display:block;color:#8a9a9a;font-size:11.5px;margin-top:2px;}
+  /* ---- نظرسنجی کلی کلاس ---- */
+  .svq-header{background:#fff;border:1px solid #e3ecec;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;align-items:flex-start;}
+  .svq-header .form-grid{width:100%;}
+  .svq-count{font-size:13px;color:#4f6466;font-weight:600;}
+  .svq-list{display:flex;flex-direction:column;gap:10px;}
+  .svq-card{background:#fff;border:1px solid #e3ecec;border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start;}
+  .svq-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#e6f3f3;color:var(--teal-dark);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .svq-body{flex:1;min-width:0;}
+  .svq-text{font-weight:600;color:#1f3437;line-height:1.9;font-size:13.5px;word-break:break-word;white-space:pre-wrap;}
+  .svq-kind{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+  .svq-kind.choice{background:#e6f3f3;color:var(--teal-dark);}
+  .svq-kind.text{background:#fdf1dc;color:#9a6a12;}
+  .svq-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .svq-opt{background:#f3f7f7;border:1px solid #dfe9e9;border-radius:8px;padding:3px 10px;font-size:12px;color:#33474a;word-break:break-word;}
+  .svq-hint{margin-top:8px;font-size:12px;color:#8a9a9a;}
+  .svq-actions{display:flex;gap:6px;flex-shrink:0;}
+  .svq-actions .icon-btn[disabled]{opacity:.35;pointer-events:none;}
+  .svq-kind-pick{display:flex;gap:18px;flex-wrap:wrap;}
+  .svq-kind-pick label{display:flex;align-items:center;gap:6px;font-size:13px;color:#33474a;cursor:pointer;}
+  .svq-optlist{display:flex;flex-direction:column;gap:8px;}
+  .svq-optrow{display:flex;gap:8px;align-items:center;}
+  .svq-optrow input{flex:1;}
+  @media (max-width:560px){.svq-card{flex-direction:column;}.svq-actions{align-self:flex-end;}}
+  .fb-sender-link{color:var(--teal-dark);font-weight:700;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px;}
+  .fb-sender-link:hover{color:var(--teal);}
+  .fb-sender-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
+  .fb-sender-grid .full{grid-column:1/-1;}
+  .fb-sender-grid span{display:block;color:#7b8b8b;font-size:11.5px;margin-bottom:2px;}
+  .fb-sender-grid b{font-weight:700;color:#1f3437;font-size:13px;word-break:break-word;}
+  @media (max-width:560px){.fb-sender-grid{grid-template-columns:1fr;}}
   .review-subview{display:none;}
   .review-subview.active{display:block;}
 
@@ -663,6 +782,16 @@
   .time-spinner-colon{font-size:19px;font-weight:700;color:var(--teal-dark);}
   .field label{display:block;font-size:12.5px;color:#33474a;margin-bottom:6px;font-weight:600;}
   .field label .req-star{color:#c0392b;margin-inline-start:2px;}
+  .field input.persian-invalid{border-color:#c0392b;}
+  .persian-only-hint{
+    color:#c0392b;font-size:11px;margin-top:5px;display:none;line-height:1.6;
+  }
+  .persian-only-hint.show{display:block;}
+  .field input.english-invalid{border-color:#c0392b;}
+  .english-only-hint{
+    color:#c0392b;font-size:11px;margin-top:5px;display:none;line-height:1.6;
+  }
+  .english-only-hint.show{display:block;}
   .login-error{
     font-size:12px;color:#c0392b;background:#fdecea;
     border-radius:8px;padding:9px 12px;text-align:right;
@@ -1092,6 +1221,24 @@
       <svg viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 14v-3z"></path><path d="M11.6 16.8a2 2 0 0 1-3.2 2.4L6 15.5"></path></svg>
       اطلاعیه‌ها
     </div>
+    <div class="side-link" data-view="finance">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+      امور مالی
+    </div>
+    <div class="side-link" data-view="logs">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      لاگ
+    </div>
+    <div class="side-link is-soon" data-soon="1">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      گزارشات
+      <span class="side-soon">به‌زودی</span>
+    </div>
+    <div class="side-link is-soon" data-soon="1">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      مدیریت اسلاید شو
+      <span class="side-soon">به‌زودی</span>
+    </div>
   </aside>
 
   <main class="admin-main">
@@ -1135,6 +1282,182 @@
             <p>مشاهده، افزودن و ویرایش اطلاعیه‌ها به تفکیک شعبه</p>
           </div>
         </div>
+
+        <div class="section-card card-finance" data-goto="finance">
+          <div class="card-watermark"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
+          <div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
+            <h3>امور مالی</h3>
+            <p>ثبت و پیگیری پرداخت حق‌التدریس مدرسین به تفکیک کلاس و شعبه</p>
+          </div>
+        </div>
+
+        <div class="section-card card-logs" data-goto="logs">
+          <div class="card-watermark"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+          <div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+            <h3>لاگ</h3>
+            <p>گزارش ورود و خروج (ناموفق‌ها هم)، ویرایش‌ها و پرداخت‌ها؛ فقط‌خواندنی و همیشگی</p>
+          </div>
+        </div>
+
+        <div class="section-card card-reports" data-soon="1">
+          <div class="card-watermark"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+          <span class="card-soon-badge">به‌زودی</span>
+          <div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+            <h3>گزارشات</h3>
+            <p>گزارش‌ها و آمار تحلیلی از کلاس‌ها، دانش‌پژوهان و مدرسین</p>
+          </div>
+        </div>
+
+        <div class="section-card card-slideshow" data-soon="1">
+          <div class="card-watermark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
+          <span class="card-soon-badge">به‌زودی</span>
+          <div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
+            <h3>مدیریت اسلاید شو</h3>
+            <p>مدیریت اسلایدهای نمایش‌داده‌شده در صفحه‌ی اصلی سایت</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINANCE: امور مالی - پرداخت به مدرسین ============ -->
+    <section id="view-finance" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="dashboard">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به داشبورد
+        </button>
+      </div>
+      <div class="page-title">امور مالی — پرداخت به مدرسین</div>
+      <div class="page-sub">ثبت و پیگیری پرداخت حق‌التدریس هر کلاس. حق‌الزحمه می‌تواند «ساعتی» (ساعت کل دوره × نرخ هر ساعت) یا «ماهیانه» (مبلغ ثابت ماهیانه) باشد؛ مبلغ نهایی قابل ویرایش دستی است.</div>
+
+      <div class="dept-branch-picked-bar hide" id="financeBranchBar">
+        <div>شعبه: <b id="financeBranchName"></b></div>
+        
+      </div>
+
+      <div id="finContent" class="hide">
+        <div class="member-edit-missing hide" id="finNoTeacherNote"></div>
+        <div class="stats-grid fin-cards" id="finCards"></div>
+
+        <div class="fin-h">جمع‌بندی مدرسین</div>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table class="hr-table">
+            <thead>
+              <tr>
+                <th>مدرس</th>
+                <th>تعداد کلاس</th>
+                <th>ساعت کل</th>
+                <th>پرداخت‌شده (تومان)</th>
+                <th>کلاس پرداخت‌نشده</th>
+                <th>ساعت پرداخت‌نشده</th>
+              </tr>
+            </thead>
+            <tbody id="finTeacherSummary"></tbody>
+          </table>
+        </div>
+
+        <div class="fin-h">کلاس‌ها و پرداخت‌ها</div>
+        <div class="hr-toolbar">
+          <div class="fin-filters">
+            <select class="fin-select" id="finTerm" title="ترم"><option value="">همه‌ی ترم‌ها</option></select>
+            <select class="fin-select" id="finTeacher" title="مدرس"><option value="">همه‌ی مدرسین</option></select>
+            <select class="fin-select" id="finStatus" title="وضعیت پرداخت">
+              <option value="">همه‌ی وضعیت‌ها</option>
+              <option value="paid">پرداخت‌شده</option>
+              <option value="unpaid">پرداخت‌نشده</option>
+            </select>
+          </div>
+          <button class="btn-ghost" id="btnFinExport" type="button">خروجی اکسل</button>
+        </div>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table class="hr-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>مدرس</th>
+                <th>کلاس</th>
+                <th>ترم</th>
+                <th>ساعت کل</th>
+                <th>نوع و نرخ</th>
+                <th>مبلغ (تومان)</th>
+                <th>وضعیت</th>
+                <th>تاریخ پرداخت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="finTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="qa-empty" id="finEmpty" style="display:none;"></div>
+      <div id="finPickWrap" style="display:none;"></div>
+    </section>
+
+    <!-- ============ LOGS: لاگ سامانه ============ -->
+    <section id="view-logs" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="dashboard">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به داشبورد
+        </button>
+      </div>
+      <div class="page-title">لاگ سامانه</div>
+      <div class="page-sub">گزارش رویدادهای مهم: ورود و خروج (ناموفق‌ها هم)، ویرایش اطلاعات، ثبت‌نام، پرداخت‌ها و ... لاگ فقط اضافه می‌شود و برای همیشه نگه داشته می‌شود؛ هیچ‌کس نمی‌تواند آن را ویرایش یا حذف کند. فقط رویدادهای مربوط به شعبه‌ی شما نمایش داده می‌شود.</div>
+
+      <div class="log-alert hide" id="logAlert"></div>
+
+      <div class="log-filters">
+        <select class="fin-select" id="log_category" title="دسته">
+          <option value="">همه‌ی دسته‌ها</option>
+          <option value="auth">ورود و خروج</option>
+          <option value="member">اعضا</option>
+          <option value="teacher">مدرسین</option>
+          <option value="staff">کارکنان</option>
+          <option value="class">کلاس و ثبت‌نام</option>
+          <option value="finance">امور مالی</option>
+          <option value="feedback">انتقادات و پیشنهادات</option>
+          <option value="survey">نظرسنجی</option>
+          <option value="settings">تنظیمات</option>
+        </select>
+        <select class="fin-select" id="log_status" title="وضعیت">
+          <option value="">همه‌ی وضعیت‌ها</option>
+          <option value="success">موفق</option>
+          <option value="failed">ناموفق</option>
+          <option value="blocked">مسدود</option>
+        </select>
+        <input class="fin-select" type="text" id="log_q" placeholder="جستجو: شرح، نام، کد ملی، IP …" style="min-width:210px;">
+        <input class="fin-select" type="text" id="log_date_from" placeholder="از تاریخ" dir="ltr" style="width:130px;">
+        <input class="fin-select" type="text" id="log_date_to" placeholder="تا تاریخ" dir="ltr" style="width:130px;">
+        <button class="btn-primary fin-btn" id="btnLogSearch" type="button">جستجو</button>
+        <button class="btn-ghost fin-btn" id="btnLogClear" type="button">پاک‌کردن فیلترها</button>
+        <button class="btn-ghost fin-btn" id="btnLogExport" type="button">خروجی اکسل (CSV)</button>
+      </div>
+
+      <div class="table-wrap" style="overflow-x:auto;">
+        <table class="hr-table">
+          <thead>
+            <tr>
+              <th>زمان</th>
+              <th>دسته</th>
+              <th>رویداد</th>
+              <th>انجام‌دهنده</th>
+              <th>شعبه</th>
+              <th>وضعیت</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody"></tbody>
+        </table>
+      </div>
+      <div class="qa-empty" id="logEmpty" style="display:none;"></div>
+      <div class="log-pager">
+        <button class="btn-ghost fin-btn" id="btnLogPrev" type="button">قبلی</button>
+        <span id="logPageInfo"></span>
+        <button class="btn-ghost fin-btn" id="btnLogNext" type="button">بعدی</button>
       </div>
     </section>
 
@@ -1471,6 +1794,23 @@
             </button>
           </div>
 
+          <div class="section-status-row" id="ciAgeRow" style="margin-top:18px;">
+            <div class="section-status-info">
+              <span class="section-status-dot"></span>
+              <div class="section-status-text">
+                <b id="ciAgeLabel">رده سنی برای این کلاس غیرفعال است</b>
+                <span class="manager-only-note">در صورت فعال بودن، بازه‌ی سنی مجاز (۰ تا ۱۰۰) را تعیین کنید</span>
+              </div>
+            </div>
+            <button class="toggle-switch" id="ciAgeToggle" type="button" aria-label="فعال/غیرفعال کردن رده سنی">
+              <span class="knob"></span>
+            </button>
+          </div>
+          <div class="form-grid" style="margin-top:12px;">
+            <div class="field"><label>حداقل سن</label><input type="text" id="ciAgeMin" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="مثلاً ۲۰" disabled></div>
+            <div class="field"><label>حداکثر سن</label><input type="text" id="ciAgeMax" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="مثلاً ۶۰" disabled></div>
+          </div>
+
           <div class="field full" style="margin-top:18px;">
             <label>توضیحات کلاس <span style="font-weight:400;color:#8a9a9a;">(اختیاری)</span></label>
             <textarea id="ci_desc" rows="3" placeholder="در صورت تمایل، توضیحاتی درباره‌ی این کلاس بنویسید…"></textarea>
@@ -1518,6 +1858,7 @@
     </section>
 
     <!-- ============ CLASS EXAM (subsection of class management) ============ -->
+    <!-- ============ EXAM HUB (بازگشت به بخش آموزش) ============ -->
     <section id="view-classExam" class="view">
       <div class="back-row">
         <button class="btn-back" data-goto="training">
@@ -1526,6 +1867,98 @@
         </button>
       </div>
       <div class="page-title">آزمون</div>
+      <div class="page-sub">ثبت نمرات دانش‌پژوهان یا مدیریت بانک سوالات آزمون‌ها</div>
+
+      <div class="skeleton-grid">
+        <div class="skeleton-card nav-card" data-goto="examScores">
+          <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+          <h4>درج نمرات</h4>
+        </div>
+        <div class="skeleton-card nav-card" data-goto="examQuestionBank">
+          <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="7" x2="15" y2="7"></line><line x1="9" y1="11" x2="14" y2="11"></line></svg></div>
+          <h4>بانک سوالات</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXAM: QUESTION BANK (subsection of آزمون) - شعبه همیشه
+         شعبه‌ی خودِ همین مسئول است، نیازی به انتخاب شعبه نیست ============ -->
+    <section id="view-examQuestionBank" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="classExam">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به آزمون
+        </button>
+      </div>
+      <div class="page-title">بانک سوالات</div>
+      <div class="page-sub">یک دپارتمان و درس را انتخاب کنید تا سوالات آزمون آن درس مدیریت شود</div>
+
+      <div class="field" style="max-width:420px;margin-bottom:18px;">
+        <label>دپارتمان<span class="req-star">*</span></label>
+        <select id="qbDeptSelect">
+          <option value="">— انتخاب دپارتمان —</option>
+        </select>
+      </div>
+
+      <div class="member-empty-state" id="qbNoDeptState">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <div>برای مشاهده‌ی درس‌ها، ابتدا یک دپارتمان را از بالا انتخاب کنید.</div>
+      </div>
+
+      <!-- لیست درس‌های دپارتمان انتخاب‌شده -->
+      <div class="table-wrap hide" id="qbLessonListWrap">
+        <table class="hr-table">
+          <thead>
+            <tr>
+              <th style="width:70px;">#</th>
+              <th>نام درس</th>
+              <th>تعداد سوالات</th>
+              <th style="width:150px;">عملیات</th>
+            </tr>
+          </thead>
+          <tbody id="qbLessonListBody"></tbody>
+        </table>
+      </div>
+
+      <!-- سوالات درسِ انتخاب‌شده -->
+      <div class="hide" id="qbQuestionsWrap">
+        <div class="back-row" style="margin-bottom:14px;">
+          <button class="btn-back" type="button" id="btnBackToQbLessonList">
+            <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            بازگشت به لیست درس‌ها
+          </button>
+        </div>
+        <div class="hr-toolbar">
+          <div style="font-weight:700;" id="qbCurrentLessonName"></div>
+          <button class="btn-primary" id="btnAddQuestion" type="button">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            افزودن سؤال
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table class="hr-table">
+            <thead>
+              <tr>
+                <th style="width:70px;">#</th>
+                <th>متن سؤال</th>
+                <th>تعداد گزینه</th>
+                <th style="width:100px;">عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="qbTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-examScores" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="classExam">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به آزمون
+        </button>
+      </div>
+      <div class="page-title">درج نمرات</div>
       <div class="page-sub">یک درس را انتخاب کنید تا لیست دانش‌پژوهان آن برای ثبت نمره نمایش داده شود</div>
 
       <div class="dept-branch-picked-bar hide" id="examTermPickedBar">
@@ -1816,6 +2249,7 @@
               <th>نام و نام خانوادگی</th>
               <th>دپارتمان</th>
               <th>شماره تماس</th>
+              <th>مجوزها</th>
               <th>عملیات</th>
             </tr>
           </thead>
@@ -1875,7 +2309,7 @@
         </button>
       </div>
       <div class="page-title">اعضا</div>
-      <div class="page-sub">جستجوی اعضا بر اساس کد ملی، نام یا کد عضویت</div>
+      <div class="page-sub">جستجوی اعضا بر اساس کد ملی، نام یا کد عضویت. اطلاعات اعضای موجود از اینجا قابل ویرایش است؛ افزودن عضو یا دانش‌پژوه جدید فقط از پنل ادمین جنگو انجام می‌شود.</div>
 
       <div class="member-search-card">
           <div class="member-search-grid">
@@ -1922,7 +2356,7 @@
         </button>
       </div>
       <div class="page-title">انتقادات و پیشنهادات</div>
-      <div class="page-sub">ساختار کلی این بخش آماده است؛ مدیریت هر مورد به‌زودی تکمیل می‌شود.</div>
+      <div class="page-sub">بررسی و پاسخ به انتقادها و پیشنهادهای ثبت‌شده در سایت، گزارش‌ها و نظرسنجی‌ها.</div>
 
       <div class="section-status-row is-on" id="feedbackStatusRow">
         <div class="section-status-info">
@@ -2029,42 +2463,33 @@
         </button>
       </div>
       <div class="page-title">نظرسنجی‌های کلاسی</div>
-      <div class="page-sub">مدیریت نظرسنجی‌های مربوط به کلاس‌های ترم انتخاب‌شده</div>
+      <div class="page-sub">فقط یک نظرسنجی کلی برای همه‌ی دانش‌پژوهان وجود دارد (نه جدا برای هر کلاس یا ترم). عنوان آن را ویرایش کنید و سؤال تستی یا تشریحی اضافه کنید.</div>
 
-      <div class="dept-branch-picked-bar hide" id="classSurveyTermPickedBar">
-        <div>ترم انتخاب‌شده: <b id="classSurveyPickedTermName"></b></div>
-        <button class="btn-ghost" id="btnChangeClassSurveyTerm" type="button">تغییر ترم</button>
+      <div class="svq-header">
+        <div class="form-grid">
+          <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="surveyTitleInput" maxlength="200" placeholder="مثلاً نظرسنجی پایان دوره"></div>
+          <div class="field full"><label>توضیحات (متنی که بالای نظرسنجی به دانش‌پژوه نشان داده می‌شود)</label><textarea id="surveyDescInput" rows="2" maxlength="1000" placeholder="اختیاری"></textarea></div>
+        </div>
+        <button class="btn-primary" id="btnSaveSurveyHeader" type="button">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          ذخیره‌ی عنوان و توضیحات
+        </button>
       </div>
 
-      <div class="hide" id="classSurveyContentWrap">
-        <div class="hr-toolbar">
-          <div class="search-box">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="classSurveySearch" placeholder="جستجوی عنوان نظرسنجی یا کلاس…">
-          </div>
-          <button class="btn-primary" id="btnAddClassSurvey" type="button">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            افزودن نظرسنجی
-          </button>
-        </div>
-
-        <div class="table-wrap">
-          <table class="hr-table">
-            <thead>
-              <tr>
-                <th style="width:60px;">#</th>
-                <th>عنوان نظرسنجی</th>
-                <th>کلاس مربوطه</th>
-                <th>تعداد سؤال</th>
-                <th>وضعیت</th>
-                <th>تاریخ ایجاد</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody id="classSurveyTableBody"></tbody>
-          </table>
-        </div>
+      <div class="hr-toolbar" style="margin-top:22px;">
+        <div class="svq-count" id="surveyQuestionsCount">—</div>
+        <button class="btn-primary" id="btnAddSurveyQuestion" type="button">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          افزودن سؤال
+        </button>
       </div>
+
+      <div id="surveyQuestionsList" class="svq-list"></div>
+      <div class="qa-empty" id="surveyQuestionsEmpty" style="display:none;"></div>
+
+      <div class="survey-stats-heading" style="margin-top:30px;">نتایج نظرسنجی</div>
+      <div class="svq-count" id="surveyResultsSummary">—</div>
+      <div id="surveyResultsList" style="margin-top:12px;"></div>
     </section>
 
     <!-- ============ REPORTS (subsection of feedback) ============ -->
@@ -2102,7 +2527,7 @@
       </div>
 
       <div class="survey-stats-heading">آمار نظرسنجی‌ها</div>
-      <div class="page-sub">آمار کلی نظرسنجی‌های برگزارشده در سامانه (داده‌ها نمونه هستند و پس از اتصال به بک‌اند به‌روزرسانی می‌شوند)</div>
+      <div class="page-sub">آمار شرکت‌کنندگان در نظرسنجی کلی؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود. فقط پاسخ‌های کلاس‌های شعبه‌ی شما نمایش داده می‌شود.</div>
 
       <div class="survey-hero-stat">
         <div class="survey-hero-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
@@ -2152,11 +2577,11 @@
         </button>
       </div>
       <div class="page-title">بررسی و پاسخ</div>
-      <div class="page-sub">موارد دریافتی را بر اساس نوع انتخاب کن.</div>
+      <div class="page-sub">فقط انتقادها و پیشنهادهای مربوط به شعبه‌ی شما نمایش داده می‌شود. نوع را انتخاب کنید.</div>
 
       <div class="review-subtabs">
-        <div class="review-subtab active" data-reviewtab="complaints">انتقاد</div>
-        <div class="review-subtab" data-reviewtab="suggestions">پیشنهاد</div>
+        <div class="review-subtab active" data-reviewtab="complaints">انتقاد<span class="review-badge" id="complaintsPendingBadge"></span></div>
+        <div class="review-subtab" data-reviewtab="suggestions">پیشنهاد<span class="review-badge" id="suggestionsPendingBadge"></span></div>
       </div>
 
       <div class="review-subview active" id="reviewTabComplaints">
@@ -2164,6 +2589,7 @@
           <thead>
             <tr>
               <th>#</th>
+              <th>فرستنده</th>
               <th>شعبه</th>
               <th>شماره تماس</th>
               <th>متن پیام</th>
@@ -2172,45 +2598,9 @@
               <th>عملیات</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>۱</td>
-              <td><span class="dept-tag">تهران</span></td>
-              <td>09121234567</td>
-              <td>تأخیر زیاد در پاسخ‌گویی اپراتور شعبه مرکزی.</td>
-              <td>۱۴۰۵/۰۵/۱۲</td>
-              <td><span class="status-tag status-leave">بررسی نشده</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-            <tr>
-              <td>۲</td>
-              <td><span class="dept-tag">اصفهان</span></td>
-              <td>09351239876</td>
-              <td>کیفیت کلاس آموزشی دپارتمان فرش و گلیم پایین بود.</td>
-              <td>۱۴۰۵/۰۵/۰۸</td>
-              <td><span class="status-tag status-active">پاسخ داده شد</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-            <tr>
-              <td>۳</td>
-              <td><span class="dept-tag">مشهد</span></td>
-              <td>09151239900</td>
-              <td>ثبت‌نام دوره باوجود پرشدن ظرفیت هنوز باز بود.</td>
-              <td>۱۴۰۵/۰۴/۲۹</td>
-              <td><span class="status-tag status-leave">بررسی نشده</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="complaintsTbody"></tbody>
         </table>
+        <div class="qa-empty" id="complaintsEmpty" style="display:none;"></div>
       </div>
 
       <div class="review-subview" id="reviewTabSuggestions">
@@ -2218,6 +2608,7 @@
           <thead>
             <tr>
               <th>#</th>
+              <th>فرستنده</th>
               <th>شعبه</th>
               <th>شماره تماس</th>
               <th>متن پیام</th>
@@ -2226,45 +2617,9 @@
               <th>عملیات</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>۱</td>
-              <td><span class="dept-tag">کرج</span></td>
-              <td>09121112233</td>
-              <td>پیشنهاد می‌شود کلاس‌های آشپزی در ساعت عصر هم برگزار شود.</td>
-              <td>۱۴۰۵/۰۵/۱۵</td>
-              <td><span class="status-tag status-leave">بررسی نشده</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-            <tr>
-              <td>۲</td>
-              <td><span class="dept-tag">شیراز</span></td>
-              <td>09171239988</td>
-              <td>بهتر است اپلیکیشن موبایل هم برای ثبت‌نام دوره‌ها ارائه شود.</td>
-              <td>۱۴۰۵/۰۵/۰۳</td>
-              <td><span class="status-tag status-active">پاسخ داده شد</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-            <tr>
-              <td>۳</td>
-              <td><span class="dept-tag">رشت</span></td>
-              <td>09111239977</td>
-              <td>افزودن دپارتمان زبان‌های خارجی به شعبه‌های شمالی کشور.</td>
-              <td>۱۴۰۵/۰۴/۲۲</td>
-              <td><span class="status-tag status-leave">بررسی نشده</span></td>
-              <td class="row-actions">
-                <div class="icon-btn review-reply-btn" title="ثبت پاسخ"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <div class="icon-btn danger review-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="suggestionsTbody"></tbody>
         </table>
+        <div class="qa-empty" id="suggestionsEmpty" style="display:none;"></div>
       </div>
     </section>
 
@@ -2390,8 +2745,8 @@
         برای تأیید <b id="approveTeacherName">این متقاضی</b> و ساخته‌شدن حساب ورودش، یک نام کاربری و رمز عبور تعیین کنید.
       </p>
       <div class="form-grid">
-        <div class="field full"><label>نام کاربری<span class="req-star">*</span></label><input type="text" id="approveTeacherUsername" placeholder="نام کاربری برای ورود مدرس"></div>
-        <div class="field full"><label>رمز عبور<span class="req-star">*</span></label><input type="password" id="approveTeacherPassword" placeholder="رمز عبور"></div>
+        <div class="field full"><label>نام کاربری<span class="req-star">*</span></label><input type="text" id="approveTeacherUsername" dir="ltr" placeholder="نام کاربری برای ورود مدرس"></div>
+        <div class="field full"><label>رمز عبور<span class="req-star">*</span></label><div class="approve-pw-wrap"><input type="password" id="approveTeacherPassword" dir="ltr" placeholder="رمز عبور"><button type="button" class="toggle-pass" id="approveTeacherPasswordToggle" aria-label="نمایش رمز عبور"><svg viewBox="0 0 24 24" id="approveTeacherPasswordEye"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div>
       </div>
     </div>
     <div class="modal-foot">
@@ -2612,6 +2967,193 @@
 
 
 
+<!-- Log Detail Modal: جزئیات یک رویداد لاگ -->
+<div class="modal-overlay" id="logDetailModalOverlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head">
+      <h3>جزئیات رویداد</h3>
+      <button class="modal-close" id="logDetailClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="max-height:66vh;overflow-y:auto;">
+      <div class="fb-sender-grid" id="logDetailGrid"></div>
+      <div id="logDetailChanges"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="logDetailOk" type="button">بستن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Finance Modals: ثبت/ویرایش پرداخت، لغو پرداخت، سابقه‌ی پرداخت -->
+<div class="modal-overlay" id="finPayModalOverlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-head">
+      <h3 id="finPayTitle">ثبت پرداخت</h3>
+      <button class="modal-close" id="finPayClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="fin-info" id="finPayInfo"></div>
+      <div class="form-grid">
+        <div class="field full">
+          <label>نوع حق‌الزحمه<span class="req-star">*</span></label>
+          <div class="svq-kind-pick">
+            <label><input type="radio" name="finFeeType" value="hourly" checked> <span>ساعتی (نرخ هر ساعت × ساعت کل دوره)</span></label>
+            <label><input type="radio" name="finFeeType" value="monthly"> <span>ماهیانه (مبلغ ثابت ماهیانه)</span></label>
+          </div>
+        </div>
+        <div class="field" id="finRateField"><label>نرخ هر ساعت (تومان)</label><input type="text" id="fin_rate" inputmode="numeric" maxlength="13" placeholder="مثلاً 100,000" dir="ltr"></div>
+        <div class="field" id="finMonthlyField" style="display:none;"><label>حق‌الزحمه‌ی ماهیانه (تومان)</label><input type="text" id="fin_monthly" inputmode="numeric" maxlength="17" placeholder="مثلاً 2,000,000" dir="ltr"></div>
+        <div class="field"><label>مبلغ پرداختی (تومان)<span class="req-star">*</span></label><input type="text" id="fin_amount" inputmode="numeric" maxlength="17" placeholder="ساعت × نرخ" dir="ltr"><div class="fin-amount-hint" id="finAmountHint"></div></div>
+        <div class="field"><label>تاریخ پرداخت<span class="req-star">*</span></label><input type="text" id="fin_date" placeholder="انتخاب از تقویم شمسی" dir="ltr"></div>
+        <div class="field"><label>روش پرداخت<span class="req-star">*</span></label>
+          <select id="fin_method">
+            <option value="bank">واریز بانکی</option>
+            <option value="card">کارت‌به‌کارت</option>
+            <option value="cash">نقدی</option>
+          </select>
+        </div>
+        <div class="field full"><label>شماره پیگیری</label><input type="text" id="fin_tracking" maxlength="50" placeholder="اختیاری" dir="ltr"></div>
+        <div class="field full"><label>توضیحات</label><textarea id="fin_note" rows="2" maxlength="1000" placeholder="اختیاری"></textarea></div>
+      </div>
+      <div class="member-edit-error" id="finPayError" role="alert"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="finPayCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="finPaySave" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="finPaySaveLabel">ثبت پرداخت</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="finCancelModalOverlay">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-head">
+      <h3>لغو پرداخت</h3>
+      <button class="modal-close" id="finCancelClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="fin-info" id="finCancelInfo"></div>
+      <div class="field"><label>دلیل لغو</label><textarea id="fin_cancel_reason" rows="3" maxlength="500" placeholder="اختیاری؛ در سابقه ثبت می‌شود"></textarea></div>
+      <p class="member-edit-note">با لغو، کلاس دوباره «پرداخت‌نشده» می‌شود و می‌توان پرداخت تازه ثبت کرد. رکورد لغوشده در سابقه می‌ماند.</p>
+      <div class="member-edit-error" id="finCancelError" role="alert"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="finCancelBack" type="button">انصراف</button>
+      <button class="btn-primary" id="finCancelSave" type="button" style="background:#c0392b;">لغو پرداخت</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="finHistoryModalOverlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head">
+      <h3 id="finHistoryTitle">سابقه‌ی پرداخت</h3>
+      <button class="modal-close" id="finHistoryClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="finHistoryBody" style="max-height:60vh;overflow-y:auto;"></div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="finHistoryOk" type="button">بستن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Teacher Permissions Modal: ویرایش مجوزهای تدریس یک مدرس (انتخاب دپارتمان ← فعال/غیرفعال‌کردن درس‌های شعبه) -->
+<div class="modal-overlay" id="teacherPermModalOverlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-head">
+      <h3 id="teacherPermTitle">ویرایش مجوزها</h3>
+      <button class="modal-close" id="teacherPermClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="tp-branch">شعبه: <b id="teacherPermBranch">—</b></div>
+      <div class="field"><label>دپارتمان</label><select id="teacherPermDept" disabled></select></div>
+      <div class="tp-hint" id="teacherPermHint"></div>
+      <div class="tp-list" id="teacherPermLessons"></div>
+      <div class="member-edit-error" id="teacherPermError" role="alert"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="teacherPermCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="teacherPermSave" type="button" disabled>
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        ذخیره‌ی مجوزها
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Member Edit Modal: ویرایش اطلاعات یک عضو/دانش‌پژوه موجود (افزودن عضو فقط از پنل ادمین جنگو) -->
+<div class="modal-overlay" id="memberEditModalOverlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head">
+      <h3 id="memberEditModalTitle">ویرایش اطلاعات عضو</h3>
+      <button class="modal-close" id="memberEditModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="member-edit-missing hide" id="memberEditMissing"></div>
+      <div class="form-grid">
+        <div class="field"><label>نام<span class="req-star">*</span></label><input type="text" id="me_first" maxlength="150" placeholder="نام"></div>
+        <div class="field"><label>نام خانوادگی<span class="req-star">*</span></label><input type="text" id="me_last" maxlength="150" placeholder="نام خانوادگی"></div>
+        <div class="field"><label>نام پدر</label><input type="text" id="me_father" maxlength="100" placeholder="نام پدر"></div>
+        <div class="field"><label>تاریخ تولد</label><input type="text" id="me_birth" placeholder="به شمسی، مثلاً ۱۳۷۰/۰۵/۱۲" dir="ltr"></div>
+        <div class="field"><label>کد ملی<span class="req-star">*</span></label><input type="text" id="me_nid" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم" dir="ltr"></div>
+        <div class="field"><label>کد عضویت<span class="req-star">*</span></label><input type="text" id="me_code" inputmode="numeric" maxlength="14" placeholder="۱۴ رقم" dir="ltr"></div>
+        <div class="field"><label>شماره موبایل</label><input type="text" id="me_phone" inputmode="numeric" maxlength="11" placeholder="09xxxxxxxxx" dir="ltr"></div>
+        <div class="field"><label>استان</label><select id="me_province"></select></div>
+        <div class="field full"><label>شعبه</label><select id="me_branch"></select></div>
+      </div>
+      <p class="member-edit-note">با تغییر «کد ملی»، نام کاربری ورود دانش‌پژوه هم عوض می‌شود. تاریخ انقضای کارت عضویت از اینجا قابل ویرایش نیست.</p>
+      <div class="member-edit-error" id="memberEditError" role="alert"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="memberEditModalCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="memberEditModalSave" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        ذخیره‌ی اطلاعات
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sender Modal: اطلاعات کامل فرستنده‌ی انتقاد/پیشنهاد + دکمه‌ی سوابق آموزشی -->
+<div class="modal-overlay" id="senderModalOverlay">
+  <div class="modal-box" style="max-width:580px;">
+    <div class="modal-head">
+      <h3>اطلاعات فرستنده</h3>
+      <button class="modal-close" id="senderModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="rec-ban-notice hide" id="senderBanNotice" style="margin-bottom:16px;">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <div>این فرد <b>محروم</b> از ثبت‌نام در کلاس‌های دیگر است.<br>دلیل محرومیت: <b id="senderBanReason"></b></div>
+      </div>
+      <div class="fb-sender-grid" id="senderInfoGrid"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="senderModalCancel" type="button">بستن</button>
+      <button class="btn-primary" id="senderRecordsBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        سوابق آموزشی
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Reply Modal (انتقادات و پیشنهادات) -->
 <div class="modal-overlay" id="replyModalOverlay">
   <div class="modal-box">
@@ -2756,6 +3298,42 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="questionModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="questionModalTitle">افزودن سؤال</h3>
+      <button class="modal-close" id="questionModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="questionForm">
+        <div class="form-grid">
+          <div class="field full"><label>متن سؤال<span class="req-star">*</span></label><textarea id="q_text" placeholder="متن سؤال را بنویسید" style="min-height:70px;"></textarea></div>
+          <div class="field"><label>تعداد گزینه‌ها<span class="req-star">*</span></label>
+            <select id="q_option_count">
+              <option value="2">۲ گزینه</option>
+              <option value="3">۳ گزینه</option>
+              <option value="4" selected>۴ گزینه</option>
+            </select>
+          </div>
+          <div class="field full" id="q_options_wrap">
+            <label>گزینه‌ها (یک یا چند گزینه‌ی صحیح را با تیک‌زدن کنارش مشخص کنید)<span class="req-star">*</span></label>
+            <div id="q_options_list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="questionModalCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="questionModalSave" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        ذخیره
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Teacher Info Modal (اطلاعات کامل مدرس) -->
 <div class="modal-overlay" id="teacherInfoModalOverlay">
   <div class="modal-box">
@@ -2848,7 +3426,12 @@
         <div class="field"><label>نام کاربری<span class="req-star">*</span></label><input type="text" id="te_username" dir="ltr"></div>
         <div class="field">
           <label>رمز عبور</label>
-          <input type="text" id="te_password" dir="ltr" value="••••••••" readonly style="letter-spacing:2px;color:#8a9a9a;">
+          <div class="approve-pw-wrap">
+            <input type="text" id="te_password" dir="ltr" value="••••••••" readonly style="letter-spacing:2px;color:#8a9a9a;">
+            <button type="button" class="toggle-pass hide" id="te_password_toggle" aria-label="نمایش رمز عبور">
+              <svg viewBox="0 0 24 24" id="te_password_eye"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
           <button class="btn-ghost" id="btnChangeTeacherPassword" type="button" style="margin-top:8px;">تغییر رمز عبور</button>
         </div>
         <div class="field full"><label>دپارتمان‌ها</label>
@@ -2983,7 +3566,24 @@
           </button>
         </div>
 
-        <div class="field full" style="margin-top:18px;">
+        <div class="section-status-row" id="ceAgeRow" style="margin-top:18px;">
+            <div class="section-status-info">
+              <span class="section-status-dot"></span>
+              <div class="section-status-text">
+                <b id="ceAgeLabel">رده سنی برای این کلاس غیرفعال است</b>
+                <span class="manager-only-note">در صورت فعال بودن، بازه‌ی سنی مجاز (۰ تا ۱۰۰) را تعیین کنید</span>
+              </div>
+            </div>
+            <button class="toggle-switch" id="ceAgeToggle" type="button" aria-label="فعال/غیرفعال کردن رده سنی">
+              <span class="knob"></span>
+            </button>
+          </div>
+          <div class="form-grid" style="margin-top:12px;">
+            <div class="field"><label>حداقل سن</label><input type="text" id="ceAgeMin" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="مثلاً ۲۰" disabled></div>
+            <div class="field"><label>حداکثر سن</label><input type="text" id="ceAgeMax" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="مثلاً ۶۰" disabled></div>
+          </div>
+
+          <div class="field full" style="margin-top:18px;">
           <label>توضیحات کلاس <span style="font-weight:400;color:#8a9a9a;">(اختیاری)</span></label>
           <textarea id="f_class_desc" rows="3" placeholder="در صورت تمایل، توضیحاتی درباره‌ی این کلاس بنویسید…"></textarea>
         </div>
@@ -3101,30 +3701,6 @@
 </div>
 
 <!-- Class Survey Term Selection Modal -->
-<div class="modal-overlay" id="classSurveyTermModalOverlay">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>انتخاب ترم</h3>
-      <button class="modal-close" id="classSurveyTermModalClose" type="button">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:12.5px;color:#6b7d7e;line-height:1.9;margin-bottom:14px;">
-        برای مدیریت نظرسنجی‌های کلاسی، ابتدا ترمی که می‌خواهید روی آن کار کنید را از تقویم آموزشی انتخاب کنید.
-      </p>
-      <div class="dept-branch-checklist" id="classSurveyTermChecklist"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-ghost" id="classSurveyTermModalCancel" type="button">انصراف</button>
-      <button class="btn-primary" id="classSurveyTermModalConfirm" type="button">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        تایید و ادامه
-      </button>
-    </div>
-  </div>
-</div>
-
 <!-- Add/Edit Class Survey Modal -->
 <div class="modal-overlay" id="generalSurveyModalOverlay">
   <div class="modal-box">
@@ -3171,53 +3747,45 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="classSurveyModalOverlay">
-  <div class="modal-box">
+<!-- Survey Question Modal: افزودن/ویرایش یک سؤال نظرسنجی کلی (تستی یا تشریحی) -->
+<div class="modal-overlay" id="surveyQuestionModalOverlay">
+  <div class="modal-box" style="max-width:560px;">
     <div class="modal-head">
-      <h3 id="classSurveyModalTitle">افزودن نظرسنجی</h3>
-      <button class="modal-close" id="classSurveyModalClose" type="button">
+      <h3 id="surveyQuestionModalTitle">افزودن سؤال</h3>
+      <button class="modal-close" id="surveyQuestionModalClose" type="button">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
     <div class="modal-body">
-      <form id="classSurveyForm">
-        <div class="form-grid">
-          <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="cs_title" placeholder="مثلاً نظرسنجی رضایت از کلاس" required=""></div>
-          <div class="field full"><label>کلاس مربوطه</label><select id="cs_class"></select></div>
-          <div class="field"><label>وضعیت</label>
-            <select id="cs_status">
-              <option value="فعال">فعال</option>
-              <option value="غیرفعال">غیرفعال</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label>سوالات نظرسنجی</label>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <button class="btn-ghost" type="button" id="btnManageCsQuestions">سوالات</button>
-              <span id="csQuestionsCountLabel" style="font-size:12.5px;color:#6b7d7e;">هیچ سؤالی ثبت نشده</span>
-            </div>
-          </div>
-          <div class="field full">
-            <label>نوع پاسخ</label>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <button class="btn-ghost" type="button" id="btnManageCsAnswer">پاسخ</button>
-              <span id="csAnswerSummaryLabel" style="font-size:12.5px;color:#6b7d7e;">تعیین نشده</span>
-            </div>
+      <div class="form-grid">
+        <div class="field full"><label>متن سؤال</label><textarea id="svq_text" rows="3" maxlength="500" placeholder="مثلاً کیفیت تدریس مدرس را چگونه ارزیابی می‌کنید؟"></textarea></div>
+        <div class="field full">
+          <label>نوع پاسخ</label>
+          <div class="svq-kind-pick">
+            <label><input type="radio" name="svqKind" value="choice" checked> <span>تستی (انتخاب از بین گزینه‌ها)</span></label>
+            <label><input type="radio" name="svqKind" value="text"> <span>تشریحی (پاسخ متنی آزاد)</span></label>
           </div>
         </div>
-      </form>
+        <div class="field full" id="svqOptionsBlock">
+          <label>گزینه‌ها (حداقل ۲ و حداکثر ۱۰ گزینه)</label>
+          <div id="svqOptionsList" class="svq-optlist"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+            <button class="btn-ghost" type="button" id="btnAddSvqOption">+ افزودن گزینه</button>
+            <button class="btn-ghost" type="button" id="btnStandardSvqOptions">گزینه‌های استاندارد (خیلی خوب … خیلی بد)</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
-      <button class="btn-ghost" id="classSurveyModalCancel" type="button">انصراف</button>
-      <button class="btn-primary" id="classSurveyModalSave" type="button">
+      <button class="btn-ghost" id="surveyQuestionModalCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="surveyQuestionModalSave" type="button">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        ثبت
+        ذخیره
       </button>
     </div>
   </div>
 </div>
 
-<!-- Class Survey Questions Modal -->
 <div class="modal-overlay" id="csQuestionsModalOverlay">
   <div class="modal-box">
     <div class="modal-head">
@@ -3375,16 +3943,16 @@
   setTimeSpinner('f_class_entry', 10, 0);
 
   // ---- sample department list (matches training departments) ----
-  const HR_DEPARTMENTS = [
-    "دوخت و دوز","کامپیوتر","هنر","آشپزی",
-    "بافتنی","فرش و گلیم","زبان‌های خارجه","حقوق",
-    "مدیریت و حسابداری","بهداشت و سلامت","فنی","قرآن"
-  ];
 
   // ---- متصدیان (مدیر آموزش/مسئول آموزش) - فعلاً نمونه، در حافظه فقط ----
   // مدرسین دیگر اینجا نیستند: مدرس فقط از تأیید «مدرسین متقاضی» ساخته می‌شود (REAL_TEACHERS پایین‌تر)
   // ---- متصدیان و مدرسین - EMPLOYEES دیگر شامل مدرس نیست؛ مدرس فقط از
   // تأیید «مدرسین متقاضی» ساخته می‌شود (REAL_TEACHERS پایین‌تر) ----
+  // این دو، پیش‌تر پایین‌تر در فایل تعریف می‌شدند؛ چون چک‌لیست‌های دپارتمانِ «افزودن مدیر/مسئول»
+  // و «افزودن مدرس متقاضی» بلافاصله در همین بالا (هنگام بارگذاری اسکریپت) صدا زده می‌شوند،
+  // باید DEPARTMENTS پیش از آن‌ها تعریف شده باشد.
+  let DEPARTMENTS = [];
+  let BRANCH_DEPT_LINKS = []; // [{id, branch, department, department_name}]
   let EMPLOYEES = [];
   let nextId = 1;
 
@@ -3428,7 +3996,7 @@
     );
 
     if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="4">مدرسی یافت نشد</td></tr>`;
+      body.innerHTML = `<tr class="empty-row"><td colspan="5">مدرسی یافت نشد</td></tr>`;
       return;
     }
 
@@ -3437,6 +4005,7 @@
         <td class="emp-name">${e.name}</td>
         <td>${(e.depts && e.depts.length) ? e.depts.map(d => `<span class="dept-tag">${d}</span>`).join(' ') : '<span class="dept-empty">—</span>'}</td>
         <td>${e.phone}</td>
+        <td><button class="btn-ghost teacher-perm-btn" type="button" onclick="openTeacherPermModal(${e.id})"><svg viewBox="0 0 24 24" width="14" height="14" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>ویرایش مجوزها</button></td>
         <td>
           <div class="row-actions">
             <button class="icon-btn" title="اطلاعات کامل" onclick="openTeacherInfoModal(${e.id})">
@@ -3509,27 +4078,48 @@
   // با زدن دکمه‌ی «تغییر رمز عبور» فیلد باز و خالی می‌شود تا رمز تازه
   // وارد شود - و فقط در همین حالت مقدارش هنگام ذخیره ارسال می‌شود ----
   let teacherPasswordChanged = false;
+  // پیش‌فرض رمز مخفی (نقطه‌چین) است؛ بعد از «تغییر رمز عبور» رمز تازه هم به‌صورت پیش‌فرض مخفی
+  // تایپ می‌شود (type="password") و مسئول با آیکون چشم می‌تواند دلخواه آن را آشکار کند.
   function resetTeacherPasswordField(){
     const inp = document.getElementById('te_password');
     const btn = document.getElementById('btnChangeTeacherPassword');
+    const toggle = document.getElementById('te_password_toggle');
     teacherPasswordChanged = false;
     inp.value = '••••••••';
+    inp.type = 'text';
     inp.readOnly = true;
     inp.style.color = '#8a9a9a';
     btn.textContent = 'تغییر رمز عبور';
     btn.disabled = false;
+    toggle.classList.add('hide');
   }
   document.getElementById('btnChangeTeacherPassword').addEventListener('click', () => {
     const inp = document.getElementById('te_password');
     teacherPasswordChanged = true;
     inp.value = '';
+    inp.type = 'password';
     inp.readOnly = false;
     inp.style.color = '';
     inp.placeholder = 'رمز عبور جدید را وارد کنید';
     inp.focus();
     document.getElementById('btnChangeTeacherPassword').textContent = 'رمز عبور جدید وارد شد';
     document.getElementById('btnChangeTeacherPassword').disabled = true;
+    document.getElementById('te_password_toggle').classList.remove('hide');
   });
+  // نمایش/مخفی‌کردن رمز تازه‌ی مدرس (فقط بعد از «تغییر رمز عبور» فعال است)
+  (function(){
+    const input = document.getElementById('te_password');
+    const toggle = document.getElementById('te_password_toggle');
+    const eye = document.getElementById('te_password_eye');
+    toggle.addEventListener('click', function(){
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      toggle.setAttribute('aria-label', isPass ? 'مخفی‌کردن رمز عبور' : 'نمایش رمز عبور');
+      eye.innerHTML = isPass
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.61 3.61M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+    });
+  })();
 
   window.openTeacherEditModal = function(id){
     const e = REAL_TEACHERS.find(x => x.id === id);
@@ -3874,10 +4464,15 @@
   function fillApDeptChecklist(selectedDepts){
     const wrap = document.getElementById('ap_dept_checklist');
     const selected = new Set(selectedDepts || []);
-    wrap.innerHTML = HR_DEPARTMENTS.map(d => `
+    if(!DEPARTMENTS.length){
+      wrap.innerHTML = `<p style="color:#8a9a9a;font-size:12px;">در حال دریافت دپارتمان‌ها…</p>`;
+      loadDepartmentsAndLinks().then(() => fillApDeptChecklist(Array.from(selected)));
+      return;
+    }
+    wrap.innerHTML = DEPARTMENTS.map(d => `
       <label>
-        <input type="checkbox" name="apDeptPick" value="${d}" ${selected.has(d) ? 'checked' : ''}>
-        <span>${d}</span>
+        <input type="checkbox" name="apDeptPick" value="${d.name}" ${selected.has(d.name) ? 'checked' : ''}>
+        <span>${d.name}</span>
       </label>
     `).join('');
   }
@@ -3967,6 +4562,97 @@
   }
   function closeApplicantModal(){ applicantOverlay.classList.remove('open'); }
 
+  // ---- اعتبارسنجی زنده‌ی «فقط حروف فارسی» - همان لحظه‌ی تایپ خطا نشان
+  // می‌دهد تا خودِ فرد در همان لحظه اصلاح کند، نه فقط موقع ذخیره‌ی فرم ----
+  function enforcePersianOnly(inputId, options){
+    const input = document.getElementById(inputId);
+    if(!input || input._persianOnlyBound) return;
+    input._persianOnlyBound = true;
+    const allowDigits = !!(options && options.allowDigits);
+    const hint = document.createElement('div');
+    hint.className = 'persian-only-hint';
+    // برای آدرس (که عدد هم مجاز است) پیام فقط از حروف انگلیسی می‌گوید، نه «فقط فارسی»
+    hint.textContent = allowDigits ? 'حروف انگلیسی مجاز نیست (عدد مجاز است)' : 'فقط حروف فارسی مجاز است';
+    input.insertAdjacentElement('afterend', hint);
+    // فیلدهای معمولی (نام، نام خانوادگی، نام پدر): هیچ حرف انگلیسی و
+    // هیچ نوع عددی (انگلیسی/فارسی/عربی) مجاز نیست.
+    // فیلد آدرس (allowDigits): فقط حروف انگلیسی بسته می‌شود، چون آدرس
+    // به‌طور طبیعی به شماره‌ی پلاک/خیابان نیاز دارد.
+    const forbiddenPattern = allowDigits ? /[a-zA-Z]/g : /[a-zA-Z0-9۰-۹٠-٩]/g;
+    input.addEventListener('input', () => {
+      const cleaned = input.value.replace(forbiddenPattern, '');
+      if(cleaned === input.value){
+        hint.classList.remove('show');
+        input.classList.remove('persian-invalid');
+        return;
+      }
+      // کاراکتر غیرمجاز همون لحظه از مقدار فیلد حذف می‌شود تا اصلاً اجازه‌ی
+      // تایپ نداشته باشد، نه اینکه فقط بعداً هشدار بدهیم
+      const caret = input.selectionStart - (input.value.length - cleaned.length);
+      input.value = cleaned;
+      input.setSelectionRange(caret, caret);
+      input.classList.add('persian-invalid');
+      hint.classList.add('show');
+      clearTimeout(input._persianHideTimer);
+      input._persianHideTimer = setTimeout(() => {
+        hint.classList.remove('show');
+        input.classList.remove('persian-invalid');
+      }, 1800);
+    });
+  }
+  ['ap_fname', 'ap_lname', 'ap_father_name'].forEach(enforcePersianOnly);
+  // فیلد باید فقط انگلیسی باشد (نام کاربری/رمز عبور مدرس): اگر کیبورد روی فارسی باشد و مسئول
+  // حرف فارسی/عربی یا رقم فارسی تایپ کند، همان لحظه حذف می‌شود و پیام «کیبورد فارسی است» نشان
+  // داده می‌شود - یعنی تا وقتی کیبورد را به انگلیسی نبرد، آن حرف اصلاً نوشته نمی‌شود.
+  // برای فیلد رمز عبور (type="password") هم کار می‌کند، چون input.value مستقل از نمایش (نقطه‌چین) است.
+  function enforceEnglishOnly(inputId){
+    const input = document.getElementById(inputId);
+    if(!input || input._englishOnlyBound) return;
+    input._englishOnlyBound = true;
+    const hint = document.createElement('div');
+    hint.className = 'english-only-hint';
+    hint.textContent = 'کیبورد شما فارسی است؛ لطفاً کیبورد را به انگلیسی تغییر دهید.';
+    input.insertAdjacentElement('afterend', hint);
+    // هر چیزی که حرف/رقم لاتین یا نویسه‌ی معمول رمز/نام‌کاربری (._-@) نباشد فارسی/عربی یا غیرمجاز است
+    const forbiddenPattern = /[^\x20-\x7E]/g;
+    input.addEventListener('input', () => {
+      const cleaned = input.value.replace(forbiddenPattern, '');
+      if(cleaned === input.value){
+        hint.classList.remove('show');
+        input.classList.remove('english-invalid');
+        return;
+      }
+      const caret = input.selectionStart - (input.value.length - cleaned.length);
+      input.value = cleaned;
+      input.setSelectionRange(caret, caret);
+      input.classList.add('english-invalid');
+      hint.classList.add('show');
+      clearTimeout(input._englishHideTimer);
+      input._englishHideTimer = setTimeout(() => {
+        hint.classList.remove('show');
+        input.classList.remove('english-invalid');
+      }, 1800);
+    });
+  }
+  ['approveTeacherUsername', 'approveTeacherPassword', 'te_username', 'te_password'].forEach(enforceEnglishOnly);
+
+  // ---- نمایش/مخفی‌کردن رمز عبور هنگام تعیین رمز مدرس (تا مسئول بتواند تایپش را چک کند) ----
+  (function(){
+    const input = document.getElementById('approveTeacherPassword');
+    const toggle = document.getElementById('approveTeacherPasswordToggle');
+    const eye = document.getElementById('approveTeacherPasswordEye');
+    toggle.addEventListener('click', function(){
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      toggle.setAttribute('aria-label', isPass ? 'مخفی‌کردن رمز عبور' : 'نمایش رمز عبور');
+      eye.innerHTML = isPass
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.61 3.61M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+    });
+  })();
+
+  enforcePersianOnly('ap_address', { allowDigits: true });
+
   document.getElementById('btnAddTeacher').addEventListener('click', openAddApplicant);
   document.getElementById('applicantModalClose').addEventListener('click', closeApplicantModal);
   document.getElementById('applicantModalCancel').addEventListener('click', closeApplicantModal);
@@ -3991,6 +4677,7 @@
     // همه‌ی فیلدها الزامی‌اند به‌جز «توضیحات متقاضی». نام‌کاربری/رمز عبور
     // اینجا نیستند - آن‌ها فقط لحظه‌ی «تأیید» (approve) از ادمین پرسیده می‌شوند.
     if(!fname || !lname){ showToast('لطفاً نام و نام خانوادگی را وارد کنید'); return; }
+    if(/[a-zA-Z]/.test(fname) || /[a-zA-Z]/.test(lname)){ showToast('لطفاً فقط حروف فارسی وارد کنید'); return; }
     if(depts.length === 0){ showToast('لطفاً حداقل یک دپارتمان را انتخاب کنید'); return; }
     if(!branch){ showToast('لطفاً شعبه را انتخاب کنید'); return; }
     if(reqtype.length === 0){ showToast('لطفاً حداقل یک نوع همکاری (حضوری یا مجازی) را انتخاب کنید'); return; }
@@ -3998,8 +4685,10 @@
     if(!nationalId || !/^\d{10}$/.test(nationalId)){ showToast('کد ملی باید ۱۰ رقم باشد'); return; }
     if(!education){ showToast('لطفاً میزان تحصیلات را انتخاب کنید'); return; }
     if(!apFatherName){ showToast('لطفاً نام پدر را وارد کنید'); return; }
+    if(/[a-zA-Z]/.test(apFatherName)){ showToast('لطفاً فقط حروف فارسی وارد کنید'); return; }
     if(!apBirthDate){ showToast('لطفاً تاریخ تولد را وارد کنید'); return; }
     if(!address){ showToast('لطفاً آدرس را وارد کنید'); return; }
+    if(/[a-zA-Z]/.test(address)){ showToast('لطفاً فقط حروف فارسی وارد کنید'); return; }
     if(!apPhotoFile){ showToast('لطفاً یک عکس آپلود کنید'); return; }
     if(!apResumeFile){ showToast('لطفاً فایل رزومه را آپلود کنید'); return; }
 
@@ -4038,6 +4727,96 @@
       .catch(err => showToast(err.message || 'خطا در ثبت متقاضی؛ دوباره تلاش کنید'));
   });
 
+  // ---- انتقادات و پیشنهادات: متصل به بک‌اند واقعی (/api/feedback/) ----
+  // پیام‌هایی که از فرم «انتقادات و پیشنهادات» سایت اصلی ثبت می‌شوند، اینجا
+  // (بخش «بررسی و پاسخ») نمایش داده می‌شوند تا مدیر/مسئول آموزش پاسخ دهد.
+  let FEEDBACK_ITEMS = [];          // همه‌ی موارد دریافتی (انتقاد + پیشنهاد) از سرور
+  let feedbackLoadFailed = false;   // اگر دریافت از سرور شکست بخورد، «خالی» نشان داده نشود
+  let feedbackReplyTarget = null;   // موردی که الان مودال پاسخ برایش باز است
+
+  // متن این بخش را عموم مردم می‌نویسند (نه ادمین)؛ پس قبل از قرار دادن در
+  // HTML حتماً escape می‌شود تا کسی نتواند کد مخرب داخل پنل اجرا کند.
+  function escFb(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // درخواست به API انتقادات (با کوکی نشست + توکن CSRF برای POST/DELETE)
+  function feedbackApi(path, method, body){
+    return fetch(`${API_BASE_URL}${path}`, {
+      method: method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(async function(res){
+      if(res.status === 401 || res.status === 403){
+        throw new Error('دسترسی مجاز نیست؛ دوباره با حساب خود وارد شوید.');
+      }
+      const data = await res.json().catch(function(){ return null; });
+      if(!res.ok){
+        throw new Error((data && data.detail) || 'خطا در ارتباط با سرور');
+      }
+      return data;
+    });
+  }
+
+  function feedbackItemsOf(kind){
+    return FEEDBACK_ITEMS.filter(function(it){ return it.kind === kind; });
+  }
+
+  function renderFeedbackRows(kind, tbodyId, emptyId){
+    const items = feedbackItemsOf(kind);
+    const tbody = document.getElementById(tbodyId);
+    const emptyEl = document.getElementById(emptyId);
+    tbody.innerHTML = items.map(function(it, i){
+      const answered = it.status === 'answered';
+      return `
+        <tr data-id="${it.id}">
+          <td>${toPersianDigits(i + 1)}</td>
+          <td>${it.sender ? `<a class="fb-sender-link" data-id="${it.id}" title="مشاهده‌ی اطلاعات فرستنده">${escFb(it.sender_name) || 'بدون نام'}</a>` : '<span style="color:#9aa7a7;" title="حساب این فرستنده حذف شده است">—</span>'}</td>
+          <td>${it.branch ? `<span class="dept-tag">${escFb(it.branch)}</span>` : '—'}</td>
+          <td>${escFb(it.phone) || '—'}</td>
+          <td style="white-space:pre-wrap;word-break:break-word;max-width:340px;">${escFb(it.message)}</td>
+          <td>${formatApplicantDate(it.created_at)}</td>
+          <td><span class="status-tag ${answered ? 'status-active' : 'status-leave'}">${answered ? 'پاسخ داده شد' : 'بررسی نشده'}</span></td>
+          <td class="row-actions">
+            <div class="icon-btn review-reply-btn" data-id="${it.id}" title="${answered ? 'مشاهده/ویرایش پاسخ' : 'ثبت پاسخ'}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <div class="icon-btn danger review-delete-btn" data-id="${it.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
+          </td>
+        </tr>`;
+    }).join('');
+    emptyEl.style.display = items.length ? 'none' : 'block';
+    emptyEl.textContent = feedbackLoadFailed
+      ? 'دریافت اطلاعات از سرور ممکن نشد؛ صفحه را دوباره باز کنید.'
+      : (kind === 'complaint' ? 'هنوز انتقادی ثبت نشده است.' : 'هنوز پیشنهادی ثبت نشده است.');
+
+    // تعداد «بررسی‌نشده‌ها» روی تب نمایش داده می‌شود
+    const pending = items.filter(function(it){ return it.status !== 'answered'; }).length;
+    document.getElementById(kind === 'complaint' ? 'complaintsPendingBadge' : 'suggestionsPendingBadge').textContent =
+      pending ? toPersianDigits(pending) : '';
+  }
+
+  function renderFeedback(){
+    renderFeedbackRows('complaint', 'complaintsTbody', 'complaintsEmpty');
+    renderFeedbackRows('suggestion', 'suggestionsTbody', 'suggestionsEmpty');
+    if(typeof updateReportsStats === 'function') updateReportsStats();
+  }
+
+  function loadFeedback(){
+    return fetch(`${API_BASE_URL}/feedback/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : Promise.reject(res.status); })
+      .then(function(list){
+        FEEDBACK_ITEMS = Array.isArray(list) ? list : ((list && list.results) || []);
+        feedbackLoadFailed = false;
+      })
+      .catch(function(){
+        FEEDBACK_ITEMS = [];
+        feedbackLoadFailed = true;
+      })
+      .then(renderFeedback);
+  }
+
   // ---- Review sub-tabs (انتقاد / پیشنهاد) ----
   function goToReviewTab(name){
     document.querySelectorAll('.review-subtab').forEach(t => t.classList.toggle('active', t.dataset.reviewtab === name));
@@ -4048,64 +4827,155 @@
     t.addEventListener('click', () => goToReviewTab(t.dataset.reviewtab));
   });
 
-  // ---- delete a complaint/suggestion row directly ----
-  document.querySelectorAll('.review-delete-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const row = btn.closest('tr');
-      if(row){
-        row.remove();
-        showToast('مورد حذف شد');
-      }
-    });
+  // ---- پنجره‌ی «اطلاعات فرستنده» (با کلیک روی نام فرستنده در جدول) ----
+  const senderOverlay = document.getElementById('senderModalOverlay');
+  let senderModalItem = null;
+
+  function openSenderModal(item){
+    const sd = item.sender;
+    if(!sd){
+      showToast('حساب این فرستنده حذف شده است');
+      return;
+    }
+    senderModalItem = item;
+    const fa = function(v){ return v ? escFb(toPersianDigits(v)) : '—'; };
+    const fullName = `${sd.first_name || ''} ${sd.last_name || ''}`.trim();
+    // تاریخ انقضای کارت به‌صورت میلادی (YYYY-MM-DD) ذخیره شده؛ به شمسی نمایش می‌دهیم
+    const cardText = sd.card_expires_at
+      ? `${sd.is_membership_valid ? 'معتبر' : 'منقضی‌شده'} - تا ${new Date(sd.card_expires_at).toLocaleDateString('fa-IR')}`
+      : 'معتبر (بدون تاریخ انقضا)';
+    const cell = function(label, valueHtml, full){
+      return `<div${full ? ' class="full"' : ''}><span>${label}</span><b>${valueHtml}</b></div>`;
+    };
+    document.getElementById('senderInfoGrid').innerHTML = [
+      cell('نام و نام‌خانوادگی', escFb(fullName) || '—'),
+      cell('نام پدر', escFb(sd.father_name) || '—'),
+      cell('تاریخ تولد', fa(sd.birth_date)),
+      cell('کد ملی', fa(sd.national_id)),
+      cell('کد عضویت', fa(sd.membership_code)),
+      cell('شماره موبایل (عضویت)', fa(sd.phone)),
+      cell('استان', escFb(sd.province) || '—'),
+      cell('شعبه‌ی عضویت', escFb(sd.branch) || '—'),
+      cell('تاریخ عضویت', formatApplicantDate(sd.membership_since)),
+      cell('کارت عضویت', escFb(cardText)),
+      cell('شماره‌ی واردشده در همین پیام', fa(item.phone)),
+      cell('شعبه‌ی مرتبط با همین پیام', escFb(item.branch) || '—'),
+    ].join('');
+
+    const banNotice = document.getElementById('senderBanNotice');
+    if(sd.is_banned){
+      document.getElementById('senderBanReason').textContent = sd.ban_reason || 'دلیلی ثبت نشده است';
+      banNotice.classList.remove('hide');
+    } else {
+      banNotice.classList.add('hide');
+    }
+    senderOverlay.classList.add('open');
+  }
+  function closeSenderModal(){
+    senderOverlay.classList.remove('open');
+    senderModalItem = null;
+  }
+  document.getElementById('senderModalClose').addEventListener('click', closeSenderModal);
+  document.getElementById('senderModalCancel').addEventListener('click', closeSenderModal);
+  senderOverlay.addEventListener('click', (e) => { if(e.target === senderOverlay) closeSenderModal(); });
+
+  // دکمه‌ی «سوابق آموزشی»: همان صفحه‌ی «سوابق آموزشی» پنل باز می‌شود و جستجو
+  // با کد ملی (و کد عضویت، اگر ۱۴ رقمی باشد) همین فرد خودکار انجام می‌شود
+  document.getElementById('senderRecordsBtn').addEventListener('click', () => {
+    const sd = senderModalItem && senderModalItem.sender;
+    if(!sd) return;
+    closeSenderModal();
+    goToView('records');
+    recNidInput.value = sd.national_id || '';
+    recMemberInput.value = /^\d{14}$/.test(sd.membership_code || '') ? sd.membership_code : '';
+    searchRecords();
   });
 
-  // ---- reply modal (نام مسئول + متن پیام) ----
+  // ---- reply modal (نام مسئول + متن پاسخ) ----
   const replyOverlay = document.getElementById('replyModalOverlay');
   const replyNameInput = document.getElementById('reply_name');
   const replyMessageInput = document.getElementById('reply_message');
+  const replySaveBtn = document.getElementById('replyModalSave');
+  replyNameInput.maxLength = 100;       // هم‌اندازه‌ی محدودیت سرور
+  replyMessageInput.maxLength = 2000;
 
-  function openReplyModal(){
-    replyNameInput.value = '';
-    replyMessageInput.value = '';
+  function openReplyModal(item){
+    feedbackReplyTarget = item;
+    // اگر قبلاً پاسخ داده شده، همان پاسخ برای مشاهده/ویرایش پر می‌شود
+    replyNameInput.value = item.status === 'answered' ? (item.replier_name || '') : '';
+    replyMessageInput.value = item.status === 'answered' ? (item.reply_text || '') : '';
     replyOverlay.classList.add('open');
   }
   function closeReplyModal(){
     replyOverlay.classList.remove('open');
+    feedbackReplyTarget = null;
   }
-  document.querySelectorAll('.review-reply-btn').forEach(btn => {
-    btn.addEventListener('click', openReplyModal);
-  });
   document.getElementById('replyModalClose').addEventListener('click', closeReplyModal);
   document.getElementById('replyModalCancel').addEventListener('click', closeReplyModal);
   replyOverlay.addEventListener('click', (e) => { if(e.target === replyOverlay) closeReplyModal(); });
-  document.getElementById('replyModalSave').addEventListener('click', () => {
-    if(!replyNameInput.value.trim() || !replyMessageInput.value.trim()){
+
+  replySaveBtn.addEventListener('click', () => {
+    const name = replyNameInput.value.trim();
+    const text = replyMessageInput.value.trim();
+    if(!name || !text){
       showToast('لطفاً نام مسئول و متن پیام را وارد کنید');
       return;
     }
-    closeReplyModal();
-    showToast('پاسخ ثبت شد (فقط نمایشی، به بک‌اند وصل نیست)');
+    if(!feedbackReplyTarget) return;
+    replySaveBtn.disabled = true;
+    feedbackApi(`/feedback/${feedbackReplyTarget.id}/reply/`, 'POST', { replier_name: name, reply_text: text })
+      .then(function(){
+        closeReplyModal();
+        showToast('پاسخ ثبت شد');
+        return loadFeedback();
+      })
+      .catch(function(err){ showToast(err.message || 'خطا در ثبت پاسخ؛ دوباره تلاش کنید'); })
+      .then(function(){ replySaveBtn.disabled = false; });
   });
 
-  // ---- پاپ‌آپ آمار: پاسخگویی مسئولان (نمایشی — داده‌ی دمو، بدون بک‌اند) ----
-  const COMPLAINT_RESPONSES = [
-    {
-      branch: "اصفهان", date: "۱۴۰۵/۰۵/۰۸",
-      question: "کیفیت کلاس آموزشی دپارتمان فرش و گلیم پایین بود.",
-      responder: "علی رضایی — مسئول آموزش",
-      answer: "موضوع بررسی و به مدرس مربوطه تذکر داده شد؛ کیفیت کلاس‌ها از هفته‌ی آینده پایش می‌شود.",
-      answerDate: "۱۴۰۵/۰۵/۱۱"
-    }
-  ];
-  const SUGGESTION_RESPONSES = [
-    {
-      branch: "شیراز", date: "۱۴۰۵/۰۵/۰۳",
-      question: "بهتر است اپلیکیشن موبایل هم برای ثبت‌نام دوره‌ها ارائه شود.",
-      responder: "حسین کریمی — مدیر آموزش",
-      answer: "با تشکر از پیشنهاد شما، طراحی اپلیکیشن موبایل در برنامه‌ی توسعه‌ی سال آینده قرار گرفته است.",
-      answerDate: "۱۴۰۵/۰۵/۰۶"
-    }
-  ];
+  // ---- دکمه‌های هر ردیف (پاسخ/حذف) - با event delegation چون ردیف‌ها پویا ساخته می‌شوند ----
+  ['complaintsTbody', 'suggestionsTbody'].forEach(function(tbodyId){
+    document.getElementById(tbodyId).addEventListener('click', function(e){
+      const senderLink = e.target.closest('.fb-sender-link');
+      const replyBtn = e.target.closest('.review-reply-btn');
+      const deleteBtn = e.target.closest('.review-delete-btn');
+      const clicked = senderLink || replyBtn || deleteBtn;
+      if(!clicked) return;
+      const id = Number(clicked.dataset.id);
+      const item = FEEDBACK_ITEMS.find(function(it){ return it.id === id; });
+      if(!item) return;
+
+      if(senderLink){
+        openSenderModal(item);
+        return;
+      }
+
+      if(replyBtn){
+        openReplyModal(item);
+        return;
+      }
+      if(!confirm('آیا از حذف این مورد مطمئن هستید؟ این کار قابل بازگشت نیست.')) return;
+      feedbackApi(`/feedback/${id}/`, 'DELETE')
+        .then(function(){ showToast('مورد حذف شد'); return loadFeedback(); })
+        .catch(function(err){ showToast(err.message || 'خطا در حذف؛ دوباره تلاش کنید'); });
+    });
+  });
+
+  // ---- پاپ‌آپ آمار: پاسخگویی مسئولان (از موارد واقعیِ پاسخ‌داده‌شده ساخته می‌شود) ----
+  function feedbackAnsweredCards(kind){
+    return feedbackItemsOf(kind)
+      .filter(function(it){ return it.status === 'answered'; })
+      .map(function(it){
+        return {
+          branch: it.branch || '—',
+          date: formatApplicantDate(it.created_at),
+          question: it.message,
+          responder: it.replier_name,
+          answer: it.reply_text,
+          answerDate: formatApplicantDate(it.replied_at)
+        };
+      });
+  }
 
   const qaOverlay = document.getElementById('qaModalOverlay');
   const qaTitle = document.getElementById('qaModalTitle');
@@ -4117,16 +4987,16 @@
         <div class="qa-question">
           <div class="qa-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
           <div class="qa-question-body">
-            <div class="qa-question-meta"><span><b>شعبه:</b> ${item.branch}</span><span><b>تاریخ:</b> ${item.date}</span></div>
-            <div class="qa-question-text">${item.question}</div>
+            <div class="qa-question-meta"><span><b>شعبه:</b> ${escFb(item.branch)}</span><span><b>تاریخ:</b> ${escFb(item.date)}</span></div>
+            <div class="qa-question-text">${escFb(item.question)}</div>
           </div>
         </div>
         <div class="qa-answer">
           <div class="qa-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           <div class="qa-answer-body">
-            <div class="qa-answer-name">${item.responder}</div>
-            <div class="qa-answer-text">${item.answer}</div>
-            <div class="qa-answer-date">تاریخ پاسخ: ${item.answerDate}</div>
+            <div class="qa-answer-name">${escFb(item.responder)}</div>
+            <div class="qa-answer-text">${escFb(item.answer)}</div>
+            <div class="qa-answer-date">تاریخ پاسخ: ${escFb(item.answerDate)}</div>
           </div>
         </div>
       </div>
@@ -4143,13 +5013,15 @@
   function closeQaModal(){ qaOverlay.classList.remove('open'); }
 
   document.getElementById('statRespondedCard').addEventListener('click', () => {
-    openQaModal('پاسخگویی مسئولان به انتقادها', COMPLAINT_RESPONSES);
+    openQaModal('پاسخگویی مسئولان به انتقادها', feedbackAnsweredCards('complaint'));
   });
   document.getElementById('statSuggestionsRespondedCard').addEventListener('click', () => {
-    openQaModal('پاسخگویی مسئولان به پیشنهادها', SUGGESTION_RESPONSES);
+    openQaModal('پاسخگویی مسئولان به پیشنهادها', feedbackAnsweredCards('suggestion'));
   });
   document.getElementById('qaModalClose').addEventListener('click', closeQaModal);
   qaOverlay.addEventListener('click', (e) => { if(e.target === qaOverlay) closeQaModal(); });
+
+  loadFeedback();
 
   // ---- مدیریت شعب (نمایشی — بدون بک‌اند، داده‌ها با رفرش صفحه بازنشانی می‌شوند) ----
   let BRANCHES = [
@@ -4434,8 +5306,6 @@
   // درس/کلاس بر اساس شعبه‌ی خودِ مسئول) لازم است؛ مسئول آموزش نمی‌تواند
   // دپارتمان‌های فعال هر شعبه را تغییر بدهد (آن بخش فقط در پنل مدیر
   // آموزش است) ----
-  let DEPARTMENTS = [];
-  let BRANCH_DEPT_LINKS = []; // [{id, branch, department, department_name}]
 
   function branchDeptIds(branch){
     return BRANCH_DEPT_LINKS.filter(l => l.branch === branch).map(l => l.department);
@@ -4617,114 +5487,285 @@
   });
   document.getElementById('btnChangeTerm').addEventListener('click', openTermModal);
 
-  // ---- نظرسنجی‌های کلاسی: انتخاب ترم ----
-  let pickedClassSurveyTerm = null;
-  let pendingPickedClassSurveyTerm = null;
-  const classSurveyTermOverlay = document.getElementById('classSurveyTermModalOverlay');
-  const classSurveyTermChecklist = document.getElementById('classSurveyTermChecklist');
+  // ---- نظرسنجی کلاسی: «یک» نظرسنجی کلی برای همه‌ی دانش‌پژوهان (متصل به بک‌اند) ----
+  // نظرسنجی به‌ازای هر کلاس/ترم تعریف نمی‌شود؛ فقط یکی وجود دارد و قرار است
+  // دانش‌پژوه موقع دریافت مدرک در آن شرکت کند. اینجا عنوان/توضیحات ویرایش می‌شود
+  // و سؤال تستی (با گزینه‌های قابل‌ویرایش) یا تشریحی اضافه/ویرایش/حذف/جابه‌جا می‌شود.
+  let CLASS_SURVEY = { title: '', description: '', questions: [] };
+  let surveyLoadFailed = false;
+  let editingSurveyQuestionId = null;    // null یعنی «افزودن سؤال جدید»
+  let svqOptionsDraft = [];              // گزینه‌های سؤالِ در حال ویرایش (داخل مدال)
+  const STANDARD_CHOICE_OPTIONS = ['خیلی خوب', 'خوب', 'متوسط', 'بد', 'خیلی بد'];
+  const SVQ_MAX_OPTIONS = 10;
 
-  function renderClassSurveyTermChecklist(){
-    const terms = getTermsFromCalendar();
-    if(terms.length === 0){
-      classSurveyTermChecklist.innerHTML = `<div class="no-match">داده‌ای در تقویم آموزشی یافت نشد</div>`;
-      return;
-    }
-    classSurveyTermChecklist.innerHTML = terms.map(t => `
-      <label>
-        <input type="radio" name="classSurveyTermPick" value="${t.code}" ${pendingPickedClassSurveyTerm === t.code ? 'checked' : ''}>
-        <span>دوره ${t.code} (ثبت‌نام ${t.regStart} تا ${t.regEnd})</span>
-      </label>
-    `).join('');
+  // درخواست به API نظرسنجی؛ پیام خطای فارسی سرور (حتی خطای یک فیلد خاص) را برمی‌گرداند
+  function surveyApi(path, method, body){
+    return fetch(`${API_BASE_URL}${path}`, {
+      method: method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(async function(res){
+      if(res.status === 401 || res.status === 403){
+        throw new Error('دسترسی مجاز نیست؛ دوباره با حساب خود وارد شوید.');
+      }
+      const data = await res.json().catch(function(){ return null; });
+      if(!res.ok){
+        let msg = data && data.detail;
+        if(!msg && data && typeof data === 'object'){
+          const first = Object.values(data)[0];
+          msg = Array.isArray(first) ? first[0] : first;
+        }
+        throw new Error(msg || 'خطا در ارتباط با سرور');
+      }
+      return data;
+    });
   }
 
-  function openClassSurveyTermModal(){
-    pendingPickedClassSurveyTerm = pickedClassSurveyTerm;
-    renderClassSurveyTermChecklist();
-    classSurveyTermOverlay.classList.add('open');
-  }
-  function closeClassSurveyTermModal(){ classSurveyTermOverlay.classList.remove('open'); }
-
-  classSurveyTermChecklist.addEventListener('change', (e) => {
-    if(e.target.name === 'classSurveyTermPick') pendingPickedClassSurveyTerm = e.target.value;
-  });
-  document.getElementById('classSurveyTermModalClose').addEventListener('click', () => { closeClassSurveyTermModal(); if(!pickedClassSurveyTerm) goToView('survey'); });
-  document.getElementById('classSurveyTermModalCancel').addEventListener('click', () => { closeClassSurveyTermModal(); if(!pickedClassSurveyTerm) goToView('survey'); });
-  classSurveyTermOverlay.addEventListener('click', (e) => { if(e.target === classSurveyTermOverlay){ closeClassSurveyTermModal(); if(!pickedClassSurveyTerm) goToView('survey'); } });
-
-  function renderClassSurveyTermStatus(){
-    const bar = document.getElementById('classSurveyTermPickedBar');
-    const label = document.getElementById('classSurveyPickedTermName');
-    const wrap = document.getElementById('classSurveyContentWrap');
-    bar.classList.toggle('hide', !pickedClassSurveyTerm);
-    wrap.classList.toggle('hide', !pickedClassSurveyTerm);
-    label.textContent = pickedClassSurveyTerm ? `دوره ${pickedClassSurveyTerm}` : '';
-  }
-  renderClassSurveyTermStatus();
-
-  document.getElementById('classSurveyTermModalConfirm').addEventListener('click', () => {
-    if(!pendingPickedClassSurveyTerm){
-      showToast('لطفاً یک ترم را انتخاب کنید');
-      return;
-    }
-    pickedClassSurveyTerm = pendingPickedClassSurveyTerm;
-    renderClassSurveyTermStatus();
-    closeClassSurveyTermModal();
-    showToast(`ترم «دوره ${pickedClassSurveyTerm}» انتخاب شد`);
-  });
-  document.getElementById('btnChangeClassSurveyTerm').addEventListener('click', openClassSurveyTermModal);
-
-  // ---- نظرسنجی‌های کلاسی: لیست و مدیریت نظرسنجی‌ها ----
-  let CLASS_SURVEYS = [
-    { id:1, title:"نظرسنجی رضایت از کلاس مقدماتی ورد و اکسل", className:"مقدماتی ورد و اکسل", status:"فعال", date:"۱۴۰۴/۰۵/۱۰",
-      questions:[
-        "کیفیت تدریس مدرس را چگونه ارزیابی می‌کنید؟",
-        "محتوای آموزشی ارائه‌شده تا چه حد کاربردی بود؟",
-        "امکانات و فضای برگزاری کلاس را چگونه می‌بینید؟",
-        "آیا این کلاس را به دیگران پیشنهاد می‌کنید؟",
-        "نظر یا پیشنهاد خود را برای بهبود این کلاس بنویسید."
-      ],
-      answerConfig: { mc: true, mcOptions: ["خیلی خوب","خوب","متوسط","بد","خیلی بد"], desc: true, descMode: 'qa' } }
-  ];
-  let nextClassSurveyId = 2;
-  let editingClassSurveyId = null;
-
-  function fillClassSurveySelect(){
-    const sel = document.getElementById('cs_class');
-    sel.innerHTML = CLASSES.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+  function fillSurveyHeader(){
+    document.getElementById('surveyTitleInput').value = CLASS_SURVEY.title || '';
+    document.getElementById('surveyDescInput').value = CLASS_SURVEY.description || '';
   }
 
-  function renderClassSurveys(){
-    const q = (document.getElementById('classSurveySearch').value || '').trim();
-    const filtered = CLASS_SURVEYS.filter(s => !q || s.title.includes(q) || (s.className || '').includes(q));
-    const body = document.getElementById('classSurveyTableBody');
+  function renderSurveyQuestions(){
+    const qs = CLASS_SURVEY.questions || [];
+    const list = document.getElementById('surveyQuestionsList');
+    const emptyEl = document.getElementById('surveyQuestionsEmpty');
+    const choiceCount = qs.filter(q => q.kind === 'choice').length;
+    document.getElementById('surveyQuestionsCount').textContent = surveyLoadFailed
+      ? '—'
+      : `تعداد سؤال‌ها: ${toPersianDigits(qs.length)} (${toPersianDigits(choiceCount)} تستی، ${toPersianDigits(qs.length - choiceCount)} تشریحی)`;
 
-    if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="7">نظرسنجی‌ای یافت نشد</td></tr>`;
-      return;
-    }
-
-    body.innerHTML = filtered.map((s, i) => `
-      <tr data-id="${s.id}">
-        <td>${toPersianDigits(i + 1)}</td>
-        <td>${s.title}</td>
-        <td>${s.className ? `<span class="dept-tag">${s.className}</span>` : '<span class="dept-empty">—</span>'}</td>
-        <td>${toPersianDigits((s.questions || []).length)}</td>
-        <td>${s.status === 'فعال' ? '<span class="status-pass">فعال</span>' : '<span class="dept-empty">غیرفعال</span>'}</td>
-        <td>${s.date || '—'}</td>
-        <td>
-          <div class="row-actions">
-            <button class="icon-btn" title="ویرایش" onclick="openEditClassSurvey(${s.id})">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="icon-btn danger" title="حذف" onclick="deleteClassSurvey(${s.id})">
-              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+    list.innerHTML = qs.map(function(q, i){
+      const opts = q.kind === 'choice'
+        ? `<div class="svq-opts">${q.options.map(o => `<span class="svq-opt">${escFb(o)}</span>`).join('')}</div>`
+        : '<div class="svq-hint">دانش‌پژوه پاسخ را به‌صورت متن آزاد می‌نویسد.</div>';
+      return `
+        <div class="svq-card" data-id="${q.id}">
+          <div class="svq-num">${toPersianDigits(i + 1)}</div>
+          <div class="svq-body">
+            <div class="svq-text">${escFb(q.text)}</div>
+            <span class="svq-kind ${q.kind}">${q.kind === 'choice' ? 'تستی' : 'تشریحی'}</span>
+            ${opts}
           </div>
-        </td>
-      </tr>
-    `).join('');
+          <div class="svq-actions">
+            <div class="icon-btn" data-svq-action="up" data-id="${q.id}" title="انتقال به بالا" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></div>
+            <div class="icon-btn" data-svq-action="down" data-id="${q.id}" title="انتقال به پایین" ${i === qs.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            <div class="icon-btn" data-svq-action="edit" data-id="${q.id}" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+            <div class="icon-btn danger" data-svq-action="delete" data-id="${q.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    emptyEl.style.display = qs.length ? 'none' : 'block';
+    emptyEl.textContent = surveyLoadFailed
+      ? 'دریافت نظرسنجی از سرور ممکن نشد؛ صفحه را دوباره باز کنید.'
+      : 'هنوز سؤالی ثبت نشده است؛ با «افزودن سؤال» شروع کنید.';
   }
-  document.getElementById('classSurveySearch').addEventListener('input', renderClassSurveys);
+
+  // نظرسنجی را از سرور می‌خواند؛ withHeader=true یعنی عنوان/توضیحات هم دوباره در
+  // فیلدها پر شود (فقط موقع باز شدن صفحه - نه بعد از هر تغییر سؤال، تا متنی که
+  // مدیر هنوز ذخیره نکرده پاک نشود)
+  function loadClassSurvey(withHeader){
+    return fetch(`${API_BASE_URL}/feedback/class-survey/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => {
+        CLASS_SURVEY = data;
+        surveyLoadFailed = false;
+        if(withHeader) fillSurveyHeader();
+      })
+      .catch(() => { surveyLoadFailed = true; CLASS_SURVEY = { title: '', description: '', questions: [] }; })
+      .then(renderSurveyQuestions)
+      .then(loadSurveyResults);
+  }
+
+  // ---- نتایج نظرسنجی کلی: شمارش گزینه‌ها و پاسخ‌های تشریحی (از پاسخ‌های واقعی دانش‌پژوهان) ----
+  let SURVEY_RESULTS = null;                       // null یعنی دریافت از سرور شکست خورده
+  const SURVEY_RESULTS_SCOPE = 'فقط پاسخ‌های کلاس‌های شعبه‌ی شما — ';        // پیشوند توضیح (مسئول آموزش فقط شعبه‌ی خودش را می‌بیند)
+
+  function renderSurveyResults(){
+    const summary = document.getElementById('surveyResultsSummary');
+    const list = document.getElementById('surveyResultsList');
+    if(!SURVEY_RESULTS){
+      summary.textContent = 'دریافت نتایج از سرور ممکن نشد.';
+      list.innerHTML = '';
+      return;
+    }
+    summary.textContent = `${SURVEY_RESULTS_SCOPE}تعداد شرکت‌کنندگان: ${toPersianDigits(SURVEY_RESULTS.participants)}`;
+    if(!SURVEY_RESULTS.participants){
+      list.innerHTML = '<div class="qa-empty">هنوز کسی در نظرسنجی شرکت نکرده است.</div>';
+      return;
+    }
+    list.innerHTML = SURVEY_RESULTS.questions.map(function(q, i){
+      const head = `<div class="svr-qtitle">${toPersianDigits(i + 1)}. ${escFb(q.text)}</div>
+        <div class="svr-meta">${q.kind === 'choice' ? 'تستی' : 'تشریحی'} — ${toPersianDigits(q.answered)} پاسخ</div>`;
+      if(q.kind === 'choice'){
+        const rows = q.options.map(function(o){
+          const pct = q.answered ? Math.round(o.count * 100 / q.answered) : 0;
+          return `<div class="svr-row"><div class="svr-label">${escFb(o.label)}</div>
+            <div class="svr-track"><div class="svr-fill" style="width:${pct}%"></div></div>
+            <div class="svr-count">${toPersianDigits(o.count)} (${toPersianDigits(pct)}٪)</div></div>`;
+        }).join('');
+        return `<div class="svr-card">${head}${rows}</div>`;
+      }
+      const answers = q.answers.length ? q.answers.map(function(a){
+        return `<div class="svr-answer">${escFb(a.text)}<small>${escFb(a.class_name) || '—'}${a.branch ? ' — ' + escFb(a.branch) : ''} — ${formatApplicantDate(a.submitted_at)}</small></div>`;
+      }).join('') : '<div class="svq-hint">هنوز پاسخی نوشته نشده است.</div>';
+      return `<div class="svr-card">${head}${answers}</div>`;
+    }).join('');
+  }
+
+  function loadSurveyResults(){
+    return fetch(`${API_BASE_URL}/feedback/class-survey/results/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => { SURVEY_RESULTS = data; })
+      .catch(() => { SURVEY_RESULTS = null; })
+      .then(renderSurveyResults);
+  }
+
+
+  document.getElementById('btnSaveSurveyHeader').addEventListener('click', () => {
+    const title = document.getElementById('surveyTitleInput').value.trim();
+    if(!title){
+      showToast('لطفاً عنوان نظرسنجی را وارد کنید');
+      return;
+    }
+    const btn = document.getElementById('btnSaveSurveyHeader');
+    btn.disabled = true;
+    surveyApi('/feedback/class-survey/', 'PATCH', { title: title, description: document.getElementById('surveyDescInput').value.trim() })
+      .then(data => { CLASS_SURVEY.title = data.title; CLASS_SURVEY.description = data.description; showToast('عنوان و توضیحات ذخیره شد'); })
+      .catch(err => showToast(err.message))
+      .then(() => { btn.disabled = false; });
+  });
+
+  // ---- مدال افزودن/ویرایش سؤال ----
+  const svqOverlay = document.getElementById('surveyQuestionModalOverlay');
+  const svqOptionsList = document.getElementById('svqOptionsList');
+
+  function currentSvqKind(){
+    return document.querySelector('input[name="svqKind"]:checked').value;
+  }
+  function toggleSvqOptionsBlock(){
+    document.getElementById('svqOptionsBlock').style.display = currentSvqKind() === 'choice' ? '' : 'none';
+  }
+  document.querySelectorAll('input[name="svqKind"]').forEach(r => r.addEventListener('change', toggleSvqOptionsBlock));
+
+  function renderSvqOptions(focusLast){
+    svqOptionsList.innerHTML = svqOptionsDraft.map((o, i) => `
+      <div class="svq-optrow">
+        <input type="text" maxlength="200" data-idx="${i}" value="${escFb(o)}" placeholder="گزینه ${toPersianDigits(i + 1)}">
+        <div class="icon-btn danger" data-remove-idx="${i}" title="حذف گزینه"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+      </div>`).join('');
+    document.getElementById('btnAddSvqOption').style.display = svqOptionsDraft.length >= SVQ_MAX_OPTIONS ? 'none' : '';
+    if(focusLast){
+      const inputs = svqOptionsList.querySelectorAll('input');
+      if(inputs.length) inputs[inputs.length - 1].focus();
+    }
+  }
+  svqOptionsList.addEventListener('input', (e) => {
+    if(e.target.dataset.idx !== undefined) svqOptionsDraft[Number(e.target.dataset.idx)] = e.target.value;
+  });
+  svqOptionsList.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove-idx]');
+    if(!rm) return;
+    svqOptionsDraft.splice(Number(rm.dataset.removeIdx), 1);
+    renderSvqOptions(false);
+  });
+  document.getElementById('btnAddSvqOption').addEventListener('click', () => {
+    if(svqOptionsDraft.length >= SVQ_MAX_OPTIONS) return;
+    svqOptionsDraft.push('');
+    renderSvqOptions(true);
+  });
+  document.getElementById('btnStandardSvqOptions').addEventListener('click', () => {
+    svqOptionsDraft = [...STANDARD_CHOICE_OPTIONS];
+    renderSvqOptions(false);
+  });
+
+  function openSurveyQuestionModal(q){
+    editingSurveyQuestionId = q ? q.id : null;
+    document.getElementById('surveyQuestionModalTitle').textContent = q ? 'ویرایش سؤال' : 'افزودن سؤال';
+    document.getElementById('svq_text').value = q ? q.text : '';
+    const kind = q ? q.kind : 'choice';
+    document.querySelector(`input[name="svqKind"][value="${kind}"]`).checked = true;
+    // سؤال جدید (یا سؤال تشریحی که به تستی تبدیل می‌شود) با گزینه‌های استاندارد شروع می‌شود
+    svqOptionsDraft = (q && q.options && q.options.length) ? [...q.options] : [...STANDARD_CHOICE_OPTIONS];
+    renderSvqOptions(false);
+    toggleSvqOptionsBlock();
+    svqOverlay.classList.add('open');
+  }
+  function closeSurveyQuestionModal(){ svqOverlay.classList.remove('open'); }
+  document.getElementById('btnAddSurveyQuestion').addEventListener('click', () => openSurveyQuestionModal(null));
+  document.getElementById('surveyQuestionModalClose').addEventListener('click', closeSurveyQuestionModal);
+  document.getElementById('surveyQuestionModalCancel').addEventListener('click', closeSurveyQuestionModal);
+  svqOverlay.addEventListener('click', (e) => { if(e.target === svqOverlay) closeSurveyQuestionModal(); });
+
+  document.getElementById('surveyQuestionModalSave').addEventListener('click', () => {
+    const text = document.getElementById('svq_text').value.trim();
+    const kind = currentSvqKind();
+    if(!text){
+      showToast('لطفاً متن سؤال را وارد کنید');
+      return;
+    }
+    const body = { text: text, kind: kind };
+    if(kind === 'choice'){
+      const options = svqOptionsDraft.map(o => o.trim());
+      if(options.some(o => !o)){
+        showToast('گزینه‌ی خالی مجاز نیست؛ آن را پر یا حذف کنید');
+        return;
+      }
+      if(options.length < 2){
+        showToast('سؤال تستی حداقل ۲ گزینه لازم دارد');
+        return;
+      }
+      if(new Set(options).size !== options.length){
+        showToast('گزینه‌ها نباید تکراری باشند');
+        return;
+      }
+      body.options = options;
+    }
+    const btn = document.getElementById('surveyQuestionModalSave');
+    btn.disabled = true;
+    const request = editingSurveyQuestionId
+      ? surveyApi(`/feedback/class-survey/questions/${editingSurveyQuestionId}/`, 'PATCH', body)
+      : surveyApi('/feedback/class-survey/questions/', 'POST', body);
+    request
+      .then(() => {
+        const wasEditing = !!editingSurveyQuestionId;
+        closeSurveyQuestionModal();
+        showToast(wasEditing ? 'سؤال به‌روزرسانی شد' : 'سؤال جدید افزوده شد');
+        return loadClassSurvey(false);
+      })
+      .catch(err => showToast(err.message))
+      .then(() => { btn.disabled = false; });
+  });
+
+  // ---- دکمه‌های هر سؤال (بالا/پایین/ویرایش/حذف) ----
+  document.getElementById('surveyQuestionsList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-svq-action]');
+    if(!btn || btn.hasAttribute('disabled')) return;
+    const id = Number(btn.dataset.id);
+    const qs = CLASS_SURVEY.questions;
+    const idx = qs.findIndex(q => q.id === id);
+    if(idx < 0) return;
+    const action = btn.dataset.svqAction;
+
+    if(action === 'edit'){
+      openSurveyQuestionModal(qs[idx]);
+    } else if(action === 'delete'){
+      if(!confirm('آیا از حذف این سؤال مطمئن هستید؟')) return;
+      surveyApi(`/feedback/class-survey/questions/${id}/`, 'DELETE')
+        .then(() => { showToast('سؤال حذف شد'); return loadClassSurvey(false); })
+        .catch(err => showToast(err.message));
+    } else if(action === 'up' || action === 'down'){
+      const swapWith = action === 'up' ? idx - 1 : idx + 1;
+      if(swapWith < 0 || swapWith >= qs.length) return;
+      const ids = qs.map(q => q.id);
+      [ids[idx], ids[swapWith]] = [ids[swapWith], ids[idx]];
+      surveyApi('/feedback/class-survey/questions/reorder/', 'POST', { ids: ids })
+        .then(() => loadClassSurvey(false))
+        .catch(err => showToast(err.message));
+    }
+  });
 
   // ---- مودال سوالات نظرسنجی (مشترک بین نظرسنجی کلی و کلاسی؛ ثبت سوالات قبل از ذخیره‌ی نهایی) ----
   let csDraftQuestions = [];
@@ -4768,7 +5809,8 @@
   }
   function closeCsQuestionsModal(){ csQuestionsOverlay.classList.remove('open'); }
 
-  document.getElementById('btnManageCsQuestions').addEventListener('click', () => openCsQuestionsModal('class'));
+  // (دکمه‌ی «سوالات» نظرسنجی کلاسیِ قدیمی حذف شده؛ نظرسنجی کلاسی حالا یک نظرسنجی کلی با
+  // ویرایشگر سؤال جداگانه است. فقط دکمه‌ی «نظرسنجی‌های کلی» از این مودال استفاده می‌کند.)
   document.getElementById('btnManageGsQuestions').addEventListener('click', () => openCsQuestionsModal('general'));
   document.getElementById('btnAddCsQuestion').addEventListener('click', () => {
     const text = csQuestionInput.value.trim();
@@ -4838,7 +5880,7 @@
   }
   function closeAnswerTypeModal(){ answerTypeOverlay.classList.remove('open'); }
 
-  document.getElementById('btnManageCsAnswer').addEventListener('click', () => openAnswerTypeModal('class'));
+  // (دکمه‌ی «نوع پاسخ» نظرسنجی کلاسیِ قدیمی هم حذف شده؛ فقط نظرسنجی‌های کلی از این مودال استفاده می‌کنند.)
   document.getElementById('btnManageGsAnswer').addEventListener('click', () => openAnswerTypeModal('general'));
   document.getElementById('answerTypeModalClose').addEventListener('click', closeAnswerTypeModal);
   document.getElementById('answerTypeModalCancel').addEventListener('click', closeAnswerTypeModal);
@@ -4970,73 +6012,81 @@
   });
   renderGeneralSurveys();
 
-  const classSurveyOverlay = document.getElementById('classSurveyModalOverlay');
-  function openAddClassSurvey(){
-    editingClassSurveyId = null;
-    document.getElementById('classSurveyModalTitle').textContent = 'افزودن نظرسنجی';
-    fillClassSurveySelect();
-    document.getElementById('cs_title').value = '';
-    document.getElementById('cs_class').selectedIndex = 0;
-    document.getElementById('cs_status').value = 'فعال';
-    csDraftQuestions = [];
-    csQuestionsContext = 'class';
-    updateCsQuestionsCountLabel();
-    csAnswerConfig = defaultAnswerConfig();
-    updateAnswerSummaryLabel();
-    classSurveyOverlay.classList.add('open');
-  }
-  window.openEditClassSurvey = function(id){
-    const s = CLASS_SURVEYS.find(x => x.id === id);
-    if(!s) return;
-    editingClassSurveyId = id;
-    document.getElementById('classSurveyModalTitle').textContent = 'ویرایش نظرسنجی';
-    fillClassSurveySelect();
-    document.getElementById('cs_title').value = s.title;
-    document.getElementById('cs_class').value = s.className || '';
-    document.getElementById('cs_status').value = s.status || 'فعال';
-    csDraftQuestions = [...(s.questions || [])];
-    csQuestionsContext = 'class';
-    updateCsQuestionsCountLabel();
-    csAnswerConfig = s.answerConfig ? { ...s.answerConfig, mcOptions: [...s.answerConfig.mcOptions] } : defaultAnswerConfig();
-    updateAnswerSummaryLabel();
-    classSurveyOverlay.classList.add('open');
-  };
-  window.deleteClassSurvey = function(id){
-    const s = CLASS_SURVEYS.find(x => x.id === id);
-    if(!s) return;
-    if(!confirm(`آیا از حذف «${s.title}» مطمئن هستید؟`)) return;
-    CLASS_SURVEYS = CLASS_SURVEYS.filter(x => x.id !== id);
-    renderClassSurveys();
-    showToast('نظرسنجی حذف شد');
-  };
-  function closeClassSurveyModal(){ classSurveyOverlay.classList.remove('open'); }
+  // ---- کنترل «رده سنی کلاس» (مشترک بین فرم «درج کلاس» و مودال «ویرایش کلاس») ----
+  // یک کلید فعال/غیرفعال + دو فیلد حداقل/حداکثر سن. تا وقتی کلید خاموش است فیلدها
+  // خاموش‌اند (و مقدارشان پاک است). فقط عدد ۰ تا ۱۰۰ قبول می‌شود: حرف و نماد همان لحظه
+  // حذف می‌شود، رقم فارسی/عربی به انگلیسی تبدیل می‌شود، و عددِ بزرگ‌تر از ۱۰۰ پذیرفته
+  // نمی‌شود (مقدار قبلی برمی‌گردد).
+  function createAgeLimitControl(prefix){
+    const row = document.getElementById(prefix + 'AgeRow');
+    const toggle = document.getElementById(prefix + 'AgeToggle');
+    const label = document.getElementById(prefix + 'AgeLabel');
+    const minEl = document.getElementById(prefix + 'AgeMin');
+    const maxEl = document.getElementById(prefix + 'AgeMax');
+    let enabled = false;
 
-  document.getElementById('btnAddClassSurvey').addEventListener('click', openAddClassSurvey);
-  document.getElementById('classSurveyModalClose').addEventListener('click', closeClassSurveyModal);
-  document.getElementById('classSurveyModalCancel').addEventListener('click', closeClassSurveyModal);
-  classSurveyOverlay.addEventListener('click', (e) => { if(e.target === classSurveyOverlay) closeClassSurveyModal(); });
-  document.getElementById('classSurveyModalSave').addEventListener('click', () => {
-    const title = document.getElementById('cs_title').value.trim();
-    const className = document.getElementById('cs_class').value;
-    const status = document.getElementById('cs_status').value;
-    if(!title){
-      showToast('لطفاً عنوان نظرسنجی را وارد کنید');
-      return;
+    function render(){
+      row.classList.toggle('is-on', enabled);
+      toggle.classList.toggle('is-on', enabled);
+      label.textContent = enabled ? 'رده سنی برای این کلاس فعال است' : 'رده سنی برای این کلاس غیرفعال است';
+      minEl.disabled = !enabled;
+      maxEl.disabled = !enabled;
+      if(!enabled){ minEl.value = ''; maxEl.value = ''; minEl._last = ''; maxEl._last = ''; }
     }
-    if(editingClassSurveyId){
-      const s = CLASS_SURVEYS.find(x => x.id === editingClassSurveyId);
-      s.title = title; s.className = className; s.status = status;
-      s.questions = [...csDraftQuestions];
-      s.answerConfig = { ...csAnswerConfig, mcOptions: [...csAnswerConfig.mcOptions] };
-      showToast('نظرسنجی به‌روزرسانی شد');
-    } else {
-      CLASS_SURVEYS.push({ id: nextClassSurveyId++, title, className, status, questions: [...csDraftQuestions], answerConfig: { ...csAnswerConfig, mcOptions: [...csAnswerConfig.mcOptions] }, date: new Date().toLocaleDateString('fa-IR') });
-      showToast('نظرسنجی جدید افزوده شد');
-    }
-    renderClassSurveys();
-    closeClassSurveyModal();
-  });
-  renderClassSurveys();
+
+    [minEl, maxEl].forEach(function(el){
+      el._last = '';
+      el.addEventListener('input', function(){
+        // ارقام فارسی (۰-۹) و عربی (٠-٩) به انگلیسی تبدیل می‌شوند، بقیه‌ی کاراکترها حذف
+        let v = el.value.replace(/[۰-۹٠-٩]/g, function(d){ return '۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩'.indexOf(d) % 10; }).replace(/[^0-9]/g, '');
+        v = v.replace(/^0+(?=\d)/, '');                            // صفر اضافی اول عدد (۰۰۷ -> ۷)
+        if(v !== '' && Number(v) > 100) v = el._last;              // بیشتر از ۱۰۰ قبول نیست
+        el.value = v;
+        el._last = v;
+      });
+    });
+
+    toggle.addEventListener('click', function(){
+      enabled = !enabled;
+      render();
+      if(enabled) minEl.focus();
+    });
+    render();
+
+    return {
+      // مقدار فرستاده‌شده به بک‌اند
+      get: function(){
+        return {
+          age_limit_enabled: enabled,
+          min_age: enabled && minEl.value !== '' ? Number(minEl.value) : null,
+          max_age: enabled && maxEl.value !== '' ? Number(maxEl.value) : null
+        };
+      },
+      // متن خطا (یا null اگر مشکلی نیست)
+      validate: function(){
+        if(!enabled) return null;
+        if(minEl.value === '' || maxEl.value === '') return 'لطفاً حداقل و حداکثر سن را وارد کنید';
+        if(Number(minEl.value) > Number(maxEl.value)) return 'حداقل سن نباید از حداکثر سن بیشتر باشد';
+        return null;
+      },
+      set: function(isEnabled, min, max){
+        enabled = !!isEnabled;
+        render();
+        if(enabled){
+          minEl.value = (min === null || min === undefined) ? '' : String(min);
+          maxEl.value = (max === null || max === undefined) ? '' : String(max);
+          minEl._last = minEl.value; maxEl._last = maxEl.value;
+        }
+      },
+      reset: function(){ enabled = false; render(); }
+    };
+  }
+
+  // نشان «رده سنی: ۲۰ تا ۶۰ سال» زیر نام کلاس در جدول‌ها
+  function classAgeBadge(c){
+    if(!c.ageLimitEnabled || c.minAge === null || c.minAge === undefined || c.maxAge === null || c.maxAge === undefined) return '';
+    return `<div class="exam-badge">رده سنی: ${toPersianDigits(c.minAge)} تا ${toPersianDigits(c.maxAge)} سال</div>`;
+  }
 
   // ---- مدیریت کلاس: لیست کلاس‌ها ----
   // ---- کلاس‌ها - حالا واقعاً از بک‌اند (class_management.Class) خوانده می‌شود ----
@@ -5053,6 +6103,7 @@
       termOrder: c.term_order,
       lessonName: c.lesson_name,
       hasOnlineExam: c.has_online_exam,
+      ageLimitEnabled: c.age_limit_enabled, minAge: c.min_age, maxAge: c.max_age,
       students: null, // فقط هنگام نیاز (پرینت/اکسل/جزئیات/افزودن دانش‌پژوه) لود می‌شود
     };
   }
@@ -5140,7 +6191,7 @@
       <tr data-id="${c.id}">
         <td>${toPersianDigits(i + 1)}</td>
         <td>${genderIconSvg(c.gender)}</td>
-        <td>${c.name}${c.hasOnlineExam ? '<div class="exam-badge">آزمون آنلاین دارد</div>' : ''}</td>
+        <td>${c.name}${c.hasOnlineExam ? '<div class="exam-badge">آزمون آنلاین دارد</div>' : ''}${classAgeBadge(c)}</td>
         <td>${deptNameById(c.dept)}</td>
         <td>${c.teacher || '—'}</td>
         <td>${classScheduleText(c)}</td>
@@ -5643,6 +6694,7 @@
   const classExamLabel = document.getElementById('classExamStatusLabel');
   const classExamRow = document.getElementById('classExamStatusRow');
   const classDescInput = document.getElementById('f_class_desc');
+  const classAge = createAgeLimitControl('ce');   // رده سنی (ویرایش)
   classCapacityInput.addEventListener('input', onlyDigitsInput);
 
   let classExamEnabled = false;
@@ -5700,6 +6752,7 @@
     classGenderSelect.value = c.gender || '';
     classExamEnabled = !!c.hasOnlineExam;
     renderClassExamToggle();
+    classAge.set(c.ageLimitEnabled, c.minAge, c.maxAge);
     classDescInput.value = c.desc || '';
     classOverlay.classList.add('open');
   }
@@ -5733,10 +6786,19 @@
       return;
     }
     if(!editingClassId) return; // این مودال فقط برای ویرایش است
+    if(!classDaySelect.value){
+      showToast('لطفاً روز برگزاری کلاس را انتخاب کنید');
+      return;
+    }
     const startTimeVal = getTimeSpinnerValue('f_class_start');
     const entryTimeVal = getTimeSpinnerValue('f_class_entry');
     if(timeToMinutes(startTimeVal) >= timeToMinutes(entryTimeVal)){
       showToast('ساعت شروع کلاس باید قبل از ساعت پایان کلاس باشد');
+      return;
+    }
+    const editAgeError = classAge.validate();
+    if(editAgeError){
+      showToast(editAgeError);
       return;
     }
     const existing = CLASSES.find(x => x.id === editingClassId);
@@ -5754,6 +6816,7 @@
       is_national: !!existing.isNational,
       is_published: existing.published,
       has_online_exam: classExamEnabled,
+      ...classAge.get(),   // age_limit_enabled / min_age / max_age
     };
 
     const saveBtn = document.getElementById('classModalSave');
@@ -5798,6 +6861,7 @@
     if(!ciDept) return;
 
     let ciExamEnabled = false;
+    const ciAge = createAgeLimitControl('ci');   // رده سنی (درج)
 
     function renderCiExamToggle(){
       ciExamRow.classList.toggle('is-on', ciExamEnabled);
@@ -5930,6 +6994,11 @@
         showToast('ساعت شروع کلاس باید قبل از ساعت پایان کلاس باشد');
         return;
       }
+      const ageError = ciAge.validate();
+      if(ageError){
+        showToast(ageError);
+        return;
+      }
 
       const insertBtn = document.getElementById('btnInsertClass');
       insertBtn.disabled = true;
@@ -5961,6 +7030,7 @@
             name, lesson, department: dept, branch, teacher, capacity: Number(capacity), term,
             day, start_time: startTime, entry_time: entryTime, gender,
             class_type: 'حضوری', is_national: false, is_published: true, has_online_exam: ciExamEnabled,
+            ...ciAge.get(),   // age_limit_enabled / min_age / max_age
           })
         })
         .then(async res => {
@@ -5988,6 +7058,7 @@
       ciDesc.value = '';
       ciExamEnabled = false;
       renderCiExamToggle();
+      ciAge.reset();
         })
         .catch(err => showToast(err.message || 'خطا در ثبت کلاس؛ دوباره تلاش کنید'))
         .finally(() => { insertBtn.disabled = false; });
@@ -6013,6 +7084,226 @@
       .catch(() => { LESSONS = []; });
   }
   loadLessons();
+
+  // ---- بانک سوالات (زیرمجموعه‌ی آزمون): شعبه همیشه همان شعبه‌ی خودِ این
+  // مسئول است (pickedClassBranch) - نیازی به انتخاب شعبه نیست. فقط
+  // دپارتمان -> لیست درس‌ها -> سوالات همان درس ----
+  let qbSelectedLessonId = null;
+  let QB_QUESTIONS = [];
+
+  function refreshQbDeptOptions(){
+    const sel = document.getElementById('qbDeptSelect');
+    if(!sel) return;
+    const activeIds = pickedClassBranch ? branchDeptIds(pickedClassBranch) : [];
+    const activeDepts = DEPARTMENTS.filter(d => activeIds.includes(d.id));
+    sel.innerHTML = `<option value="">— انتخاب دپارتمان —</option>` +
+      activeDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+    renderQbLessonList();
+  }
+
+  function showQbLessonListPane(){
+    qbSelectedLessonId = null;
+    document.getElementById('qbQuestionsWrap').classList.add('hide');
+    renderQbLessonList();
+  }
+
+  function renderQbLessonList(){
+    const deptSel = document.getElementById('qbDeptSelect');
+    const deptId = deptSel ? (Number(deptSel.value) || null) : null;
+    const noDeptState = document.getElementById('qbNoDeptState');
+    const listWrap = document.getElementById('qbLessonListWrap');
+    document.getElementById('qbQuestionsWrap').classList.add('hide');
+
+    if(!deptId){
+      if(noDeptState) noDeptState.classList.remove('hide');
+      if(listWrap) listWrap.classList.add('hide');
+      return;
+    }
+    if(noDeptState) noDeptState.classList.add('hide');
+    if(listWrap) listWrap.classList.remove('hide');
+
+    const lessons = LESSONS.filter(l => l.dept === deptId && (!pickedClassBranch || l.branch === pickedClassBranch));
+    const body = document.getElementById('qbLessonListBody');
+    if(lessons.length === 0){
+      body.innerHTML = `<tr class="empty-row"><td colspan="4">درسی برای این دپارتمان ثبت نشده است</td></tr>`;
+      return;
+    }
+    body.innerHTML = lessons.map((l, i) => `
+      <tr data-id="${l.id}">
+        <td>${toPersianDigits(i + 1)}</td>
+        <td style="text-align:right;">${l.name}</td>
+        <td id="qbCount_${l.id}">—</td>
+        <td class="row-actions">
+          <button class="btn-ghost qb-edit-exam-btn" type="button" data-id="${l.id}" data-name="${l.name}">ویرایش آزمون</button>
+        </td>
+      </tr>
+    `).join('');
+
+    body.querySelectorAll('.qb-edit-exam-btn').forEach(btn => {
+      btn.addEventListener('click', () => openLessonQuestions(Number(btn.dataset.id), btn.dataset.name));
+    });
+
+    lessons.forEach(l => {
+      fetch(`${API_BASE_URL}/classmgmt/questions/?lesson=${l.id}`, { credentials: 'include' })
+        .then(res => res.ok ? res.json() : [])
+        .then(list => {
+          const cell = document.getElementById(`qbCount_${l.id}`);
+          if(cell) cell.textContent = toPersianDigits((list || []).length);
+        })
+        .catch(() => {});
+    });
+  }
+  if(document.getElementById('qbDeptSelect')) document.getElementById('qbDeptSelect').addEventListener('change', renderQbLessonList);
+
+  function openLessonQuestions(lessonId, lessonName){
+    qbSelectedLessonId = lessonId;
+    document.getElementById('qbCurrentLessonName').textContent = `سوالات درس: ${lessonName}`;
+    document.getElementById('qbLessonListWrap').classList.add('hide');
+    document.getElementById('qbQuestionsWrap').classList.remove('hide');
+    loadQbQuestions();
+  }
+  if(document.getElementById('btnBackToQbLessonList')) document.getElementById('btnBackToQbLessonList').addEventListener('click', showQbLessonListPane);
+
+  function loadQbQuestions(){
+    const body = document.getElementById('qbTableBody');
+    body.innerHTML = `<tr class="empty-row"><td colspan="4">در حال بارگذاری...</td></tr>`;
+    fetch(`${API_BASE_URL}/classmgmt/questions/?lesson=${qbSelectedLessonId}`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(list => { QB_QUESTIONS = list || []; renderQbQuestions(); })
+      .catch(() => { QB_QUESTIONS = []; renderQbQuestions(); });
+  }
+
+  function renderQbQuestions(){
+    const body = document.getElementById('qbTableBody');
+    if(QB_QUESTIONS.length === 0){
+      body.innerHTML = `<tr class="empty-row"><td colspan="4">هنوز سؤالی برای این درس ثبت نشده است</td></tr>`;
+      return;
+    }
+    body.innerHTML = QB_QUESTIONS.map((q, i) => `
+      <tr data-id="${q.id}">
+        <td>${toPersianDigits(i + 1)}</td>
+        <td style="text-align:right;">${q.text}</td>
+        <td>${toPersianDigits(q.options.length)} گزینه</td>
+        <td class="row-actions">
+          <div class="icon-btn question-edit-btn" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+          <div class="icon-btn danger question-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
+        </td>
+      </tr>
+    `).join('');
+
+    body.querySelectorAll('.question-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => openEditQuestion(Number(btn.closest('tr').dataset.id)));
+    });
+    body.querySelectorAll('.question-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteQuestion(Number(btn.closest('tr').dataset.id)));
+    });
+  }
+
+  // ---- مودال افزودن/ویرایش سؤال ----
+  const questionOverlay = document.getElementById('questionModalOverlay');
+  let editingQuestionId = null;
+
+  function renderQOptionInputs(count, existingOptions){
+    const wrap = document.getElementById('q_options_list');
+    const opts = existingOptions || [];
+    let html = '';
+    for(let i = 0; i < count; i++){
+      const val = opts[i] ? opts[i].text : '';
+      const isChecked = opts[i] ? !!opts[i].is_correct : false;
+      html += `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" class="q-correct-checkbox" value="${i}" ${isChecked ? 'checked' : ''} style="width:18px;height:18px;flex-shrink:0;">
+          <input type="text" class="q-option-input" data-index="${i}" placeholder="گزینه ${toPersianDigits(i + 1)}" value="${val}" style="flex:1;">
+        </div>
+      `;
+    }
+    wrap.innerHTML = html;
+  }
+  document.getElementById('q_option_count').addEventListener('change', (e) => {
+    renderQOptionInputs(Number(e.target.value));
+  });
+
+  function openAddQuestion(){
+    editingQuestionId = null;
+    document.getElementById('questionModalTitle').textContent = 'افزودن سؤال';
+    document.getElementById('q_text').value = '';
+    document.getElementById('q_option_count').value = '4';
+    renderQOptionInputs(4);
+    questionOverlay.classList.add('open');
+  }
+  function openEditQuestion(id){
+    const item = QB_QUESTIONS.find(x => x.id === id);
+    if(!item) return;
+    editingQuestionId = id;
+    document.getElementById('questionModalTitle').textContent = 'ویرایش سؤال';
+    document.getElementById('q_text').value = item.text;
+    document.getElementById('q_option_count').value = String(item.options.length);
+    renderQOptionInputs(item.options.length, item.options);
+    questionOverlay.classList.add('open');
+  }
+  function closeQuestionModal(){ questionOverlay.classList.remove('open'); }
+  function deleteQuestion(id){
+    if(!confirm('آیا از حذف این سؤال مطمئن هستید؟')) return;
+    fetch(`${API_BASE_URL}/classmgmt/questions/${id}/`, {
+      method: 'DELETE', credentials: 'include',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
+    })
+      .then(() => { showToast('سؤال حذف شد'); loadQbQuestions(); })
+      .catch(() => showToast('خطا در حذف سؤال؛ دوباره تلاش کنید'));
+  }
+
+  document.getElementById('btnAddQuestion').addEventListener('click', openAddQuestion);
+  document.getElementById('questionModalClose').addEventListener('click', closeQuestionModal);
+  document.getElementById('questionModalCancel').addEventListener('click', closeQuestionModal);
+  questionOverlay.addEventListener('click', (e) => { if(e.target === questionOverlay) closeQuestionModal(); });
+
+  document.getElementById('questionModalSave').addEventListener('click', () => {
+    const text = document.getElementById('q_text').value.trim();
+    const optionInputs = Array.from(document.querySelectorAll('.q-option-input'));
+    const correctIndexes = Array.from(document.querySelectorAll('.q-correct-checkbox:checked')).map(cb => Number(cb.value));
+
+    if(!text){
+      showToast('لطفاً متن سؤال را وارد کنید');
+      return;
+    }
+    const options = optionInputs.map((inp, i) => ({ text: inp.value.trim(), is_correct: correctIndexes.includes(i) }));
+    if(options.some(o => !o.text)){
+      showToast('لطفاً متن همه‌ی گزینه‌ها را وارد کنید');
+      return;
+    }
+    if(correctIndexes.length === 0){
+      showToast('لطفاً حداقل یک گزینه‌ی صحیح را مشخص کنید');
+      return;
+    }
+    if(correctIndexes.length === options.length){
+      showToast('همه‌ی گزینه‌ها نمی‌توانند صحیح باشند');
+      return;
+    }
+
+    const payload = { lesson: qbSelectedLessonId, text, options };
+    const url = editingQuestionId
+      ? `${API_BASE_URL}/classmgmt/questions/${editingQuestionId}/`
+      : `${API_BASE_URL}/classmgmt/questions/`;
+    const method = editingQuestionId ? 'PATCH' : 'POST';
+
+    fetch(url, {
+      method, credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: JSON.stringify(payload),
+    })
+      .then(async res => {
+        const data = await res.json().catch(() => ({}));
+        if(!res.ok) throw new Error(Object.values(data)[0] || 'خطا در ذخیره‌ی سؤال');
+        return data;
+      })
+      .then(() => {
+        showToast(editingQuestionId ? 'سؤال به‌روزرسانی شد' : 'سؤال جدید افزوده شد');
+        closeQuestionModal();
+        loadQbQuestions();
+      })
+      .catch(err => showToast(err.message || 'خطا در ذخیره‌ی سؤال'));
+  });
+  window.refreshQbDeptOptions = refreshQbDeptOptions;
 
   function renderLessons(){
     const q = (document.getElementById('lessonSearch').value || '').trim();
@@ -6406,7 +7697,7 @@
     body.innerHTML = classesInDept.map((c, i) => `
       <tr>
         <td>${toPersianDigits(i + 1)}</td>
-        <td>${c.name}${c.hasOnlineExam ? '<div class="exam-badge">آزمون آنلاین دارد</div>' : ''}</td>
+        <td>${c.name}${c.hasOnlineExam ? '<div class="exam-badge">آزمون آنلاین دارد</div>' : ''}${classAgeBadge(c)}</td>
         <td>${c.teacher || '—'}</td>
         <td>${toPersianDigits(c.capacity || 0)}</td>
         <td>${toPersianDigits(c.studentsCount || 0)}</td>
@@ -6563,11 +7854,12 @@
   document.getElementById('btnSaveExamScores').addEventListener('click', () => {
     if(!currentExamClassId) return;
     const saveBtn = document.getElementById('btnSaveExamScores');
+    const cls = CLASSES.find(c => String(c.id) === String(currentExamClassId));
 
     const updates = currentExamStudents.map(s => {
       const pending = pendingExamChanges[s.id] || {};
       const changed = pending.score !== s.score || !!pending.absent !== !!s.absent;
-      return { enrollmentId: s.id, score: pending.score, absent: !!pending.absent, changed };
+      return { enrollmentId: s.id, memberId: s.member, score: pending.score, absent: !!pending.absent, changed };
     }).filter(u => u.changed);
 
     if(updates.length === 0){
@@ -6580,7 +7872,18 @@
       method: 'PATCH', credentials: 'include',
       headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
       body: JSON.stringify({ score: u.score, absent: u.absent })
-    }).then(res => { if(!res.ok) throw new Error('خطا در ذخیره‌ی نمره'); })))
+    }).then(res => {
+      if(!res.ok) throw new Error('خطا در ذخیره‌ی نمره');
+      // عدم حضور در کلاس یعنی محرومیت از سیستم - همان سیستم محرومیتی که
+      // توی مدیریت اعضا هم استفاده می‌شود (MemberBan)
+      if(u.absent && u.memberId){
+        return fetch(`${API_BASE_URL}/members/${u.memberId}/ban/`, {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+          body: JSON.stringify({ reason: `عدم حضور در کلاس «${cls ? cls.name : ''}»` })
+        }).catch(() => {});
+      }
+    })))
       .then(() => {
         showToast('نمرات ثبت شد');
         showExamScoresFor(currentExamClassId);
@@ -6660,7 +7963,7 @@
 
         const eparams = new URLSearchParams();
         eparams.set('member_national_id', person.national_id);
-        eparams.set('member_membership_code', person.membership_code);
+        if(person.membership_code) eparams.set('member_membership_code', person.membership_code);
         return Promise.all([
           fetch(`${API_BASE_URL}/classmgmt/enrollments/?${eparams.toString()}`, { credentials: 'include' }).then(res => res.ok ? res.json() : []),
           fetch(`${API_BASE_URL}/calendar/terms/`, { credentials: 'include' }).then(res => res.ok ? res.json() : []),
@@ -6870,7 +8173,7 @@
 
           @media print{
             body{background:#fff;padding:0;}
-            .cert-page{max-width:100%;aspect-ratio:auto;}
+            .cert-page{max-width:265mm;margin:0 auto;}
             @page{size:landscape;margin:10mm;}
           }
         </style>
@@ -6991,6 +8294,916 @@
   mNidInput.addEventListener('input', onlyDigitsInput);
   mCodeInput.addEventListener('input', onlyDigitsInput);
 
+  // ---- امور مالی: پرداخت به مدرسین (حق‌التدریس هر کلاس) ----
+  // فهرست کلاس‌های دارای مدرس در «یک شعبه» نشان داده می‌شود؛ مسئول آموزش فقط شعبه‌ی خودش را می‌بیند (همان که هنگام ثبتش تعیین شده) و انتخابی در کار نیست.
+  // هر کلاس حداکثر یک پرداخت فعال دارد: ثبت ← (ویرایش) ← (لغو و ثبت دوباره). همه‌ی تغییرها در «سابقه» می‌ماند.
+  // مبلغ = ساعت کل دوره (خودکار از زمان‌بندی کلاس) × نرخ هر ساعت؛ مبلغ نهایی قابل ویرایش دستی است.
+  let FIN_ROWS = [];             // ردیف‌های شعبه‌ی جاری (هر ردیف: یک کلاس + پرداخت فعالش)
+  let FIN_NOTEACHER = [];        // کلاس‌های همین شعبه که «مدرس ندارند» و به همین دلیل در فهرست پرداخت نیستند
+  let finBranch = '';
+  let finState = 'idle';         // idle | nobranch | ok | error
+  let finErrorText = '';
+  let finPayRow = null;          // کلاسی که مودال پرداخت برایش باز است
+  let finPayEditing = null;      // پرداخت فعالی که در حال ویرایش است (null = ثبت جدید)
+  let finAmountTouched = false;  // اگر مبلغ را دستی عوض کرده باشی، با تغییر نرخ دیگر خودکار عوض نمی‌شود
+  let finCancelPayment = null;
+  
+
+  // اعداد را فارسی و با جداکننده‌ی هزارگان نشان می‌دهیم
+  function finNum(n){ return (n === null || n === undefined || n === '') ? '—' : Number(n).toLocaleString('fa-IR'); }
+  function finHours(h){ return (h === null || h === undefined) ? '—' : Number(h).toLocaleString('fa-IR', { maximumFractionDigits: 2 }); }
+  function finToEnglish(text){
+    return String(text).replace(/[۰-۹٠-٩]/g, function(d){ return '۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩'.indexOf(d) % 10; });
+  }
+  // فیلدهای پول (نرخ و مبلغ): هنگام تایپ، رقم‌ها سه‌تا سه‌تا جدا می‌شوند (۱٬۶۰۰٬۰۰۰ به‌شکل 1,600,000).
+  // فقط رقم پذیرفته می‌شود (حرف حذف، رقم فارسی/عربی به انگلیسی)، صفر ابتدای عدد حذف می‌شود، و مکان‌نما
+  // بعد از هر بار جداسازی سر جای درست می‌ماند (تایپ وسط عدد هم به‌هم نمی‌ریزد). مقدار «واقعی» عدد
+  // بدون ویرگول با finRaw خوانده می‌شود.
+  function finRaw(el){ return finToEnglish(el.value).replace(/[^0-9]/g, ''); }
+  function finGroup(digits){ return String(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function finSetMoney(el, n){
+    const raw = (n === null || n === undefined || n === '') ? '' : String(n).replace(/[^0-9]/g, '');
+    el.value = finGroup(raw);
+    el._prevRaw = raw;
+  }
+  function finFormatMoneyInput(el, ev){
+    const pos = el.selectionStart === null ? el.value.length : el.selectionStart;
+    let cleaned = finRaw(el);
+    // چند رقم قبل از مکان‌نما هست (برای برگرداندن مکان‌نما بعد از جداسازی)
+    let before = finToEnglish(el.value.slice(0, pos)).replace(/[^0-9]/g, '').length;
+    const prev = el._prevRaw || '';
+    // اگر با Backspace/Delete فقط یک «,» پاک شده (ارقام همان‌اند)، به‌جایش رقم کنارش پاک می‌شود
+    // (وگرنه ویرگول دوباره برمی‌گشت و پاک‌کردن گیر می‌کرد)
+    if(ev && cleaned === prev){
+      if(ev.inputType === 'deleteContentBackward' && before > 0){
+        cleaned = cleaned.slice(0, before - 1) + cleaned.slice(before); before--;
+      } else if(ev.inputType === 'deleteContentForward' && before < cleaned.length){
+        cleaned = cleaned.slice(0, before) + cleaned.slice(before + 1);
+      }
+    }
+    const stripped = cleaned.replace(/^0+(?=\d)/, '');
+    before = Math.max(0, before - (cleaned.length - stripped.length));
+    cleaned = stripped;
+    const formatted = finGroup(cleaned);
+    el.value = formatted;
+    el._prevRaw = cleaned;
+    let newPos = 0, count = 0;
+    while(newPos < formatted.length && count < before){ if(/\d/.test(formatted[newPos])) count++; newPos++; }
+    try { el.setSelectionRange(newPos, newPos); } catch(e){}
+  }
+
+  // امروز به شمسی (YYYY/MM/DD)؛ برای مقدار پیش‌فرض تاریخ پرداخت
+  function finTodayJalali(){
+    try {
+      const parts = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      const get = function(t){ return parts.find(function(p){ return p.type === t; }).value; };
+      return `${get('year')}/${get('month')}/${get('day')}`;
+    } catch(e){ return ''; }
+  }
+  // متن «نوع و نرخ» یک پرداخت: «ساعتی — ۱۲۰٬۰۰۰ / ساعت» یا «ماهیانه — ۲٬۰۰۰٬۰۰۰ / ماه»
+  function finFeeText(p){
+    if(p.fee_type === 'monthly') return 'ماهیانه' + (p.monthly_fee ? ` — ${finNum(p.monthly_fee)} / ماه` : '');
+    return 'ساعتی' + (p.hourly_rate ? ` — ${finNum(p.hourly_rate)} / ساعت` : '');
+  }
+  function finDateTime(iso){ return iso ? new Date(iso).toLocaleString('fa-IR') : ''; }
+
+  function finResolveBranch(){ return Promise.resolve(pickedClassBranchReady); }
+  const FIN_NOBRANCH_TEXT = 'شعبه‌ی شما در سیستم ثبت نشده؛ با مدیر آموزش تماس بگیرید.';
+
+  function renderFinBranchBar(){
+    const bar = document.getElementById('financeBranchBar');
+    if(finBranch){
+      document.getElementById('financeBranchName').textContent = finBranch;
+      bar.classList.remove('hide');
+    } else {
+      bar.classList.add('hide');
+    }
+  }
+
+  // فیلترهای بالای جدول را از روی داده‌ی خوانده‌شده می‌سازد (انتخاب فعلی حفظ می‌شود)
+  function fillFinFilters(){
+    const termSel = document.getElementById('finTerm');
+    const teacherSel = document.getElementById('finTeacher');
+    const keepTerm = termSel.value, keepTeacher = teacherSel.value;
+    const terms = {}, teachers = {};
+    FIN_ROWS.forEach(function(r){
+      if(r.term_id) terms[r.term_id] = r.term_label;
+      teachers[r.teacher_id] = r.teacher_name;
+    });
+    termSel.innerHTML = '<option value="">همه‌ی ترم‌ها</option>' + Object.keys(terms).map(id => `<option value="${id}">${escFb(terms[id])}</option>`).join('');
+    teacherSel.innerHTML = '<option value="">همه‌ی مدرسین</option>' + Object.keys(teachers).sort((a, b) => teachers[a].localeCompare(teachers[b], 'fa')).map(id => `<option value="${id}">${escFb(teachers[id])}</option>`).join('');
+    termSel.value = terms[keepTerm] ? keepTerm : '';
+    teacherSel.value = teachers[keepTeacher] ? keepTeacher : '';
+  }
+
+  function finFilteredRows(){
+    const term = document.getElementById('finTerm').value;
+    const teacher = document.getElementById('finTeacher').value;
+    const status = document.getElementById('finStatus').value;
+    return FIN_ROWS.filter(function(r){
+      if(term && String(r.term_id) !== term) return false;
+      if(teacher && String(r.teacher_id) !== teacher) return false;
+      if(status === 'paid' && !r.payment) return false;
+      if(status === 'unpaid' && r.payment) return false;
+      return true;
+    });
+  }
+
+  function renderFinance(){
+    const content = document.getElementById('finContent');
+    const emptyEl = document.getElementById('finEmpty');
+    const pickWrap = document.getElementById('finPickWrap');
+    renderFinBranchBar();
+    if(pickWrap) pickWrap.style.display = 'none';
+
+    if(finState !== 'ok'){
+      content.classList.add('hide');
+      emptyEl.style.display = 'block';
+      if(finState === 'nobranch'){
+        emptyEl.textContent = FIN_NOBRANCH_TEXT;
+        if(pickWrap) pickWrap.style.display = '';
+      } else {
+        emptyEl.textContent = finErrorText || 'دریافت اطلاعات از سرور ممکن نشد؛ دوباره تلاش کنید.';
+      }
+      return;
+    }
+    content.classList.remove('hide');
+
+    const rows = finFilteredRows();
+    // کلاس‌های بدون مدرس (در فهرست پرداخت نمی‌آیند): یادداشتی بالای صفحه می‌گوید کدام‌ها هستند و چه باید کرد
+    const noteEl = document.getElementById('finNoTeacherNote');
+    if(FIN_NOTEACHER.length){
+      const names = FIN_NOTEACHER.map(c => c.class_name).join('، ');
+      noteEl.textContent = FIN_ROWS.length
+        ? `${finNum(FIN_NOTEACHER.length)} کلاس دیگر در این شعبه مدرس ندارند و در این فهرست نیستند: ${names} — برای ثبت پرداخت، ابتدا از «مدیریت کلاس» برایشان مدرس تعیین کنید.`
+        : `در این شعبه ${finNum(FIN_NOTEACHER.length)} کلاس وجود دارد ولی هیچ‌کدام مدرس ندارند (${names}). پرداخت به مدرسِ هر کلاس ثبت می‌شود؛ پس ابتدا از «مدیریت کلاس» برای این کلاس‌ها مدرس تعیین کنید.`;
+      noteEl.classList.remove('hide');
+    } else {
+      noteEl.classList.add('hide');
+    }
+    // ---- کارت‌های جمع‌بندی (بر اساس فیلترهای فعلی) ----
+    let hoursAll = 0, paidCount = 0, paidAmount = 0, unpaidCount = 0, unpaidHours = 0;
+    rows.forEach(function(r){
+      hoursAll += r.hours || 0;
+      if(r.payment){ paidCount++; paidAmount += r.payment.amount; }
+      else { unpaidCount++; unpaidHours += r.hours || 0; }
+    });
+    const card = function(icon, number, label, sub){
+      return `<div class="stat-card fin-card"><div class="stat-icon"><svg viewBox="0 0 24 24">${icon}</svg></div><div class="stat-number">${number}</div><div class="stat-label">${label}</div>${sub ? `<div class="fin-sub">${sub}</div>` : ''}</div>`;
+    };
+    document.getElementById('finCards').innerHTML =
+      card('<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>', finNum(rows.length), 'کلاس', `${finHours(hoursAll)} ساعت`) +
+      card('<polyline points="20 6 9 17 4 12"></polyline>', finNum(paidAmount), 'پرداخت‌شده (تومان)', `${finNum(paidCount)} کلاس`) +
+      card('<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>', finNum(unpaidCount), 'کلاس پرداخت‌نشده', `${finHours(unpaidHours)} ساعت`);
+
+    // ---- جمع‌بندی هر مدرس ----
+    const byTeacher = {};
+    rows.forEach(function(r){
+      const t = byTeacher[r.teacher_id] || (byTeacher[r.teacher_id] = { name: r.teacher_name, classes: 0, hours: 0, paidAmount: 0, unpaid: 0, unpaidHours: 0 });
+      t.classes++;
+      t.hours += r.hours || 0;
+      if(r.payment) t.paidAmount += r.payment.amount; else { t.unpaid++; t.unpaidHours += r.hours || 0; }
+    });
+    document.getElementById('finTeacherSummary').innerHTML = Object.values(byTeacher)
+      .sort((a, b) => a.name.localeCompare(b.name, 'fa'))
+      .map(t => `<tr><td>${escFb(t.name)}</td><td>${finNum(t.classes)}</td><td>${finHours(t.hours)}</td><td>${finNum(t.paidAmount)}</td><td>${finNum(t.unpaid)}</td><td>${finHours(t.unpaidHours)}</td></tr>`).join('')
+      || '<tr><td colspan="6" style="text-align:center;color:#8a9a9a;">—</td></tr>';
+
+    // ---- جدول کلاس‌ها ----
+    document.getElementById('finTableBody').innerHTML = rows.map(function(r, i){
+      const p = r.payment;
+      const actions = p
+        ? `<button class="btn-ghost fin-btn" data-fin="edit" data-id="${r.class_id}" type="button">ویرایش</button>
+           <button class="btn-ghost fin-btn" data-fin="cancel" data-id="${r.class_id}" type="button">لغو پرداخت</button>`
+        : `<button class="btn-primary fin-btn" data-fin="pay" data-id="${r.class_id}" type="button">ثبت پرداخت</button>`;
+      const history = r.has_history ? `<button class="btn-ghost fin-btn" data-fin="history" data-id="${r.class_id}" type="button">سابقه</button>` : '';
+      return `<tr>
+        <td>${finNum(i + 1)}</td>
+        <td>${escFb(r.teacher_name)}</td>
+        <td>${escFb(r.class_name)}</td>
+        <td>${escFb(r.term_label) || '—'}</td>
+        <td>${finHours(r.hours)}</td>
+        <td>${p ? finFeeText(p) : '—'}</td>
+        <td>${p ? finNum(p.amount) : '—'}</td>
+        <td><span class="status-tag ${p ? 'status-active' : 'status-leave'}">${p ? 'پرداخت‌شده' : 'پرداخت‌نشده'}</span></td>
+        <td>${p ? escFb(toPersianDigits(p.paid_date)) : '—'}</td>
+        <td><div class="fin-actions">${actions}${history}</div></td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="10" style="text-align:center;color:#8a9a9a;padding:22px;">${FIN_ROWS.length ? 'موردی با این فیلترها پیدا نشد.' : (FIN_NOTEACHER.length ? 'هنوز پرداختی برای نمایش نیست.' : 'در این شعبه هنوز کلاسی ثبت نشده است.')}</td></tr>`;
+    emptyEl.style.display = 'none';
+  }
+
+  function loadFinance(){
+    return finResolveBranch().then(function(branch){
+      finBranch = branch || '';
+      if(!finBranch){
+        FIN_ROWS = []; FIN_NOTEACHER = []; finState = 'nobranch'; renderFinance();
+        return null;
+      }
+      return surveyApi(`/finance/teacher-payments/classes/?branch=${encodeURIComponent(finBranch)}`, 'GET').then(function(data){
+        FIN_ROWS = data.rows || [];
+        FIN_NOTEACHER = data.classes_without_teacher || [];
+        finState = 'ok';
+        fillFinFilters();
+        renderFinance();
+      });
+    }).catch(function(err){
+      FIN_ROWS = []; FIN_NOTEACHER = []; finState = 'error'; finErrorText = err.message; renderFinance();
+    });
+  }
+
+  ['finTerm', 'finTeacher', 'finStatus'].forEach(function(id){ document.getElementById(id).addEventListener('change', renderFinance); });
+  const btnChangeFinanceBranch = document.getElementById('btnChangeFinanceBranch');
+  if(btnChangeFinanceBranch) btnChangeFinanceBranch.addEventListener('click', () => openDeptBranchModal('finance'));
+  const btnPickFinanceBranch = document.getElementById('btnPickFinanceBranch');
+  if(btnPickFinanceBranch) btnPickFinanceBranch.addEventListener('click', () => openDeptBranchModal('finance'));
+
+  // ---- مودال ثبت/ویرایش پرداخت ----
+  const finPayOverlay = document.getElementById('finPayModalOverlay');
+  const finRateEl = document.getElementById('fin_rate');
+  const finAmountEl = document.getElementById('fin_amount');
+  const finMonthlyEl = document.getElementById('fin_monthly');
+  const finPayErrorEl = document.getElementById('finPayError');
+  attachShamsiDatePicker('fin_date');
+
+  // نرخ و مبلغ: فقط رقم، با جداسازی سه‌رقمی هنگام تایپ (نگاه کنید به finFormatMoneyInput)
+  [finRateEl, finMonthlyEl, finAmountEl].forEach(function(el){
+    el.addEventListener('input', function(ev){ finFormatMoneyInput(el, ev); });
+  });
+  function updateFinAmountHint(){
+    document.getElementById('finAmountHint').textContent = finRaw(finAmountEl) ? `${finNum(finRaw(finAmountEl))} تومان` : '';
+  }
+  // نوع حق‌الزحمه: «ساعتی» (نرخ هر ساعت × ساعت کل دوره) یا «ماهیانه» (مبلغ ثابت؛ هر دوره یک ماه حساب می‌شود)
+  function finFeeType(){ return document.querySelector('input[name="finFeeType"]:checked').value; }
+  // تا وقتی مبلغ پرداختی را دستی عوض نکرده‌ای، از روی نوع حق‌الزحمه خودکار محاسبه (یا خالی) می‌شود
+  function recomputeFinAmount(){
+    if(finAmountTouched || !finPayRow) return;
+    let value = '';
+    if(finFeeType() === 'monthly'){
+      value = finRaw(finMonthlyEl) ? Number(finRaw(finMonthlyEl)) : '';
+    } else if(finPayRow.hours && finRaw(finRateEl)){
+      value = Math.round(finPayRow.hours * Number(finRaw(finRateEl)));
+    }
+    finSetMoney(finAmountEl, value);
+    updateFinAmountHint();
+  }
+  function applyFinFeeType(){
+    const monthly = finFeeType() === 'monthly';
+    document.getElementById('finRateField').style.display = monthly ? 'none' : '';
+    document.getElementById('finMonthlyField').style.display = monthly ? '' : 'none';
+    recomputeFinAmount();
+  }
+  document.querySelectorAll('input[name="finFeeType"]').forEach(function(r){ r.addEventListener('change', applyFinFeeType); });
+  [finRateEl, finMonthlyEl].forEach(function(el){
+    el.addEventListener('input', function(){ recomputeFinAmount(); updateFinAmountHint(); });
+  });
+  finAmountEl.addEventListener('input', function(){ finAmountTouched = true; updateFinAmountHint(); });
+
+  function showFinPayError(msg){ finPayErrorEl.textContent = msg; finPayErrorEl.classList.add('show'); }
+  function clearFinPayError(){ finPayErrorEl.textContent = ''; finPayErrorEl.classList.remove('show'); }
+  function closeFinPayModal(){ finPayOverlay.classList.remove('open'); finPayRow = null; finPayEditing = null; }
+  document.getElementById('finPayClose').addEventListener('click', closeFinPayModal);
+  document.getElementById('finPayCancel').addEventListener('click', closeFinPayModal);
+  finPayOverlay.addEventListener('click', (e) => { if(e.target === finPayOverlay) closeFinPayModal(); });
+
+  function finRowInfo(row){
+    return `<b>${escFb(row.teacher_name)}</b> — ${escFb(row.class_name)}<br>ترم: ${escFb(row.term_label) || '—'} · ساعت کل دوره: ${finHours(row.hours)}${row.hours ? '' : ' (زمان‌بندی کلاس کامل نیست؛ مبلغ را دستی وارد کنید)'}`;
+  }
+
+  function openFinPayModal(row, payment){
+    finPayRow = row;
+    finPayEditing = payment || null;
+    clearFinPayError();
+    document.getElementById('finPayTitle').textContent = payment ? 'ویرایش پرداخت' : 'ثبت پرداخت';
+    document.getElementById('finPaySaveLabel').textContent = payment ? 'ذخیره‌ی تغییرات' : 'ثبت پرداخت';
+    document.getElementById('finPayInfo').innerHTML = finRowInfo(row);
+
+    // نوع و نرخ/مبلغ پیش‌فرض: مقدارِ همین پرداخت (ویرایش) یا آخرین پرداختِ ثبت‌شده برای همین مدرس
+    let src = payment;
+    if(!src){
+      // «آخرین» پرداخت همین مدرس بر اساس زمان ثبت (نه ترتیب ردیف‌های جدول)
+      const mine = FIN_ROWS.filter(r => r.teacher_id === row.teacher_id && r.payment).map(r => r.payment)
+        .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+      src = mine[0] || null;
+    }
+    const feeType = (src && src.fee_type) || 'hourly';
+    document.querySelector(`input[name="finFeeType"][value="${feeType}"]`).checked = true;
+    finSetMoney(finRateEl, (src && src.hourly_rate) || '');
+    finSetMoney(finMonthlyEl, (src && src.monthly_fee) || '');
+    if(payment){
+      finSetMoney(finAmountEl, payment.amount);
+      finAmountTouched = true;
+    } else {
+      finSetMoney(finAmountEl, '');
+      finAmountTouched = false;
+    }
+    applyFinFeeType();    // فیلد مربوط به نوع را نشان می‌دهد و (برای ثبت جدید) مبلغ را خودکار پر می‌کند
+    document.getElementById('fin_date').value = payment ? toPersianDigits(payment.paid_date) : toPersianDigits(finTodayJalali());
+    document.getElementById('fin_method').value = payment ? payment.method : 'bank';
+    document.getElementById('fin_tracking').value = payment ? payment.tracking_code : '';
+    document.getElementById('fin_note').value = payment ? payment.note : '';
+    updateFinAmountHint();
+    finPayOverlay.classList.add('open');
+  }
+
+  document.getElementById('finPaySave').addEventListener('click', () => {
+    if(!finPayRow) return;
+    clearFinPayError();
+    const amount = Number(finRaw(finAmountEl) || 0);
+    const date = document.getElementById('fin_date').value.trim();
+    if(!amount || amount < 1){ showFinPayError('مبلغ پرداختی را وارد کنید.'); return; }
+    if(!date){ showFinPayError('تاریخ پرداخت را انتخاب کنید.'); return; }
+    const feeType = finFeeType();
+    const body = {
+      amount: amount,
+      fee_type: feeType,
+      // فقط مقدارِ مربوط به نوع حق‌الزحمه فرستاده می‌شود
+      hourly_rate: (feeType === 'hourly' && finRaw(finRateEl)) ? Number(finRaw(finRateEl)) : null,
+      monthly_fee: (feeType === 'monthly' && finRaw(finMonthlyEl)) ? Number(finRaw(finMonthlyEl)) : null,
+      paid_date: date,
+      method: document.getElementById('fin_method').value,
+      tracking_code: document.getElementById('fin_tracking').value.trim(),
+      note: document.getElementById('fin_note').value.trim()
+    };
+    const editing = finPayEditing;
+    if(!editing) body.class_id = finPayRow.class_id;
+    const btn = document.getElementById('finPaySave');
+    btn.disabled = true;
+    (editing ? surveyApi(`/finance/teacher-payments/${editing.id}/`, 'PATCH', body) : surveyApi('/finance/teacher-payments/', 'POST', body))
+      .then(() => {
+        closeFinPayModal();
+        showToast(editing ? 'تغییرات پرداخت ذخیره شد' : 'پرداخت ثبت شد');
+        return loadFinance();
+      })
+      .catch(err => showFinPayError(err.message))
+      .then(() => { btn.disabled = false; });
+  });
+
+  // ---- مودال لغو پرداخت ----
+  const finCancelOverlay = document.getElementById('finCancelModalOverlay');
+  function closeFinCancelModal(){ finCancelOverlay.classList.remove('open'); finCancelPayment = null; }
+  document.getElementById('finCancelClose').addEventListener('click', closeFinCancelModal);
+  document.getElementById('finCancelBack').addEventListener('click', closeFinCancelModal);
+  finCancelOverlay.addEventListener('click', (e) => { if(e.target === finCancelOverlay) closeFinCancelModal(); });
+  document.getElementById('finCancelSave').addEventListener('click', () => {
+    if(!finCancelPayment) return;
+    const errEl = document.getElementById('finCancelError');
+    errEl.classList.remove('show');
+    const btn = document.getElementById('finCancelSave');
+    btn.disabled = true;
+    surveyApi(`/finance/teacher-payments/${finCancelPayment.id}/cancel/`, 'POST', { reason: document.getElementById('fin_cancel_reason').value.trim() })
+      .then(() => { closeFinCancelModal(); showToast('پرداخت لغو شد'); return loadFinance(); })
+      .catch(err => { errEl.textContent = err.message; errEl.classList.add('show'); })
+      .then(() => { btn.disabled = false; });
+  });
+
+  // ---- مودال سابقه‌ی پرداخت‌های یک کلاس ----
+  const finHistoryOverlay = document.getElementById('finHistoryModalOverlay');
+  function closeFinHistoryModal(){ finHistoryOverlay.classList.remove('open'); }
+  document.getElementById('finHistoryClose').addEventListener('click', closeFinHistoryModal);
+  document.getElementById('finHistoryOk').addEventListener('click', closeFinHistoryModal);
+  finHistoryOverlay.addEventListener('click', (e) => { if(e.target === finHistoryOverlay) closeFinHistoryModal(); });
+
+  function openFinHistory(row){
+    const body = document.getElementById('finHistoryBody');
+    document.getElementById('finHistoryTitle').textContent = `سابقه‌ی پرداخت — ${row.class_name}`;
+    body.innerHTML = '<div style="color:#8a9a9a;">در حال دریافت…</div>';
+    finHistoryOverlay.classList.add('open');
+    surveyApi(`/finance/teacher-payments/history/?class=${row.class_id}`, 'GET')
+      .then(function(data){
+        body.innerHTML = (data.payments || []).map(function(p){
+          const logs = (p.logs || []).map(function(l){
+            const changes = (l.changes || []).map(c => `${escFb(c.field)}: ${c.old ? escFb(c.old) + ' ← ' : ''}${escFb(c.new)}`).join(' | ');
+            return `<div class="fin-log"><b>${escFb(l.action_display)}</b> — ${escFb(l.actor_name)} — ${escFb(finDateTime(l.at))}${changes ? `<br>${changes}` : ''}</div>`;
+          }).join('');
+          const canceled = p.status === 'canceled';
+          return `<div class="fin-hist-card ${canceled ? 'canceled' : ''}">
+            <div class="fin-hist-head">
+              <span class="status-tag ${canceled ? 'status-leave' : 'status-active'}">${escFb(p.status_display)}</span>
+              <b>${finNum(p.amount)} تومان</b>
+              <span>${escFb(toPersianDigits(p.paid_date))}</span>
+              <span>${escFb(p.fee_type_display)}</span>
+              <span>${escFb(p.method_display)}</span>
+              ${p.tracking_code ? `<span dir="ltr">${escFb(p.tracking_code)}</span>` : ''}
+            </div>
+            ${p.note ? `<div class="fin-log">توضیحات: ${escFb(p.note)}</div>` : ''}
+            ${canceled && p.cancel_reason ? `<div class="fin-log">دلیل لغو: ${escFb(p.cancel_reason)}</div>` : ''}
+            ${logs}
+          </div>`;
+        }).join('') || '<div style="color:#8a9a9a;">سابقه‌ای ثبت نشده است.</div>';
+      })
+      .catch(err => { body.innerHTML = `<div class="member-edit-error show">${escFb(err.message)}</div>`; });
+  }
+
+  // ---- دکمه‌های هر ردیف (ثبت/ویرایش/لغو/سابقه) ----
+  document.getElementById('finTableBody').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-fin]');
+    if(!btn) return;
+    const row = FIN_ROWS.find(r => r.class_id === Number(btn.dataset.id));
+    if(!row) return;
+    const action = btn.dataset.fin;
+    if(action === 'pay') openFinPayModal(row, null);
+    else if(action === 'edit') openFinPayModal(row, row.payment);
+    else if(action === 'history') openFinHistory(row);
+    else if(action === 'cancel'){
+      finCancelPayment = row.payment;
+      document.getElementById('fin_cancel_reason').value = '';
+      document.getElementById('finCancelError').classList.remove('show');
+      document.getElementById('finCancelInfo').innerHTML = finRowInfo(row) + `<br>مبلغ: <b>${finNum(row.payment.amount)} تومان</b> — ${escFb(toPersianDigits(row.payment.paid_date))}`;
+      finCancelOverlay.classList.add('open');
+    }
+  });
+
+  // ---- خروجی اکسل (همان ردیف‌های فیلترشده‌ی جدول) ----
+  document.getElementById('btnFinExport').addEventListener('click', () => {
+    const rows = finFilteredRows();
+    if(!rows.length){ showToast('موردی برای خروجی وجود ندارد'); return; }
+    const cell = v => `<td>${escFb(v === null || v === undefined ? '' : v)}</td>`;
+    const head = ['مدرس', 'کلاس', 'ترم', 'ساعت کل', 'نوع حق‌الزحمه', 'نرخ هر ساعت', 'حق‌الزحمه‌ی ماهیانه', 'مبلغ (تومان)', 'وضعیت', 'تاریخ پرداخت', 'روش پرداخت', 'شماره پیگیری'];
+    const body = rows.map(function(r){
+      const p = r.payment;
+      return '<tr>' + [r.teacher_name, r.class_name, r.term_label, r.hours, p ? p.fee_type_display : '', p ? p.hourly_rate : '', p ? p.monthly_fee : '', p ? p.amount : '',
+        p ? 'پرداخت‌شده' : 'پرداخت‌نشده', p ? p.paid_date : '', p ? p.method_display : '', p ? p.tracking_code : ''].map(cell).join('') + '</tr>';
+    }).join('');
+    const html = `<html dir="rtl"><head><meta charset="UTF-8"></head><body><table border="1"><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${body}</table></body></html>`;
+    const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `پرداخت-مدرسین-${finBranch}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('فایل اکسل دانلود شد');
+  });
+
+  // ---- لاگ سامانه ----
+  // گزارش رویدادها (ورود/خروج، ویرایش‌ها، پرداخت‌ها ...). فقط خواندنی است: هیچ دکمه‌ی ویرایش یا حذفی وجود ندارد.
+  // مسئول آموزش: فقط رویدادهای شعبه‌ی خودش (سرور اجبار می‌کند).
+  let LOG_PAGE = 1;
+  let LOG_TOTAL = 0;
+  let LOG_PAGE_SIZE = 50;
+  let LOG_ROWS = [];
+  let LOG_TICKET = 0;    // شماره‌ی آخرین درخواست: پاسخ درخواست‌های قدیمی‌تر (که دیرتر می‌رسند) نادیده گرفته می‌شود
+
+  const logTableBody = document.getElementById('logTableBody');
+  attachShamsiDatePicker('log_date_from');
+  attachShamsiDatePicker('log_date_to');
+
+  function logQueryString(page){
+    const params = new URLSearchParams();
+    const add = function(key, value){ if(value) params.set(key, value); };
+    add('category', document.getElementById('log_category').value);
+    add('status', document.getElementById('log_status').value);
+    add('q', document.getElementById('log_q').value.trim());
+    add('date_from', document.getElementById('log_date_from').value.trim());
+    add('date_to', document.getElementById('log_date_to').value.trim());
+    if(page) params.set('page', page);
+    if(page) params.set('page_size', LOG_PAGE_SIZE);
+    return params.toString();
+  }
+
+  function logStatusBadge(status, display){
+    if(status === 'blocked') return `<span class="log-blocked">${escFb(display)}</span>`;
+    return `<span class="status-tag ${status === 'success' ? 'status-active' : 'status-leave'}">${escFb(display)}</span>`;
+  }
+
+  // هشدار امنیتی بالای صفحه: شمارنده‌های ۲۴ ساعت گذشته
+  function renderLogAlert(summary){
+    const box = document.getElementById('logAlert');
+    const parts = [];
+    if(summary.anonymous_changes) parts.push(`${finNum(summary.anonymous_changes)} تغییر مدیریتی بدون ورود به سامانه (ناشناس)`);
+    if(summary.failed_logins) parts.push(`${finNum(summary.failed_logins)} ورود ناموفق`);
+    if(summary.lockouts) parts.push(`${finNum(summary.lockouts)} مسدودی حساب`);
+    if(summary.unknown_attempts) parts.push(`${finNum(summary.unknown_attempts)} حسابِ ناشناس که با آن تلاش ورود شده`);
+    if(summary.active_lockouts) parts.push(`${finNum(summary.active_lockouts)} حساب هم‌اکنون مسدود است`);
+    if(!parts.length){ box.classList.add('hide'); return; }
+    box.textContent = 'هشدار امنیتی — در ۲۴ ساعت گذشته: ' + parts.join('، ') + '.';
+    box.className = 'log-alert ' + (summary.lockouts || summary.active_lockouts || summary.anonymous_changes ? 'danger' : 'warn');
+  }
+
+  function renderLogs(){
+    const emptyEl = document.getElementById('logEmpty');
+    logTableBody.innerHTML = LOG_ROWS.map(function(r){
+      const actor = r.actor_name
+        ? `${escFb(r.actor_name)}${r.actor_role ? `<span class="log-sub">${escFb(r.actor_role)}</span>` : ''}`
+        : (r.target_type === 'حساب' ? `<span class="log-sub" style="margin:0;">حساب: ${escFb(r.target_label)}</span>`
+          : ((r.category !== 'auth' && r.status === 'success' && !['applicant_create', 'class_enroll', 'enroll_rejected'].includes(r.action))
+              ? '<span class="log-blocked" title="این تغییر بدون ورود به سامانه انجام شده؛ یعنی این مسیر برای عموم باز است">بدون ورود</span>'
+              : '<span class="log-sub" style="margin:0;" title="بدون ورود به سامانه">ناشناس</span>'));
+      const extra = r.identifier ? `<span class="log-sub" dir="ltr" style="text-align:right;">${escFb(r.identifier)}</span>` : (r.target_label && r.target_type !== 'حساب' ? `<span class="log-sub">${escFb(r.target_label)}</span>` : '');
+      return `<tr class="log-row ${r.status === 'blocked' ? 'log-row-blocked' : ''}" data-id="${r.id}">
+        <td style="white-space:nowrap;text-align:right;" dir="ltr">${escFb(finDateTime(r.created_at))}</td>
+        <td><span class="log-cat">${escFb(r.category_display)}</span></td>
+        <td>${escFb(r.summary)}${extra}</td>
+        <td>${actor}</td>
+        <td>${escFb(r.branch) || '—'}</td>
+        <td>${logStatusBadge(r.status, r.status_display)}</td>
+      </tr>`;
+    }).join('');
+    emptyEl.style.display = LOG_ROWS.length ? 'none' : 'block';
+    emptyEl.textContent = 'رویدادی با این فیلترها پیدا نشد.';
+    const pages = Math.max(1, Math.ceil(LOG_TOTAL / LOG_PAGE_SIZE));
+    document.getElementById('logPageInfo').textContent = LOG_TOTAL ? `صفحه ${finNum(LOG_PAGE)} از ${finNum(pages)} (${finNum(LOG_TOTAL)} رویداد)` : '';
+    document.getElementById('btnLogPrev').disabled = LOG_PAGE <= 1;
+    document.getElementById('btnLogNext').disabled = LOG_PAGE >= pages;
+  }
+
+  function loadLogs(page){
+    LOG_PAGE = page || 1;
+    const ticket = ++LOG_TICKET;
+    return surveyApi(`/logs/?${logQueryString(LOG_PAGE)}`, 'GET')
+      .then(function(data){
+        if(ticket !== LOG_TICKET) return;      // فیلتر بعدی زده شده؛ این پاسخ قدیمی است
+        LOG_ROWS = data.results || [];
+        LOG_TOTAL = data.count || 0;
+        renderLogAlert(data.summary || {});
+        renderLogs();
+      })
+      .catch(function(err){
+        if(ticket !== LOG_TICKET) return;
+        LOG_ROWS = []; LOG_TOTAL = 0;
+        renderLogs();
+        const emptyEl = document.getElementById('logEmpty');
+        emptyEl.style.display = 'block';
+        emptyEl.textContent = err.message || 'دریافت لاگ از سرور ممکن نشد.';
+      });
+  }
+
+  document.getElementById('btnLogSearch').addEventListener('click', () => loadLogs(1));
+  document.getElementById('log_q').addEventListener('keydown', (e) => { if(e.key === 'Enter') loadLogs(1); });
+  ['log_category', 'log_status'].forEach(function(id){ document.getElementById(id).addEventListener('change', () => loadLogs(1)); });
+  document.getElementById('btnLogClear').addEventListener('click', () => {
+    ['log_category', 'log_status', 'log_q', 'log_date_from', 'log_date_to'].forEach(function(id){ document.getElementById(id).value = ''; });
+    loadLogs(1);
+  });
+  document.getElementById('btnLogPrev').addEventListener('click', () => { if(LOG_PAGE > 1) loadLogs(LOG_PAGE - 1); });
+  document.getElementById('btnLogNext').addEventListener('click', () => loadLogs(LOG_PAGE + 1));
+
+  // خروجی CSV (با همان فیلترها؛ اکسل آن را مستقیم باز می‌کند)
+  document.getElementById('btnLogExport').addEventListener('click', () => {
+    fetch(`${API_BASE_URL}/logs/export/?${logQueryString(0)}`, { credentials: 'include' })
+      .then(function(res){ if(!res.ok) throw new Error('دریافت خروجی ممکن نشد.'); return res.blob(); })
+      .then(function(blob){
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'لاگ-سامانه.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast('فایل خروجی دانلود شد');
+      })
+      .catch(err => showToast(err.message));
+  });
+
+  // ---- جزئیات یک رویداد ----
+  const logDetailOverlay = document.getElementById('logDetailModalOverlay');
+  function closeLogDetail(){ logDetailOverlay.classList.remove('open'); }
+  document.getElementById('logDetailClose').addEventListener('click', closeLogDetail);
+  document.getElementById('logDetailOk').addEventListener('click', closeLogDetail);
+  logDetailOverlay.addEventListener('click', (e) => { if(e.target === logDetailOverlay) closeLogDetail(); });
+
+  logTableBody.addEventListener('click', (e) => {
+    const tr = e.target.closest('tr[data-id]');
+    if(!tr) return;
+    const r = LOG_ROWS.find(x => x.id === Number(tr.dataset.id));
+    if(!r) return;
+    const cell = (label, html, full) => `<div${full ? ' class="full"' : ''}><span>${label}</span><b>${html}</b></div>`;
+    document.getElementById('logDetailGrid').innerHTML = [
+      cell('زمان', `<span dir="ltr">${escFb(finDateTime(r.created_at))}</span>`),
+      cell('دسته', escFb(r.category_display)),
+      cell('رویداد', escFb(r.summary), true),
+      cell('وضعیت', logStatusBadge(r.status, r.status_display)),
+      cell('شعبه', escFb(r.branch) || '—'),
+      cell('انجام‌دهنده', r.actor_name ? `${escFb(r.actor_name)}${r.actor_role ? ' (' + escFb(r.actor_role) + ')' : ''}` : 'ناشناس (بدون ورود)'),
+      cell('مورد', r.target_label ? `${escFb(r.target_type)}: ${escFb(r.target_label)}` : '—'),
+      cell('شناسه‌ی واردشده', r.identifier ? `<span dir="ltr">${escFb(r.identifier)}</span>` : '—'),
+      cell('آدرس IP', r.ip ? `<span dir="ltr">${escFb(r.ip)}</span>` : '—'),
+      cell('مرورگر', r.user_agent ? `<span dir="ltr" style="font-weight:500;font-size:11.5px;">${escFb(r.user_agent)}</span>` : '—', true),
+    ].join('');
+    document.getElementById('logDetailChanges').innerHTML = (r.changes && r.changes.length)
+      ? '<div class="fin-h" style="margin:16px 0 6px;">تغییرات (قبل ← بعد)</div>' + r.changes.map(c =>
+          `<div class="log-change"><b>${escFb(c.field)}:</b> ${c.old ? escFb(c.old) + ' ← ' : ''}${escFb(c.new)}</div>`).join('')
+      : '';
+    logDetailOverlay.classList.add('open');
+  });
+
+  // ---- ویرایش مجوزهای تدریس مدرس (دکمه‌ی «ویرایش مجوزها» جلوی هر مدرس تأییدشده) ----
+  // ترتیب کار: ۱) دپارتمان را انتخاب می‌کنی ۲) درس‌های «همان شعبه» در آن دپارتمان نشان داده
+  // می‌شود و جلوی هر درس یک کلید فعال/غیرفعال هست ۳) «ذخیره» مجوزها را در سرور ثبت می‌کند.
+  // شعبه: مسئول آموزش: شعبه‌ی خودش (همان که هنگام ثبتش تعیین شده)، نه چیزی قابل‌انتخاب
+  let tpTeacher = null;          // مدرسی که پنجره برایش باز است
+  let tpBranch = '';             // شعبه‌ی درس‌هایی که نشان داده می‌شود
+  let tpOriginal = new Set();    // مجوزهای فعالِ ذخیره‌شده در سرور (id درس‌ها)
+  let tpEnabled = new Set();     // وضعیت فعلی کلیدها (هنوز ذخیره نشده)
+
+  const tpOverlay = document.getElementById('teacherPermModalOverlay');
+  const tpDeptSelect = document.getElementById('teacherPermDept');
+  const tpLessonsEl = document.getElementById('teacherPermLessons');
+  const tpHintEl = document.getElementById('teacherPermHint');
+  const tpErrorEl = document.getElementById('teacherPermError');
+  const tpSaveBtn = document.getElementById('teacherPermSave');
+
+  function showTpError(msg){ tpErrorEl.textContent = msg; tpErrorEl.classList.add('show'); }
+  function clearTpError(){ tpErrorEl.textContent = ''; tpErrorEl.classList.remove('show'); }
+
+  // دپارتمان‌های خودِ مدرس (همان‌هایی که برای مدرس ثبت شده) و درس‌های یک دپارتمان در شعبه
+  function tpDepartmentsOf(teacher){
+    const names = new Set(teacher.depts || []);
+    return DEPARTMENTS.filter(d => names.has(d.name));
+  }
+  function tpLessonsOf(deptId){
+    return LESSONS.filter(l => l.branch === tpBranch && l.dept === deptId)
+      .sort((a, b) => a.name.localeCompare(b.name, 'fa'));
+  }
+
+  // فهرست دپارتمان‌ها، با تعداد مجوزهای فعال هر دپارتمان کنار نامش
+  function renderTpDeptOptions(){
+    const keep = tpDeptSelect.value;
+    const depts = tpDepartmentsOf(tpTeacher);
+    tpDeptSelect.innerHTML = '<option value="">— انتخاب دپارتمان —</option>' + depts.map(d => {
+      const active = tpLessonsOf(d.id).filter(l => tpEnabled.has(l.id)).length;
+      return `<option value="${d.id}">${escFb(d.name)}${active ? ` — ${toPersianDigits(active)} درس فعال` : ''}</option>`;
+    }).join('');
+    tpDeptSelect.value = keep;
+  }
+
+  function renderTpLessons(){
+    const deptId = Number(tpDeptSelect.value) || null;
+    if(!deptId){
+      tpLessonsEl.innerHTML = '';
+      tpHintEl.textContent = 'برای دیدن درس‌ها، ابتدا دپارتمان را انتخاب کنید.';
+      return;
+    }
+    const lessons = tpLessonsOf(deptId);
+    const deptName = (DEPARTMENTS.find(d => d.id === deptId) || {}).name || '';
+    if(!lessons.length){
+      tpLessonsEl.innerHTML = '';
+      tpHintEl.textContent = `برای دپارتمان «${deptName}» در شعبه‌ی «${tpBranch}» هنوز درسی تعریف نشده است (از بخش «درس» اضافه کنید).`;
+      return;
+    }
+    tpHintEl.textContent = 'کلید هر درس را برای صدور مجوز تدریس «فعال» کنید؛ درس‌های غیرفعال برای این مدرس مجوز ندارند.';
+    tpLessonsEl.innerHTML = lessons.map(l => {
+      const on = tpEnabled.has(l.id);
+      return `
+        <div class="tp-row ${on ? 'is-on' : ''}" data-id="${l.id}">
+          <span class="tp-name">${escFb(l.name)}</span>
+          <span class="tp-state">${on ? 'فعال' : 'غیرفعال'}</span>
+          <button class="toggle-switch-sm tp-toggle ${on ? 'is-on' : ''}" data-id="${l.id}" type="button" title="${on ? 'غیرفعال‌کردن مجوز' : 'فعال‌کردن مجوز'}"><span class="knob"></span></button>
+        </div>`;
+    }).join('');
+  }
+
+  tpDeptSelect.addEventListener('change', () => { clearTpError(); renderTpLessons(); });
+  tpLessonsEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tp-toggle');
+    if(!btn) return;
+    const id = Number(btn.dataset.id);
+    if(tpEnabled.has(id)) tpEnabled.delete(id); else tpEnabled.add(id);
+    clearTpError();
+    renderTpLessons();
+    renderTpDeptOptions();
+  });
+
+  function closeTeacherPermModal(){
+    tpOverlay.classList.remove('open');
+    tpTeacher = null;
+  }
+  document.getElementById('teacherPermClose').addEventListener('click', closeTeacherPermModal);
+  document.getElementById('teacherPermCancel').addEventListener('click', closeTeacherPermModal);
+  tpOverlay.addEventListener('click', (e) => { if(e.target === tpOverlay) closeTeacherPermModal(); });
+
+  window.openTeacherPermModal = function(id){
+    const teacher = REAL_TEACHERS.find(x => x.id === id);
+    if(!teacher) return;
+    if(!tpPrecheck()) return;
+    tpTeacher = teacher;
+    tpBranch = '';
+    tpOriginal = new Set();
+    tpEnabled = new Set();
+    clearTpError();
+    tpSaveBtn.disabled = true;
+    tpDeptSelect.disabled = true;
+    tpDeptSelect.innerHTML = '<option value="">در حال دریافت…</option>';
+    tpLessonsEl.innerHTML = '';
+    tpHintEl.textContent = '';
+    document.getElementById('teacherPermTitle').textContent = `ویرایش مجوزهای ${teacher.name}`;
+    document.getElementById('teacherPermBranch').textContent = '—';
+    tpOverlay.classList.add('open');
+
+    // شعبه، دپارتمان‌ها و درس‌ها باید آماده باشند؛ بعد مجوزهای فعلی مدرس از سرور خوانده می‌شود
+    Promise.all([
+      tpResolveBranch(teacher),
+      DEPARTMENTS.length ? null : loadDepartmentsAndLinks(),
+      LESSONS.length ? null : loadLessons()
+    ])
+      .then(results => {
+        if(tpTeacher !== teacher) return null;
+        const branch = results[0];
+        if(!branch){
+          throw new Error(TP_NO_BRANCH_MESSAGE);
+        }
+        tpBranch = branch;
+        document.getElementById('teacherPermBranch').textContent = branch;
+        return surveyApi(`/classmgmt/teacher-permissions/?teacher=${teacher.id}`, 'GET');
+      })
+      .then(data => {
+        if(!data || tpTeacher !== teacher) return;
+        tpOriginal = new Set(data.lesson_ids || []);
+        tpEnabled = new Set(tpOriginal);
+        tpDeptSelect.disabled = false;
+        tpSaveBtn.disabled = false;
+        renderTpDeptOptions();
+        if(!tpDepartmentsOf(teacher).length){
+          tpHintEl.textContent = 'برای این مدرس دپارتمانی ثبت نشده است؛ ابتدا از «ویرایش» مدرس، دپارتمان‌هایش را مشخص کنید.';
+        } else {
+          renderTpLessons();
+        }
+      })
+      .catch(err => {
+        tpDeptSelect.innerHTML = '<option value="">—</option>';
+        showTpError(err.message || 'خطا در دریافت مجوزها؛ دوباره تلاش کنید.');
+      });
+  };
+
+  tpSaveBtn.addEventListener('click', () => {
+    if(!tpTeacher) return;
+    clearTpError();
+    const enable = [...tpEnabled].filter(id => !tpOriginal.has(id));
+    const disable = [...tpOriginal].filter(id => !tpEnabled.has(id));
+    if(!enable.length && !disable.length){
+      showTpError('تغییری برای ذخیره وجود ندارد.');
+      return;
+    }
+    tpSaveBtn.disabled = true;
+    const teacher = tpTeacher;
+    surveyApi('/classmgmt/teacher-permissions/', 'POST', { teacher: teacher.id, enable: enable, disable: disable })
+      .then(data => {
+        tpOriginal = new Set(data.lesson_ids || []);
+        closeTeacherPermModal();
+        showToast('مجوزهای ' + teacher.name + ' ذخیره شد');
+      })
+      .catch(err => { showTpError(err.message); tpSaveBtn.disabled = false; });
+  });
+
+  function tpPrecheck(){ return true; }   // شعبه‌ی مسئول همیشه از پیش مشخص است (انتخابی نیست)
+  function tpResolveBranch(teacher){ return Promise.resolve(pickedClassBranchReady); }
+  const TP_NO_BRANCH_MESSAGE = 'شعبه‌ی شما در سیستم ثبت نشده؛ با مدیر آموزش تماس بگیرید.';
+
+  // ---- ویرایش اطلاعات اعضا (دکمه‌ی «ویرایش اطلاعات» جلوی هر عضو در صفحه‌ی اعضا) ----
+  // اطلاعات یک عضو «موجود» از اینجا ویرایش و در دیتابیس سدا ذخیره می‌شود (PATCH /api/members/<id>/؛
+  // فقط مدیر/مسئول آموزش). افزودن عضو یا دانش‌پژوه جدید عمداً اینجا وجود ندارد و فقط از پنل ادمین جنگو
+  // ممکن است.
+  const MEMBER_PROVINCES = ['آذربایجان غربی', 'آذربایجان شرقی', 'اردبیل', 'گیلان', 'مازندران', 'گلستان', 'خراسان شمالی', 'خراسان رضوی', 'خراسان جنوبی', 'زنجان', 'قزوین', 'البرز', 'تهران', 'قم', 'سمنان', 'مرکزی', 'همدان', 'کردستان', 'کرمانشاه', 'ایلام', 'لرستان', 'خوزستان', 'چهارمحال و بختیاری', 'کهگیلویه و بویراحمد', 'بوشهر', 'اصفهان', 'یزد', 'فارس', 'کرمان', 'هرمزگان', 'سیستان و بلوچستان'];
+  let memberEditBranchNames = null;     // نام شعب واقعی (یک‌بار از سرور خوانده می‌شود)
+  let memberEditTarget = null;          // عضوی که مودال برایش باز است
+  let memberEditOriginal = null;        // مقدار اولیه‌ی فیلدها (برای فرستادن فقط موارد تغییرکرده)
+  let memberEditOnSaved = null;
+
+  const meOverlay = document.getElementById('memberEditModalOverlay');
+  const meErrorEl = document.getElementById('memberEditError');
+  const meFields = {
+    first_name: document.getElementById('me_first'),
+    last_name: document.getElementById('me_last'),
+    father_name: document.getElementById('me_father'),
+    birth_date: document.getElementById('me_birth'),
+    national_id: document.getElementById('me_nid'),
+    membership_code: document.getElementById('me_code'),
+    phone: document.getElementById('me_phone'),
+    province: document.getElementById('me_province'),
+    branch: document.getElementById('me_branch')
+  };
+  // نام و نام پدر: فقط حروف فارسی (همان قاعده‌ی بقیه‌ی فرم‌های پنل)
+  ['me_first', 'me_last', 'me_father'].forEach(function(id){ enforcePersianOnly(id); });
+  // کد ملی/کد عضویت/موبایل: فقط رقم
+  ['me_nid', 'me_code', 'me_phone'].forEach(function(id){ document.getElementById(id).addEventListener('input', onlyDigitsInput); });
+  // تاریخ تولد: انتخاب از تقویم شمسی (مثل فرم درخواست همکاری مدرس)
+  attachShamsiDatePicker('me_birth');
+
+  function showMemberEditError(msg){ meErrorEl.textContent = msg; meErrorEl.classList.add('show'); }
+  function clearMemberEditError(){ meErrorEl.textContent = ''; meErrorEl.classList.remove('show'); }
+
+  // گزینه‌های یک select؛ اگر مقدار فعلیِ عضو در فهرست نباشد (داده‌ی قدیمی)، همان هم نشان داده
+  // می‌شود تا بی‌صدا حذف نشود (سرور موقع ذخیره نامعتبر بودنش را اعلام می‌کند)
+  function fillMemberSelect(selectEl, names, current, emptyLabel){
+    const list = names.slice();
+    if(current && list.indexOf(current) === -1) list.push(current);
+    selectEl.innerHTML = `<option value="">${emptyLabel}</option>` + list.map(n => `<option value="${escFb(n)}">${escFb(n)}</option>`).join('');
+    selectEl.value = current || '';
+  }
+
+  function loadMemberEditBranches(){
+    if(memberEditBranchNames) return Promise.resolve(memberEditBranchNames);
+    return fetch(`${API_BASE_URL}/core/branches/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(list => { memberEditBranchNames = (list || []).map(b => b.name); return memberEditBranchNames; })
+      .catch(() => []);
+  }
+
+  function openMemberEditModal(member, onSaved){
+    memberEditTarget = member;
+    memberEditOnSaved = onSaved;
+    clearMemberEditError();
+    document.getElementById('memberEditModalTitle').textContent = `ویرایش اطلاعات ${member.first_name} ${member.last_name}`.trim();
+
+    const missingBox = document.getElementById('memberEditMissing');
+    if(member.missing_fields && member.missing_fields.length){
+      missingBox.textContent = 'اطلاعات ناقص: ' + member.missing_fields.join('، ');
+      missingBox.classList.remove('hide');
+    } else {
+      missingBox.classList.add('hide');
+    }
+
+    meFields.first_name.value = member.first_name || '';
+    meFields.last_name.value = member.last_name || '';
+    meFields.father_name.value = member.father_name || '';
+    meFields.birth_date.value = member.birth_date || '';
+    meFields.national_id.value = member.national_id || '';
+    meFields.membership_code.value = member.membership_code || '';
+    meFields.phone.value = member.phone || '';
+    fillMemberSelect(meFields.province, MEMBER_PROVINCES, member.province || '', '— انتخاب استان —');
+    fillMemberSelect(meFields.branch, memberEditBranchNames || [], member.branch || '', '— انتخاب شعبه —');
+    memberEditOriginal = {};
+    Object.keys(meFields).forEach(function(k){ memberEditOriginal[k] = meFields[k].value; });
+    meOverlay.classList.add('open');
+
+    // لیست شعب اگر هنوز نیامده، بعد از رسیدن جایگزین می‌شود (مقدار انتخاب‌شده حفظ می‌شود)
+    if(!memberEditBranchNames){
+      loadMemberEditBranches().then(function(names){
+        if(memberEditTarget !== member) return;
+        const picked = meFields.branch.value;
+        fillMemberSelect(meFields.branch, names, picked, '— انتخاب شعبه —');
+        memberEditOriginal.branch = member.branch || '';
+      });
+    }
+  }
+  function closeMemberEditModal(){
+    meOverlay.classList.remove('open');
+    memberEditTarget = null;
+  }
+  document.getElementById('memberEditModalClose').addEventListener('click', closeMemberEditModal);
+  document.getElementById('memberEditModalCancel').addEventListener('click', closeMemberEditModal);
+  meOverlay.addEventListener('click', (e) => { if(e.target === meOverlay) closeMemberEditModal(); });
+
+  document.getElementById('memberEditModalSave').addEventListener('click', () => {
+    if(!memberEditTarget) return;
+    clearMemberEditError();
+
+    // فقط فیلدهای «تغییرکرده» فرستاده می‌شود، تا داده‌ی قدیمیِ دست‌نخورده مانع ذخیره‌ی بقیه نشود
+    const changes = {};
+    Object.keys(meFields).forEach(function(k){
+      const now = meFields[k].value.trim();
+      if(now !== (memberEditOriginal[k] || '').trim()) changes[k] = now;
+    });
+    if(Object.keys(changes).length === 0){
+      showMemberEditError('تغییری برای ذخیره وجود ندارد.');
+      return;
+    }
+    if('first_name' in changes && !changes.first_name){ showMemberEditError('نام نمی‌تواند خالی باشد.'); return; }
+    if('last_name' in changes && !changes.last_name){ showMemberEditError('نام خانوادگی نمی‌تواند خالی باشد.'); return; }
+    if('national_id' in changes && !/^\d{10}$/.test(toEnglishDigits(changes.national_id))){ showMemberEditError('کد ملی باید دقیقاً ۱۰ رقم باشد.'); return; }
+    if('membership_code' in changes && !/^\d{14}$/.test(toEnglishDigits(changes.membership_code))){ showMemberEditError('کد عضویت باید دقیقاً ۱۴ رقم باشد.'); return; }
+    if('phone' in changes && changes.phone && !/^09\d{9}$/.test(toEnglishDigits(changes.phone))){ showMemberEditError('شماره موبایل باید مثل 09xxxxxxxxx (۱۱ رقم) باشد.'); return; }
+
+    const saveBtn = document.getElementById('memberEditModalSave');
+    saveBtn.disabled = true;
+    const target = memberEditTarget;
+    fetch(`${API_BASE_URL}/members/${target.id}/`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: JSON.stringify(changes)
+    })
+      .then(async res => {
+        const data = await res.json().catch(() => null);
+        if(res.status === 401 || res.status === 403) throw new Error('دسترسی مجاز نیست؛ دوباره با حساب خود وارد شوید.');
+        if(!res.ok){
+          let msg = data && data.detail;
+          if(!msg && data && typeof data === 'object'){
+            const first = Object.values(data)[0];
+            msg = Array.isArray(first) ? first[0] : first;
+          }
+          throw new Error(msg || 'خطا در ذخیره‌ی اطلاعات؛ دوباره تلاش کنید.');
+        }
+        return data;
+      })
+      .then(updated => {
+        // کد ملی ممکن است عوض شده باشد؛ کلید قدیمیِ کش اعضا پاک می‌شود
+        delete MEMBER_CACHE[target.national_id];
+        Object.assign(target, updated);
+        cacheMembers([target]);
+        closeMemberEditModal();
+        if(memberEditOnSaved) memberEditOnSaved(target);
+        showToast(updated.missing_fields && updated.missing_fields.length
+          ? 'اطلاعات ذخیره شد؛ هنوز ناقص است: ' + updated.missing_fields.join('، ')
+          : 'اطلاعات عضو ذخیره شد');
+      })
+      .catch(err => showMemberEditError(err.message))
+      .then(() => { saveBtn.disabled = false; });
+  });
+
   function searchMembers(){
     const nid = toEnglishDigits(mNidInput.value).replace(/[^0-9]/g, '');
     const fname = document.getElementById('m_fname').value.trim();
@@ -7052,6 +9265,7 @@
               <th>نام و نام‌خانوادگی</th>
               <th>کد ملی</th>
               <th>کد عضویت</th>
+              <th>ویرایش</th>
               <th>شعبه</th>
               <th>شماره تماس</th>
               <th>وضعیت</th>
@@ -7062,9 +9276,10 @@
             ${results.map((m, i) => `
               <tr data-id="${m.id}" data-nid="${m.national_id}">
                 <td>${toPersianDigits(i + 1)}</td>
-                <td>${m.first_name} ${m.last_name}</td>
+                <td>${escFb(m.first_name)} ${escFb(m.last_name)}${m.missing_fields && m.missing_fields.length ? `<span class="member-incomplete-tag" title="نواقص: ${escFb(m.missing_fields.join('، '))}">اطلاعات ناقص</span>` : ''}</td>
                 <td dir="ltr" style="text-align:right;">${toPersianDigits(m.national_id)}</td>
                 <td dir="ltr" style="text-align:right;">${m.membership_code ? toPersianDigits(m.membership_code) : '—'}</td>
+                <td><button class="btn-ghost member-edit-btn" data-id="${m.id}" type="button"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>ویرایش اطلاعات</button></td>
                 <td>${m.branch || '—'}</td>
                 <td dir="ltr" style="text-align:right;">${m.phone ? toPersianDigits(m.phone) : '—'}</td>
                 <td>
@@ -7089,6 +9304,13 @@
         </table>
       </div>
     `;
+
+    resultArea.querySelectorAll('.member-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const m = results.find(x => String(x.id) === btn.dataset.id);
+        if(m) openMemberEditModal(m, () => renderMemberResults(results));
+      });
+    });
 
     resultArea.querySelectorAll('.member-ban-toggle').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -7151,12 +9373,17 @@
     document.getElementById('view-' + name).classList.add('active');
     document.querySelectorAll('.side-link').forEach(l => l.classList.toggle('active', l.dataset.view === name));
     if(name === 'reports') updateReportsStats();
+    if(name === 'reports') loadSurveyStatsFromServer();
+    if(name === 'review' || name === 'reports') loadFeedback();
     if(name === 'classManagement') renderClassBranchBar();
     if(name === 'lessons') renderLessonBranchBar();
     if(name === 'courseDept' && !pickedTerm) openTermModal();
-    if(name === 'classSurvey' && !pickedClassSurveyTerm) openClassSurveyTermModal();
-    if(name === 'classExam' && !pickedExamTerm && typeof openExamTermModal === 'function') openExamTermModal();
-    if(name === 'classExam' && pickedExamTerm && typeof renderExamTermBar === 'function') renderExamTermBar();
+    if(name === 'classSurvey') loadClassSurvey(true);
+    if(name === 'finance') loadFinance();
+    if(name === 'logs') loadLogs(1);
+    if(name === 'examScores' && !pickedExamTerm && typeof openExamTermModal === 'function') openExamTermModal();
+    if(name === 'examScores' && pickedExamTerm && typeof renderExamTermBar === 'function') renderExamTermBar();
+    if(name === 'examQuestionBank' && typeof refreshQbDeptOptions === 'function') refreshQbDeptOptions();
     window.scrollTo({top:0, behavior:'smooth'});
   }
   function toPersianDigits(n){
@@ -7272,27 +9499,51 @@
     }
   })();
   function updateReportsStats(){
-    const complaintsRows = document.querySelectorAll('#reviewTabComplaints tbody tr');
-    const suggestionsRows = document.querySelectorAll('#reviewTabSuggestions tbody tr');
-    const respondedRows = document.querySelectorAll('#reviewTabComplaints tbody tr .status-active');
-    const suggestionsRespondedRows = document.querySelectorAll('#reviewTabSuggestions tbody tr .status-active');
-    document.getElementById('statComplaintsCount').textContent = toPersianDigits(complaintsRows.length);
-    document.getElementById('statSuggestionsCount').textContent = toPersianDigits(suggestionsRows.length);
-    document.getElementById('statRespondedCount').textContent = toPersianDigits(respondedRows.length);
-    document.getElementById('statSuggestionsRespondedCount').textContent = toPersianDigits(suggestionsRespondedRows.length);
+    // شمارش‌ها از همان داده‌ی واقعیِ دریافت‌شده از سرور (FEEDBACK_ITEMS) محاسبه می‌شود
+    const complaints = feedbackItemsOf('complaint');
+    const suggestions = feedbackItemsOf('suggestion');
+    const answered = function(list){ return list.filter(function(it){ return it.status === 'answered'; }).length; };
+    document.getElementById('statComplaintsCount').textContent = toPersianDigits(complaints.length);
+    document.getElementById('statSuggestionsCount').textContent = toPersianDigits(suggestions.length);
+    document.getElementById('statRespondedCount').textContent = toPersianDigits(answered(complaints));
+    document.getElementById('statSuggestionsRespondedCount').textContent = toPersianDigits(answered(suggestions));
     renderSurveyStats();
   }
 
-  // ---- آمار نظرسنجی‌ها (داده‌ی نمونه — بعداً از بک‌اند خوانده می‌شود) ----
+  // ---- آمار نظرسنجی (صفحه‌ی گزارش‌ها): از پاسخ‌های واقعی نظرسنجی کلی محاسبه می‌شود ----
+  // فقط «یک» نظرسنجی کلی وجود دارد؛ رأی‌ها از گزینه‌های استاندارد (خیلی خوب … خیلی بد)
+  // سؤال‌های تستی شمرده می‌شود (گزینه‌های سفارشیِ دیگر در این شمارش نمی‌آیند).
   let SURVEY_STATS = {
-    surveysHeld: 14,
-    voters: 386,
-    veryGood: 172,
-    good: 121,
-    average: 58,
-    bad: 24,
-    veryBad: 11
+    surveysHeld: 0,
+    voters: 0,
+    veryGood: 0,
+    good: 0,
+    average: 0,
+    bad: 0,
+    veryBad: 0
   };
+
+  function loadSurveyStatsFromServer(){
+    return fetch(`${API_BASE_URL}/feedback/class-survey/results/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(function(data){
+        const votes = {};
+        data.questions.filter(q => q.kind === 'choice').forEach(function(q){
+          q.options.forEach(function(o){ votes[o.label] = (votes[o.label] || 0) + o.count; });
+        });
+        SURVEY_STATS = {
+          surveysHeld: data.questions.length ? 1 : 0,
+          voters: data.participants,
+          veryGood: votes['خیلی خوب'] || 0,
+          good: votes['خوب'] || 0,
+          average: votes['متوسط'] || 0,
+          bad: votes['بد'] || 0,
+          veryBad: votes['خیلی بد'] || 0
+        };
+        renderSurveyStats();
+      })
+      .catch(function(){});
+  }
 
   function renderSurveyStats(){
     document.getElementById('statSurveysHeldCount').textContent = toPersianDigits(SURVEY_STATS.surveysHeld);
@@ -7351,6 +9602,10 @@
   document.querySelectorAll('.skeleton-card:not(.nav-card)').forEach(el => {
     el.addEventListener('click', () => showToast('این بخش به‌زودی تکمیل می‌شود'));
   });
+  // کارت‌ها و موارد منوی «به‌زودی» (امور مالی، لاگ، گزارشات، مدیریت اسلاید شو): جایی نمی‌روند
+  document.querySelectorAll('[data-soon]').forEach(el => {
+    el.addEventListener('click', () => showToast('این بخش به‌زودی تکمیل می‌شود'));
+  });
 
   // ---- فعال/غیرفعال‌سازی بخش انتقادات و پیشنهادات (فقط مدیر آموزش) ----
   let feedbackSectionEnabled = true;
@@ -7371,6 +9626,17 @@
     grid.classList.toggle('is-disabled', !feedbackSectionEnabled);
   }
   renderFeedbackStatus();
+
+  // وضعیت واقعی کلید را از سرور می‌خوانیم (ذخیره‌شده در تنظیمات سایت)
+  fetch(`${API_BASE_URL}/classmgmt/site-settings/`, { credentials: 'include' })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if(data && typeof data.feedback_enabled === 'boolean'){
+        feedbackSectionEnabled = data.feedback_enabled;
+        renderFeedbackStatus();
+      }
+    })
+    .catch(() => {});
 
   document.getElementById('feedbackToggle').addEventListener('click', () => {
     showToast('شما دسترسی انجام این عملیات را ندارید');

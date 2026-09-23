@@ -102,6 +102,23 @@ class TeacherApplicantSerializer(serializers.ModelSerializer):
     photo = serializers.FileField(required=True)
     resume = serializers.FileField(required=True)
 
+    # نکته‌ی مهم: چک حجم فایل توی جاوااسکریپت (teacher-registration.html)
+    # به‌تنهایی کافی نیست - چون با غیرفعال‌کردن جاوااسکریپت یا زدن مستقیم
+    # به همین API (مثلاً با Postman) به‌سادگی دور زده می‌شود. اعتبارسنجی
+    # واقعی و غیرقابل‌دورزدن همین‌جا، سمت سرور، انجام می‌شود.
+    MAX_PHOTO_SIZE = 100 * 1024        # ۱۰۰ کیلوبایت
+    MAX_RESUME_SIZE = 5 * 1024 * 1024  # ۵ مگابایت
+
+    def validate_photo(self, value):
+        if value.size > self.MAX_PHOTO_SIZE:
+            raise serializers.ValidationError('حجم عکس نباید بیشتر از ۱۰۰ کیلوبایت باشد.')
+        return value
+
+    def validate_resume(self, value):
+        if value.size > self.MAX_RESUME_SIZE:
+            raise serializers.ValidationError('حجم رزومه نباید بیشتر از ۵ مگابایت باشد.')
+        return value
+
     class Meta:
         model = TeacherApplicant
         fields = [

@@ -101,6 +101,42 @@ class MemberBan(models.Model):
         return f'محرومیت {self.member}'
 
 
+class EmployeeOTPCode(models.Model):
+    """
+    کد یکبارمصرف پیامکی برای «فراموشی رمز عبور» مدرسین - دقیقاً مشابه
+    OTPCode بالا، با این تفاوت که به‌جای دانش‌پژوه (Member) به یک مدرس
+    (Employee) وصل است و بر اساس شماره موبایل کار می‌کند - چون مدرس با
+    نام‌کاربری اختصاصی وارد می‌شود، نه کد ملی.
+
+    یک مدل جدا (به‌جای اضافه‌کردن Employee به OTPCode بالا) عمداً انتخاب
+    شده تا مدل و منطق دانش‌پژوهِ از قبل کار‌کننده دست‌نخورده بماند.
+    """
+    PURPOSE_RESET = 'reset'
+    PURPOSE_CHOICES = [
+        (PURPOSE_RESET, 'فراموشی رمز عبور'),
+    ]
+
+    employee = models.ForeignKey(
+        Employee, on_delete=models.CASCADE, related_name='otp_codes', verbose_name='مدرس',
+    )
+    code = models.CharField('کد', max_length=6)
+    purpose = models.CharField('هدف', max_length=10, choices=PURPOSE_CHOICES, default=PURPOSE_RESET)
+    created_at = models.DateTimeField('زمان ساخت', auto_now_add=True)
+    expires_at = models.DateTimeField('زمان انقضا')
+    is_used = models.BooleanField('استفاده‌شده', default=False)
+
+    class Meta:
+        verbose_name = 'کد یکبارمصرف پیامکی مدرس'
+        verbose_name_plural = 'کدهای یکبارمصرف پیامکی مدرسین'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.employee} - {self.get_purpose_display()} - {self.code}'
+
+    def is_valid(self):
+        return not self.is_used and self.expires_at > timezone.now()
+
+
 class OTPCode(models.Model):
     """
     کد یکبارمصرف پیامکی - هم برای «فراموشی رمز عبور» و هم برای «ورود با

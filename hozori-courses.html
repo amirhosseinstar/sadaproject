@@ -397,7 +397,7 @@
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
       </div>
       <h4>این کلاس دارای پیش‌نیاز است</h4>
-      <p>برای ثبت‌نام در این کلاس، ابتدا باید در کلاس زیر ثبت‌نام کنید:</p>
+      <p>برای ثبت‌نام در این کلاس، ابتدا باید در کلاس زیر ثبت‌نام کرده و با نمره‌ی قبولی گذرانده باشید:</p>
       <button type="button" class="prereq-link-btn" id="prereqLinkBtn"></button>
       <p id="prereqNotAvailable" hidden style="color:#c0392b;font-size:13px;margin-top:10px;">این کلاس در این ترم وجود ندارد.</p>
     </div>
@@ -752,7 +752,11 @@
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
         body: JSON.stringify({ national_id: currentUser.nationalId, membership_code: currentUser.membershipCode })
       })
-        .then(function(res){ return res.ok ? res.json() : Promise.reject(); })
+        .then(function(res){
+          if(res.ok) return res.json();
+          // مسدودی موقت (۴۲۹) یا خطای دیگر: پیام سرور را نگه می‌داریم تا به کاربر نشان داده شود
+          return res.json().catch(function(){ return {}; }).then(function(data){ return Promise.reject(data); });
+        })
         .then(function(result){
           if(!result.is_member){
             showStep('become-member');
@@ -767,10 +771,11 @@
             enrollAndShowSuccess();
           }
         })
-        .catch(function(){
+        .catch(function(err){
           showStep('identity');
           identityError.hidden = false;
-          identityError.textContent = 'خطا در برقراری ارتباط با سرور؛ دوباره تلاش کنید.';
+          // اگر سرور پیام داده (مثلاً مسدودی موقت به‌خاطر تلاش‌های ناموفق)، همان نشان داده می‌شود
+          identityError.textContent = (err && err.detail) || 'خطا در برقراری ارتباط با سرور؛ دوباره تلاش کنید.';
         });
     }
 

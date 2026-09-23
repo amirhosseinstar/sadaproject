@@ -15,6 +15,32 @@ class ApprovalError(Exception):
     """وقتی تأیید درخواست به هر دلیلی ممکن نیست (مثلاً نام کاربری تکراری)."""
 
 
+def ensure_username_available(username: str, exclude_user_pk=None) -> None:
+    """
+    مطمئن می‌شود «نام کاربری» قابل استفاده است، وگرنه ApprovalError می‌دهد.
+
+    سه حالت برای حسابی که این نام کاربری را دارد:
+      ۱) حساب مدیر سیستم (superuser/staff، مثل «admin» که با createsuperuser ساخته
+         می‌شود): همیشه رد می‌شود، با پیامی که دلیل را می‌گوید.
+      ۲) حساب واقعی (مدرس/متصدی یا دانش‌پژوه): رد می‌شود.
+      ۳) حساب «یتیم» - نه Employee دارد نه Member (مثلاً از مدرسی که قبل از رفع
+         باگ حذف شده و حسابش جا مانده): هیچ‌کس نمی‌تواند با آن وارد شود و فقط
+         نام کاربری را قفل کرده؛ پس حذف می‌شود و نام آزاد می‌شود.
+    """
+    qs = User.objects.filter(username=username)
+    if exclude_user_pk is not None:
+        qs = qs.exclude(pk=exclude_user_pk)
+    user = qs.first()
+    if user is None:
+        return
+    if user.is_superuser or user.is_staff:
+        raise ApprovalError(f'نام کاربری «{username}» متعلق به حساب مدیر سیستم است؛ نام کاربری دیگری وارد کنید.')
+    # hasattr روی رابطه‌ی یک‌به‌یکِ معکوس: اگر Employee/Member نداشته باشد False می‌شود
+    if hasattr(user, 'employee') or hasattr(user, 'member'):
+        raise ApprovalError(f'نام کاربری «{username}» قبلاً استفاده شده؛ نام کاربری دیگری وارد کنید.')
+    user.delete()
+
+
 def approve_teacher_applicant(applicant: TeacherApplicant, username: str, password: str) -> Employee:
     """
     یک درخواست همکاری را تأیید می‌کند: یک Employee واقعی (role='مدرس')
@@ -37,8 +63,7 @@ def approve_teacher_applicant(applicant: TeacherApplicant, username: str, passwo
         raise ApprovalError('برای تأیید، نام کاربری لازم است.')
     if not password:
         raise ApprovalError('برای تأیید، رمز عبور لازم است.')
-    if User.objects.filter(username=username).exists():
-        raise ApprovalError(f'نام کاربری «{username}» قبلاً استفاده شده؛ نام کاربری دیگری وارد کنید.')
+    ensure_username_available(username)
 
     user = User.objects.create_user(
         username=username,

@@ -209,6 +209,59 @@
       </div>
     </div>
 
+    <div id="teacherLoginFields" hidden>
+      <div class="login-field">
+        <label for="teacherUsername">نام کاربری</label>
+        <input type="text" id="teacherUsername" autocomplete="username">
+      </div>
+
+      <div class="login-field">
+        <label for="teacherPassword">رمز عبور</label>
+        <div class="input-wrap">
+          <input type="password" id="teacherPassword" autocomplete="current-password">
+          <button type="button" class="toggle-pass" id="toggleTeacherPass" aria-label="نمایش رمز عبور">
+            <svg viewBox="0 0 24 24" id="teacherEyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-links-row">
+        <a href="#" class="forgot-link" id="openTeacherForgotPasswordLink">فراموشی رمز عبور؟</a>
+      </div>
+
+      <div class="login-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <div><b>راهنمای ورود:</b> نام کاربری و رمز عبور شما را واحد آموزش خانه کارگر در اختیارتان قرار داده است. اگر آن را ندارید یا فراموش کرده‌اید، با واحد آموزش شعبه‌ی خود تماس بگیرید.</div>
+      </div>
+    </div>
+
+    <!-- ---- فراموشی رمز عبور مدرس: مرحله ۱ (شماره موبایل) و مرحله ۲ (کد پیامکی + رمز جدید) ---- -->
+    <div id="teacherForgotPasswordFields" hidden>
+      <div id="tfpStep1">
+        <div class="login-field">
+          <label for="tfpPhone">شماره موبایل</label>
+          <input type="text" id="tfpPhone" inputmode="numeric" maxlength="11" placeholder="09xxxxxxxxx">
+        </div>
+        <div class="login-hint">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <div>یک کد ۶ رقمی به همان شماره موبایلی که واحد آموزش برایتان ثبت کرده، پیامک می‌شود.</div>
+        </div>
+      </div>
+      <div id="tfpStep2" hidden>
+        <div class="login-field">
+          <label for="tfpCode">کد پیامکی</label>
+          <input type="text" id="tfpCode" inputmode="numeric" maxlength="6" placeholder="کد ۶ رقمی">
+        </div>
+        <div class="login-field">
+          <label for="tfpNewPassword">رمز عبور جدید</label>
+          <input type="password" id="tfpNewPassword" placeholder="حداقل ۴ کاراکتر">
+        </div>
+      </div>
+      <div class="login-links-row">
+        <a href="#" id="backFromTeacherForgotLink">بازگشت به ورود</a>
+      </div>
+    </div>
+
     <!-- ---- فراموشی رمز عبور: مرحله ۱ (کد ملی) و مرحله ۲ (کد پیامکی + رمز جدید) ---- -->
     <div id="forgotPasswordFields" hidden>
       <div id="fpStep1">
@@ -293,7 +346,15 @@
     const submitBtn = document.getElementById('loginSubmitBtn');
 
     const studentLoginFields = document.getElementById('studentLoginFields');
+    const teacherLoginFields = document.getElementById('teacherLoginFields');
+    const teacherUsernameInput = document.getElementById('teacherUsername');
+    const teacherPasswordInput = document.getElementById('teacherPassword');
+    const toggleTeacherPassBtn = document.getElementById('toggleTeacherPass');
+    const teacherEyeIcon = document.getElementById('teacherEyeIcon');
     const forgotPasswordFields = document.getElementById('forgotPasswordFields');
+    const teacherForgotPasswordFields = document.getElementById('teacherForgotPasswordFields');
+    const tfpStep1 = document.getElementById('tfpStep1');
+    const tfpStep2 = document.getElementById('tfpStep2');
     const otpLoginFields = document.getElementById('otpLoginFields');
     const fpStep1 = document.getElementById('fpStep1');
     const fpStep2 = document.getElementById('fpStep2');
@@ -307,7 +368,6 @@
     });
 
     // ---- نوع ورود: دانش‌پژوه یا مدرس ----
-    const TEACHER_LOGIN_URL = '/teacher-login';
     let loginType = 'student';
 
     loginTypeToggle.addEventListener('click', function(e){
@@ -316,8 +376,17 @@
       loginType = btn.dataset.loginType;
       loginTypeToggle.querySelectorAll('.login-type-btn').forEach(b => b.classList.toggle('active', b === btn));
       studentLoginFields.hidden = (loginType === 'teacher');
+      teacherLoginFields.hidden = (loginType === 'student');
       hideMessages();
       submitBtn.textContent = 'ورود';
+    });
+
+    toggleTeacherPassBtn.addEventListener('click', function(){
+      const isPass = teacherPasswordInput.type === 'password';
+      teacherPasswordInput.type = isPass ? 'text' : 'password';
+      teacherEyeIcon.innerHTML = isPass
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.61 3.61M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
     });
 
     toggleBtn.addEventListener('click', function(){
@@ -328,9 +397,24 @@
         : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>';
     });
 
-    function getReturnUrl(){
+    function getReturnUrl(defaultUrl){
       const params = new URLSearchParams(window.location.search);
-      return params.get('returnUrl') || '/';
+      return params.get('returnUrl') || (defaultUrl || '/');
+    }
+
+    // ---- وقتی کد ملی/کد عضویت/شماره موبایل از جای دیگه (پیامک، ورد، پی‌دی‌اف)
+    // کپی می‌شود، معمولاً یکی از این‌ها همراهش می‌آید و باعث می‌شود با اینکه
+    // ظاهراً فقط عدد به‌نظر می‌رسد، الگوی "فقط عدد" رد بشه:
+    // ۱) رقم‌های فارسی/عربی (۰۱۲... یا ٠١٢...) به‌جای رقم انگلیسی
+    // ۲) کاراکترهای نامرئی جهت متن (RLM/LRM) یا فاصله‌ی صفر-عرض که از
+    //    کپی از ورد/پیامک باقی می‌مانند
+    // این تابع قبل از هر اعتبارسنجیِ «فقط عدد» روی مقدار اجرا می‌شود.
+    function normalizeDigits(value){
+      return String(value || '')
+        .replace(/[\u200B-\u200F\u202A-\u202E\uFEFF]/g, '')
+        .replace(/[۰۱۲۳۴۵۶۷۸۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+        .replace(/[٠١٢٣٤٥٦٧٨٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+        .trim();
     }
 
     function hideMessages(){
@@ -350,19 +434,25 @@
 
     // ---- مدیریت state صفحه: کدام «نما» (ورود عادی / فراموشی رمز / رمز یکبارمصرف)
     // و در نمای فراموشی رمز و رمز یکبارمصرف، کدام مرحله (۱ یا ۲) نشان داده شود ----
-    let view = 'login';   // 'login' | 'forgot' | 'otp'
-    let step = 1;         // فقط برای forgot/otp کاربرد دارد
+    let view = 'login';   // 'login' | 'forgot' | 'teacherForgot' | 'otp'
+    let step = 1;         // فقط برای forgot/teacherForgot/otp کاربرد دارد
 
     function renderView(){
       hideMessages();
       studentLoginFields.hidden = !(view === 'login' && loginType === 'student');
+      teacherLoginFields.hidden = !(view === 'login' && loginType === 'teacher');
       forgotPasswordFields.hidden = (view !== 'forgot');
+      teacherForgotPasswordFields.hidden = (view !== 'teacherForgot');
       otpLoginFields.hidden = (view !== 'otp');
       loginTypeToggle.style.display = (view === 'login') ? '' : 'none';
 
       if(view === 'forgot'){
         fpStep1.hidden = (step !== 1);
         fpStep2.hidden = (step !== 2);
+        submitBtn.textContent = (step === 1) ? 'ارسال کد پیامکی' : 'تغییر رمز عبور';
+      } else if(view === 'teacherForgot'){
+        tfpStep1.hidden = (step !== 1);
+        tfpStep2.hidden = (step !== 2);
         submitBtn.textContent = (step === 1) ? 'ارسال کد پیامکی' : 'تغییر رمز عبور';
       } else if(view === 'otp'){
         otpStep1.hidden = (step !== 1);
@@ -377,6 +467,16 @@
     document.getElementById('openForgotPasswordLink').addEventListener('click', function(e){
       e.preventDefault();
       view = 'forgot'; step = 1;
+      renderView();
+    });
+    document.getElementById('openTeacherForgotPasswordLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'teacherForgot'; step = 1;
+      renderView();
+    });
+    document.getElementById('backFromTeacherForgotLink').addEventListener('click', function(e){
+      e.preventDefault();
+      view = 'login'; step = 1;
       renderView();
     });
     document.getElementById('openOtpLoginLink').addEventListener('click', function(e){
@@ -412,13 +512,27 @@
     }
 
     function doNormalLogin(){
-      // اگر «مدرس» انتخاب شده باشد، فعلاً فقط به صفحه‌ی جداگانه‌ی ورود مدرسین منتقل می‌شویم
       if(loginType === 'teacher'){
-        window.location.href = TEACHER_LOGIN_URL;
+        const username = teacherUsernameInput.value.trim();
+        const password = teacherPasswordInput.value.trim();
+        if(!username || !password){
+          showError('لطفاً نام کاربری و رمز عبور را وارد کنید.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ورود…';
+        postJSON('/auth/login/', { username, password, login_type: 'teacher' })
+          .then(function(){ window.location.href = '/teacher-profile'; })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ورود';
+            showError(err.message || 'خطا در برقراری ارتباط با سرور. دوباره تلاش کنید.');
+          });
         return;
       }
-      const username = usernameInput.value.trim();
-      const password = passwordInput.value.trim();
+      const username = normalizeDigits(usernameInput.value);
+      const password = normalizeDigits(passwordInput.value);
       if(!username || !password){
         showError('لطفاً نام کاربری و گذرواژه را وارد کنید.');
         return;
@@ -445,7 +559,7 @@
 
     function doForgotPasswordStep(){
       if(step === 1){
-        const nationalId = document.getElementById('fpNationalId').value.trim();
+        const nationalId = normalizeDigits(document.getElementById('fpNationalId').value);
         if(!/^\d{10}$/.test(nationalId)){
           showError('کد ملی باید دقیقاً ۱۰ رقم باشد.');
           return;
@@ -465,9 +579,9 @@
             showError(err.message);
           });
       } else {
-        const nationalId = document.getElementById('fpNationalId').value.trim();
-        const code = document.getElementById('fpCode').value.trim();
-        const newPassword = document.getElementById('fpNewPassword').value;
+        const nationalId = normalizeDigits(document.getElementById('fpNationalId').value);
+        const code = normalizeDigits(document.getElementById('fpCode').value);
+        const newPassword = document.getElementById('fpNewPassword').value.trim();
         if(!code || !newPassword){
           showError('کد پیامکی و رمز عبور جدید را وارد کنید.');
           return;
@@ -490,9 +604,56 @@
       }
     }
 
+    function doTeacherForgotPasswordStep(){
+      if(step === 1){
+        const phone = normalizeDigits(document.getElementById('tfpPhone').value);
+        if(!/^\d{11}$/.test(phone)){
+          showError('شماره موبایل باید دقیقاً ۱۱ رقم باشد.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ارسال…';
+        postJSON('/auth/teacher-forgot-password/request/', { phone })
+          .then(function(data){
+            step = 2;
+            renderView();
+            showSuccess(data.detail);
+          })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ارسال کد پیامکی';
+            showError(err.message);
+          });
+      } else {
+        const phone = normalizeDigits(document.getElementById('tfpPhone').value);
+        const code = normalizeDigits(document.getElementById('tfpCode').value);
+        const newPassword = document.getElementById('tfpNewPassword').value.trim();
+        if(!code || !newPassword){
+          showError('کد پیامکی و رمز عبور جدید را وارد کنید.');
+          return;
+        }
+        hideMessages();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال بررسی…';
+        postJSON('/auth/teacher-forgot-password/confirm/', { phone, code, new_password: newPassword })
+          .then(function(data){
+            view = 'login'; step = 1; loginType = 'teacher';
+            loginTypeToggle.querySelectorAll('.login-type-btn').forEach(b => b.classList.toggle('active', b.dataset.loginType === 'teacher'));
+            renderView();
+            showSuccess(data.detail);
+          })
+          .catch(function(err){
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'تغییر رمز عبور';
+            showError(err.message);
+          });
+      }
+    }
+
     function doOtpLoginStep(){
       if(step === 1){
-        const nationalId = document.getElementById('otpNationalId').value.trim();
+        const nationalId = normalizeDigits(document.getElementById('otpNationalId').value);
         if(!/^\d{10}$/.test(nationalId)){
           showError('کد ملی باید دقیقاً ۱۰ رقم باشد.');
           return;
@@ -512,8 +673,8 @@
             showError(err.message);
           });
       } else {
-        const nationalId = document.getElementById('otpNationalId').value.trim();
-        const code = document.getElementById('otpCode').value.trim();
+        const nationalId = normalizeDigits(document.getElementById('otpNationalId').value);
+        const code = normalizeDigits(document.getElementById('otpCode').value);
         if(!code){
           showError('کد پیامکی را وارد کنید.');
           return;
@@ -533,12 +694,24 @@
 
     submitBtn.addEventListener('click', function(){
       if(view === 'forgot') return doForgotPasswordStep();
+      if(view === 'teacherForgot') return doTeacherForgotPasswordStep();
       if(view === 'otp') return doOtpLoginStep();
       return doNormalLogin();
     });
 
     usernameInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') passwordInput.focus(); });
     passwordInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') submitBtn.click(); });
+    teacherUsernameInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') teacherPasswordInput.focus(); });
+    teacherPasswordInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') submitBtn.click(); });
+
+    // اگر صفحه با ?type=teacher باز شده باشد (مثلاً از یک لینک مستقیم)، از
+    // ابتدا تب «مدرس» انتخاب‌شده نمایش داده می‌شود
+    if(new URLSearchParams(window.location.search).get('type') === 'teacher'){
+      loginType = 'teacher';
+      loginTypeToggle.querySelectorAll('.login-type-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.loginType === 'teacher');
+      });
+    }
 
     renderView();
   })();
