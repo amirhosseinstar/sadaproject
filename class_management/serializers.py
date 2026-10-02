@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: class_management/serializers.py (کنار manage.py) =====
 from rest_framework import serializers
 
 from core.models import Employee
@@ -18,7 +19,7 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'class_type']
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -27,7 +28,16 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['id', 'name', 'department', 'department_name', 'branch', 'sessions', 'description']
+        fields = ['id', 'name', 'department', 'department_name', 'class_type', 'branch', 'sessions', 'description']
+
+    def validate(self, attrs):
+        # درس و دپارتمانش باید یک «نوع برگزاری» داشته باشند - نمی‌شود درسِ
+        # مجازی زیرِ دپارتمانِ حضوری ساخت (یا برعکس)
+        department = attrs.get('department', self.instance.department if self.instance else None)
+        class_type = attrs.get('class_type', self.instance.class_type if self.instance else 'حضوری')
+        if department is not None and department.class_type != class_type:
+            raise serializers.ValidationError({'class_type': f'نوع این درس باید «{department.class_type}» باشد (مثل دپارتمانش).'})
+        return attrs
 
 
 class BranchDepartmentSerializer(serializers.ModelSerializer):
@@ -68,6 +78,20 @@ class ClassSerializer(serializers.ModelSerializer):
         در ویرایش جزئی (PATCH) که به رده سنی ربطی ندارد (مثلاً فقط «منتشر شود»)
         هیچ‌چیز بررسی/عوض نمی‌شود.
         """
+        # «دپارتمان/درسِ مشترک» (حضوری) هم برای کلاس‌های حضوری استفاده می‌شود هم
+        # برای کلاس‌های مجازیِ استانی (این دو از «مدیریت دوره و دپارتمان‌ها»، با
+        # همان درس/دپارتمانِ مشترک ساخته می‌شوند). فقط کلاس‌های مجازیِ «ملی»
+        # (is_national=True) باید از درسِ مجازیِ جداگانه (بخش «دوره‌های مجازی
+        # ملی») استفاده کنند؛ نباید از درسِ حضوریِ مشترک برای کلاس ملی استفاده شود.
+        if 'lesson' in attrs:
+            lesson = attrs['lesson']
+            is_national = attrs.get('is_national', self.instance.is_national if self.instance else False)
+            if lesson is not None:
+                if is_national and lesson.class_type != 'مجازی':
+                    raise serializers.ValidationError({'lesson': 'کلاس مجازیِ ملی باید از درسِ بخش «دوره‌های مجازی ملی» استفاده کند.'})
+                if not is_national and lesson.class_type != 'حضوری':
+                    raise serializers.ValidationError({'lesson': 'این درس مخصوصِ «دوره‌های مجازی ملی» است؛ برای کلاس حضوری/استانی قابل‌استفاده نیست.'})
+
         age_keys = ('age_limit_enabled', 'min_age', 'max_age')
         if not any(k in attrs for k in age_keys):
             return attrs

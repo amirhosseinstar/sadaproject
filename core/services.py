@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: core/services.py (کنار manage.py) =====
 """
 منطق کسب‌وکار مشترک اپ core - جدا از views.py تا هم API (core/views.py) و هم
 پنل ادمین جنگو (members/admin.py) بتوانند دقیقاً همین یک تابع را صدا بزنند و
@@ -77,6 +78,7 @@ def approve_teacher_applicant(applicant: TeacherApplicant, username: str, passwo
         name=f'{applicant.first_name} {applicant.last_name}'.strip(),
         role='مدرس',
         depts=applicant.depts or [],
+        reqtype=applicant.reqtype or [],
         branch=applicant.branch,
         phone=applicant.phone,
         national_id=applicant.national_id,

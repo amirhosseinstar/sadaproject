@@ -30,7 +30,7 @@ from core.permissions import ROLE_OFFICER, IsEducationStaff, staff_role
 from feedback.branches import canonical_branch_name
 from logs import throttle
 from logs.mixins import AuditedMixin, audit
-from logs.recorder import record, record_dedup
+from logs.recorder import actor_info, record, record_dedup
 from members.models import Member
 
 from .eligibility import check_age_eligibility
@@ -95,11 +95,26 @@ class SiteSettingsView(APIView):
     'create': ('department_create', 'افزودن دپارتمان'),
     'destroy': ('department_delete', 'حذف دپارتمان'),
 })
+@audit('class', 'دپارتمان', {
+    'create': ('department_create', 'افزودن دپارتمان'),
+    'destroy': ('department_delete', 'حذف دپارتمان'),
+})
 class DepartmentViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # اختیاری: صفحه‌ی «مدیریت دوره و دپارتمان‌ها»ی حضوری و صفحه‌ی «کلاس‌های
+        # مجازی» هرکدام فقط دپارتمان‌های نوع خودشان را می‌خواهند؛ وقتی این
+        # پارامتر فرستاده نشود (مثل بقیه‌ی جاهایی که همه‌ی دپارتمان‌ها لازم‌اند،
+        # مثل چک‌لیست دپارتمانِ مدرس)، رفتار قبلی (همه‌ی دپارتمان‌ها) حفظ می‌شود.
+        class_type = self.request.query_params.get('class_type')
+        if class_type:
+            qs = qs.filter(class_type=class_type)
+        return qs
 
 
 @audit('class', 'درس', {
@@ -120,6 +135,9 @@ class LessonViewSet(AuditedMixin, viewsets.ModelViewSet):
         department = self.request.query_params.get('department')
         if department:
             qs = qs.filter(department_id=department)
+        class_type = self.request.query_params.get('class_type')
+        if class_type:
+            qs = qs.filter(class_type=class_type)
         return qs
 
 
@@ -188,7 +206,6 @@ def _class_summary(action_key, label, target_label, obj, request, response):
     'create': ('class_create', 'درج کلاس'),
     'update': ('class_update', 'ویرایش کلاس'),
     'destroy': ('class_delete', 'حذف کلاس'),
-    'enroll': ('class_enroll', 'ثبت‌نام دانش‌پژوه در کلاس'),
 }, summary_func=_class_summary, skip_fields=('lesson', 'department', 'term', 'teacher', 'prerequisite'))
 class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = Class.objects.select_related('department', 'teacher').all()
@@ -315,19 +332,35 @@ class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
             return Response(age_error, status=status.HTTP_400_BAD_REQUEST)
         # هر دانش‌پژوه فقط می‌تواند در کلاس‌های استان خودش ثبت‌نام کند (چه
         # حضوری چه مجازی) - به‌جز کلاس‌های مجازی «سراسری» (is_national=True)
-        # که برای همه‌ی استان‌ها آزاد است
+        # که برای همه‌ی استان‌ها آزاد است.
+        #
+        # نکته‌ی مهم: تطبیق نام شعبه با «نام استانداردِ جدول شعب» انجام می‌شود
+        # (canonical_branch_name)، نه تطبیق دقیقِ رشته‌ای؛ وگرنه کوچک‌ترین اختلاف
+        # (مثلاً حرف «ي» عربی به‌جای «ی» فارسی) باعث می‌شد استانِ کلاس اصلاً پیدا
+        # نشود و این محدودیت بی‌صدا نادیده گرفته شود. اگر با همه‌ی این‌ها هم استانِ
+        # کلاس پیدا نشود (داده‌ی ناقص/نامعتبر)، به‌جای بازگذاشتنِ بی‌صدا، ثبت‌نام رد
+        # می‌شود - پیش‌فرض امن یعنی «اجازه نده» نه «اجازه بده».
         if not cls.is_national:
             from core.models import Branch
-            class_branch = Branch.objects.filter(name=cls.branch).first()
-            class_province = class_branch.province if class_branch else None
-            if class_province and member.province and class_province != member.province:
-                _log_enroll_rejected(request, cls, member, f'استان دانش‌پژوه ({member.province}) با استان کلاس ({class_province}) نمی‌خواند')
+
+            canonical_class_branch = canonical_branch_name(cls.branch) or (cls.branch or '').strip()
+            class_branch = Branch.objects.filter(name=canonical_class_branch).first()
+            class_province = (class_branch.province if class_branch else '') or ''
+            member_province = (member.province or '').strip()
+            # این محدودیت فقط وقتی اجرا می‌شود که استانِ «هم کلاس و هم دانش‌پژوه» مشخص باشد؛
+            # اگر شعبه‌ی کلاس در جدول شعب استانش ثبت نشده (فیلد «استان» آن خالی مانده)، این
+            # قانون برای آن کلاس عملاً خاموش می‌ماند - نه این‌که ثبت‌نام را اشتباهی ببندد.
+            if class_province and member_province and class_province != member_province:
+                _log_enroll_rejected(
+                    request, cls, member,
+                    f'استان کلاس ({class_province}) با استان دانش‌پژوه ({member_province}) نمی‌خواند',
+                )
                 return Response(
                     {
-                        'detail': f'این کلاس در استان «{class_province}» برگزار می‌شود؛ شما فقط می‌توانید در کلاس‌های استان «{member.province}» ثبت‌نام کنید.',
+                        'detail': 'استان انتخاب‌شده جزو استان‌های قابل ثبت‌نام برای شما نیست.',
                         'wrong_province': True,
                         'class_province': class_province,
-                        'member_province': member.province,
+                        'member_province': member_province,
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -382,6 +415,18 @@ class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
             )
 
         enrollment = Enrollment.objects.create(class_obj=cls, lesson=cls.lesson, member=member)
+        member_name = f'{member.user.first_name} {member.user.last_name}'.strip() or member.national_id
+        if is_staff_request:
+            actor_name, actor_role, _ = actor_info(request.user)
+            source_label = f'ثبت‌نام توسط {actor_name} ({actor_role})' if actor_name else 'ثبت‌نام توسط کارمند'
+        else:
+            source_label = 'ثبت‌نام اینترنتی (خودِ دانش‌پژوه از سایت)'
+        record(
+            request, 'class', 'class_enroll', f'ثبت‌نام «{member_name}» در «{cls.name}»',
+            target_type='کلاس', target_id=str(cls.pk), target_label=cls.name, branch=cls.branch,
+            identifier=member.national_id,
+            changes=[{'field': 'نحوه‌ی ثبت‌نام', 'old': '', 'new': source_label}],
+        )
         return Response(EnrollmentSerializer(enrollment).data, status=status.HTTP_201_CREATED)
 
 

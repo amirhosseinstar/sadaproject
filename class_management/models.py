@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: class_management/models.py (کنار manage.py) =====
 """
 مدل‌های دپارتمان‌ها، کلاس‌ها و ثبت‌نام دانش‌پژوهان.
 
@@ -10,13 +11,24 @@ from django.db import models
 
 
 class Department(models.Model):
-    """یک دپارتمان آموزشی (مثل «کامپیوتر»، «دوخت و دوز»)."""
-    name = models.CharField('نام دپارتمان', max_length=100, unique=True)
+    # یک دپارتمان آموزشی (مثل «کامپیوتر»، «دوخت و دوز»).
+    #
+    # هر دپارتمان مخصوص «حضوری» یا «مجازی» است، نه هر دو - چون ممکن است یک
+    # دپارتمان به‌صورت حضوری قابل‌تدریس باشد ولی مجازی نشود (یا برعکس)؛ پس
+    # کاملاً جداگانه مدیریت می‌شوند، حتی اگر اسمشان یکی باشد (مثلاً یک
+    # دپارتمان «کامپیوتر»ِ حضوری و یک دپارتمان «کامپیوتر»ِ مجازیِ جداگانه).
+    TYPE_CHOICES = [('حضوری', 'حضوری'), ('مجازی', 'مجازی')]
+
+    name = models.CharField('نام دپارتمان', max_length=100)
+    class_type = models.CharField('نوع برگزاری', max_length=10, choices=TYPE_CHOICES, default='حضوری')
 
     class Meta:
         verbose_name = 'دپارتمان'
         verbose_name_plural = 'دپارتمان‌ها'
         ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'class_type'], name='unique_department_name_per_type'),
+        ]
 
     def __str__(self):
         return self.name
@@ -49,8 +61,12 @@ class Lesson(models.Model):
     است. هر شعبه درس‌های خودش را جداگانه تعریف می‌کند (ممکن است یک درس
     فقط در یک شعبه لازم باشد، نه همه‌جا).
     """
+    # درس هم، دقیقاً مثل دپارتمان، مخصوص «حضوری» یا «مجازی» است - نه هر دو.
+    TYPE_CHOICES = [('حضوری', 'حضوری'), ('مجازی', 'مجازی')]
+
     name = models.CharField('نام درس', max_length=200)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='lessons')
+    class_type = models.CharField('نوع برگزاری', max_length=10, choices=TYPE_CHOICES, default='حضوری')
     branch = models.CharField('شعبه', max_length=100, default='')
     sessions = models.PositiveIntegerField('تعداد جلسات', null=True, blank=True)
     description = models.TextField('توضیحات', blank=True)

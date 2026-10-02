@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: members/serializers.py (کنار manage.py) =====
 import re
 
 from django.db import transaction
@@ -211,4 +212,9 @@ def build_profile_payload(user):
         'employee_role': employee.role if employee else None,
         'employee_depts': (employee.depts or []) if employee else [],
         'employee_branch': employee.branch if employee else None,
+        # نام و تلفنِ واقعیِ نیروی انسانی (Employee.name/phone)؛ برخلاف first_name/last_name
+        # (که برای حساب مدیر/مسئول آموزش هرگز پر نمی‌شود)، این‌ها همان چیزی‌اند که در
+        # «نیروی انسانی» ثبت شده و در هدر پنل و فرم «بروزرسانی حساب من» استفاده می‌شوند.
+        'employee_name': employee.name if employee else None,
+        'employee_phone': employee.phone if employee else None,
     }

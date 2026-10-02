@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: core/serializers.py (کنار manage.py) =====
 import json
 
 from rest_framework import serializers
@@ -21,7 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = [
-            'id', 'name', 'role', 'depts', 'branch', 'phone', 'username',
+            'id', 'name', 'role', 'depts', 'reqtype', 'branch', 'phone', 'username',
             'national_id', 'father_name', 'birth_date', 'education_level', 'address', 'photo', 'resume',
         ]
 

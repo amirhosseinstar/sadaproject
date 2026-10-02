@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: core/models.py (کنار manage.py) =====
 from django.conf import settings
 from django.db import models
 
@@ -60,6 +61,9 @@ class Employee(models.Model):
     name = models.CharField('نام و نام خانوادگی', max_length=150)
     role = models.CharField('سمت', max_length=50)
     depts = models.JSONField('دپارتمان‌ها', default=list, blank=True)
+    # نوع کلاسی که این مدرس تدریس می‌کند: ['حضوری']، ['مجازی'] یا هر دو با هم.
+    # برای مدرسینِ قدیمی (قبل از این فیلد) خالی می‌ماند تا ادمین بعداً تکمیل کند.
+    reqtype = models.JSONField('نوع تدریس', default=list, blank=True)
     branch = models.CharField('شعبه', max_length=100)
     phone = models.CharField('شماره تماس', max_length=20)
 

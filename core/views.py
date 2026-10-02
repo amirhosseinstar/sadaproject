@@ -15,16 +15,22 @@ API نیروی انسانی، شعب و متقاضیان تدریس.
   POST                       /api/core/teacher-applicants/<id>/approve/  -> تأیید درخواست؛ همین‌جا یک Employee واقعی ساخته می‌شود
 """
 
-from django.contrib.auth import get_user_model
+import re
+
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.db import transaction
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Branch, Employee, TeacherApplicant
 from .serializers import BranchSerializer, EmployeeSerializer, StaffSerializer, TeacherApplicantSerializer
+from core.permissions import STAFF_ROLES, IsEducationStaff
 from logs.mixins import AuditedMixin, audit
 from .services import ApprovalError, approve_teacher_applicant, ensure_username_available
+from logs.recorder import record
 
 User = get_user_model()
 
@@ -214,4 +220,96 @@ class TeacherApplicantViewSet(AuditedMixin, viewsets.ModelViewSet):
         return Response({
             'applicant': self.get_serializer(applicant).data,
             'employee': EmployeeSerializer(employee, context=self.get_serializer_context()).data,
+        })
+
+
+class MyProfileView(APIView):
+    """
+    ویرایش «اطلاعات حساب خودِ» مدیر آموزش یا مسئول آموزشِ واردشده (نه هیچ‌کس دیگر؛ همیشه
+    از روی request.user.employee عمل می‌کند، نه از روی id در آدرس یا بدنه‌ی درخواست).
+
+      GET    /api/core/my-profile/   -> نام، تلفن، نام کاربری، سمت، شعبه‌ی خودِ کاربر
+      PATCH  /api/core/my-profile/   -> ویرایش نام/تلفن/نام کاربری/رمز عبور (هرکدام اختیاری)
+
+    سمت (role) و شعبه از این مسیر هرگز قابل‌تغییر نیستند؛ حتی اگر در بدنه‌ی درخواست
+    فرستاده شوند نادیده گرفته می‌شوند - جلوگیری از ترفیع/جابه‌جاییِ خودسرانه.
+    """
+    permission_classes = [IsEducationStaff]
+
+    def _employee(self, request):
+        employee = getattr(request.user, 'employee', None)
+        if employee is None or employee.role not in STAFF_ROLES:
+            return None
+        return employee
+
+    def get(self, request):
+        employee = self._employee(request)
+        if employee is None:
+            return Response({'detail': 'حساب شما به نیروی انسانی وصل نیست.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({
+            'name': employee.name, 'phone': employee.phone, 'username': employee.user.username,
+            'role': employee.role, 'branch': employee.branch,
+        })
+
+    def patch(self, request):
+        employee = self._employee(request)
+        if employee is None:
+            return Response({'detail': 'حساب شما به نیروی انسانی وصل نیست.'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data
+        changes = []
+
+        if 'name' in data:
+            name = (data.get('name') or '').strip()
+            if not name:
+                return Response({'detail': 'نام و نام‌خانوادگی نمی‌تواند خالی باشد.'}, status=status.HTTP_400_BAD_REQUEST)
+            if name != employee.name:
+                changes.append({'field': 'نام و نام‌خانوادگی', 'old': employee.name, 'new': name})
+                employee.name = name
+
+        if 'phone' in data:
+            phone = (data.get('phone') or '').strip()
+            if not phone:
+                return Response({'detail': 'شماره تماس نمی‌تواند خالی باشد.'}, status=status.HTTP_400_BAD_REQUEST)
+            if not re.fullmatch(r'0\d{10}', phone):
+                return Response({'detail': 'شماره تماس باید ۱۱ رقم و با صفر شروع شود.'}, status=status.HTTP_400_BAD_REQUEST)
+            if phone != employee.phone:
+                changes.append({'field': 'شماره تماس', 'old': employee.phone, 'new': phone})
+                employee.phone = phone
+
+        username = (data.get('username') or '').strip()
+        if username and username != employee.user.username:
+            if not re.fullmatch(r'[A-Za-z0-9_.-]+', username):
+                return Response({'detail': 'نام کاربری فقط می‌تواند شامل حروف/رقم انگلیسی و . _ - باشد.'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                ensure_username_available(username, exclude_user_pk=employee.user_id)
+            except ApprovalError as error:
+                return Response({'detail': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+            changes.append({'field': 'نام کاربری', 'old': employee.user.username, 'new': username})
+            employee.user.username = username
+
+        password = data.get('password') or ''
+        password_changed = False
+        if password:
+            if len(password) < 6:
+                return Response({'detail': 'رمز عبور باید حداقل ۶ کاراکتر باشد.'}, status=status.HTTP_400_BAD_REQUEST)
+            employee.user.set_password(password)
+            password_changed = True
+            changes.append({'field': 'رمز عبور', 'old': '', 'new': 'تغییر کرد'})
+
+        if not changes:
+            return Response({'detail': 'تغییری برای ذخیره وجود ندارد.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        with transaction.atomic():
+            employee.save()
+            employee.user.save()
+            # اگر رمز عوض شده، نشست فعلی را دست‌نخورده نگه می‌داریم تا کاربر همین لحظه از پنل بیرون نیفتد
+            if password_changed:
+                update_session_auth_hash(request, employee.user)
+
+        record(request, 'staff', 'self_profile_update', f'ویرایش اطلاعات حساب خود: {employee.name}',
+               target_type='حساب', target_label=employee.name, branch=employee.branch, changes=changes)
+        return Response({
+            'name': employee.name, 'phone': employee.phone, 'username': employee.user.username,
+            'role': employee.role, 'branch': employee.branch,
         })

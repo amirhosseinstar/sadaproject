@@ -83,6 +83,13 @@ def _filtered(request):
     status = params.get('status')
     if status:
         qs = qs.filter(status=status)
+    action = params.get('action')
+    if action:
+        qs = qs.filter(action=action)
+    # لاگ ثبت‌نامِ یک کلاس مشخص («لیست کلاس‌ها» در صفحه‌ی لاگ): تطبیق با شناسه‌ی همان کلاس
+    class_id = params.get('class_id')
+    if class_id:
+        qs = qs.filter(target_type='کلاس', target_id=str(class_id))
     q = (params.get('q') or '').strip()
     if q:
         q = to_english_digits(q)
