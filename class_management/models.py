@@ -352,3 +352,87 @@ class TeacherLessonPermission(models.Model):
 
     def __str__(self):
         return f'{self.teacher.name} ← {self.lesson.name}'
+
+
+class Seminar(models.Model):
+    """
+    سمینار یا کارگاه آموزشی.
+
+    برخلافِ «کلاس» (که هر هفته در یک روز ثابت تکرار می‌شود)، سمینار یک یا چند
+    روزِ مشخص با تاریخ و ساعتِ شروع/پایانِ خودش دارد - نه یک الگوی هفتگیِ
+    تکرارشونده. هر «روزِ برگزاری» در مدل جداگانه‌ی SeminarSession ذخیره می‌شود.
+
+    مثل کلاس، به یک دپارتمان و یک «دوره» (ترم) وصل است، و می‌تواند حضوری یا
+    مجازی باشد؛ اگر مجازی بود، می‌تواند ملی (سراسری) یا استانی باشد - دقیقاً
+    همان قاعده‌ای که برای کلاس‌های مجازی هست.
+    """
+    TYPE_CHOICES = [('حضوری', 'حضوری'), ('مجازی', 'مجازی')]
+
+    name = models.CharField('نام سمینار/کارگاه', max_length=200)
+    department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='seminars')
+    class_type = models.CharField('نوع برگزاری', max_length=10, choices=TYPE_CHOICES, default='حضوری')
+    is_national = models.BooleanField(
+        'سراسری (بدون وابستگی به استان)', default=False,
+        help_text='فقط برای سمینارهای مجازی معنی دارد - یعنی دانش‌پژوهان همه‌ی استان‌ها می‌بینندش.',
+    )
+    branch = models.CharField('شعبه', max_length=100, blank=True)
+    term = models.ForeignKey(
+        'academic_calendar.AcademicTerm', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='seminars', verbose_name='دوره',
+    )
+    teacher = models.ForeignKey(
+        'core.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='seminars',
+    )
+    capacity = models.PositiveIntegerField('ظرفیت')
+    description = models.TextField('توضیحات', blank=True)
+    is_published = models.BooleanField('منتشرشده', default=True)
+    created_at = models.DateTimeField('تاریخ ثبت', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'سمینار/کارگاه'
+        verbose_name_plural = 'سمینارها و کارگاه‌ها'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def enrolled_count(self):
+        return self.enrollments.count()
+
+    @property
+    def is_full(self):
+        return self.enrolled_count >= self.capacity
+
+
+class SeminarSession(models.Model):
+    """یک «روزِ برگزاری» از یک سمینار/کارگاه (اگر چندروزه باشد، چند ردیف)."""
+    seminar = models.ForeignKey(Seminar, on_delete=models.CASCADE, related_name='sessions')
+    # تاریخ شمسی به‌صورت متنی، مثل «1405/08/15» - همان قراردادِ بقیه‌ی پروژه
+    date = models.CharField('تاریخ', max_length=20)
+    start_time = models.CharField('ساعت شروع', max_length=10)
+    end_time = models.CharField('ساعت پایان', max_length=10)
+
+    class Meta:
+        verbose_name = 'جلسه‌ی سمینار'
+        verbose_name_plural = 'جلسه‌های سمینار'
+        ordering = ['date', 'start_time']
+
+    def __str__(self):
+        return f'{self.seminar.name} - {self.date}'
+
+
+class SeminarEnrollment(models.Model):
+    """ثبت‌نام یک دانش‌پژوه در یک سمینار/کارگاه."""
+    seminar = models.ForeignKey(
+        Seminar, on_delete=models.SET_NULL, null=True, blank=True, related_name='enrollments',
+    )
+    member = models.ForeignKey('members.Member', on_delete=models.CASCADE, related_name='seminar_enrollments')
+    enrolled_at = models.DateTimeField('تاریخ ثبت‌نام', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'ثبت‌نام سمینار'
+        verbose_name_plural = 'ثبت‌نام‌های سمینار'
+        constraints = [
+            models.UniqueConstraint(fields=['seminar', 'member'], name='unique_seminar_member'),
+        ]

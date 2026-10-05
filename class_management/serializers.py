@@ -2,7 +2,10 @@
 from rest_framework import serializers
 
 from core.models import Employee
-from .models import BranchDepartment, Class, Department, Enrollment, Lesson, Question, SiteSettings
+from .models import (
+    BranchDepartment, Class, Department, Enrollment, Lesson, Question, Seminar, SeminarEnrollment, SeminarSession,
+    SiteSettings,
+)
 
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
@@ -243,3 +246,76 @@ class QuestionSerializer(serializers.ModelSerializer):
         if not value or not value.strip():
             raise serializers.ValidationError('متن سؤال نمی‌تواند خالی باشد.')
         return value
+
+
+class SeminarSessionSerializer(serializers.ModelSerializer):
+    """یک «روزِ برگزاری» از سمینار - تاریخ و ساعتِ شروع/پایانِ همان روز."""
+    class Meta:
+        model = SeminarSession
+        fields = ['id', 'date', 'start_time', 'end_time']
+
+
+class SeminarSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source='department.name', read_only=True)
+    teacher_name = serializers.CharField(source='teacher.name', read_only=True, default=None)
+    term_order = serializers.IntegerField(source='term.order', read_only=True, default=None)
+    term_year = serializers.IntegerField(source='term.year', read_only=True, default=None)
+    enrolled_count = serializers.IntegerField(read_only=True)
+    is_full = serializers.BooleanField(read_only=True)
+    # جلسه‌ها (روزها) همراهِ خودِ سمینار نوشته/خوانده می‌شوند، نه با یک API جدا؛
+    # چون معنی ندارد سمیناری بدون هیچ روزی وجود داشته باشد
+    sessions = SeminarSessionSerializer(many=True)
+
+    class Meta:
+        model = Seminar
+        fields = [
+            'id', 'name', 'department', 'department_name', 'class_type', 'is_national', 'branch',
+            'term', 'term_order', 'term_year', 'teacher', 'teacher_name', 'capacity', 'description',
+            'is_published', 'enrolled_count', 'is_full', 'sessions',
+        ]
+
+    def validate_sessions(self, value):
+        if not value:
+            raise serializers.ValidationError('حداقل یک روزِ برگزاری لازم است.')
+        for session in value:
+            if not (session.get('date') or '').strip():
+                raise serializers.ValidationError('تاریخِ هر روز باید پر شده باشد.')
+            if not (session.get('start_time') or '').strip() or not (session.get('end_time') or '').strip():
+                raise serializers.ValidationError('ساعتِ شروع و پایانِ هر روز باید پر شده باشد.')
+        return value
+
+    def create(self, validated_data):
+        sessions_data = validated_data.pop('sessions')
+        seminar = Seminar.objects.create(**validated_data)
+        for session_data in sessions_data:
+            SeminarSession.objects.create(seminar=seminar, **session_data)
+        return seminar
+
+    def update(self, instance, validated_data):
+        sessions_data = validated_data.pop('sessions', None)
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+        # اگر جلسه‌ها هم فرستاده شده، کل فهرستِ قبلی عوض می‌شود با فهرستِ تازه
+        # (ساده‌ترین راهِ درستِ همگام‌سازیِ «چند روزِ قابلِ افزودن/حذف»)
+        if sessions_data is not None:
+            instance.sessions.all().delete()
+            for session_data in sessions_data:
+                SeminarSession.objects.create(seminar=instance, **session_data)
+        return instance
+
+
+class SeminarEnrollmentSerializer(serializers.ModelSerializer):
+    member_name = serializers.SerializerMethodField()
+    member_national_id = serializers.CharField(source='member.national_id', read_only=True)
+    member_phone = serializers.CharField(source='member.phone', read_only=True)
+    seminar_name = serializers.CharField(source='seminar.name', read_only=True, default=None)
+
+    class Meta:
+        model = SeminarEnrollment
+        fields = ['id', 'seminar', 'seminar_name', 'member', 'member_name', 'member_national_id', 'member_phone', 'enrolled_at']
+
+    def get_member_name(self, obj):
+        if not obj.member or not obj.member.user:
+            return ''
+        return f'{obj.member.user.first_name} {obj.member.user.last_name}'.strip()

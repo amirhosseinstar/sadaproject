@@ -1741,6 +1741,8 @@
         <div class="class-subtab active" data-classtab="list">لیست کلاس</div>
         <div class="class-subtab" data-classtab="insert">درج کلاس</div>
         <div class="class-subtab" data-classtab="prereq">پیش‌نیاز</div>
+        <div class="class-subtab" data-classtab="seminarList">لیست سمینار</div>
+        <div class="class-subtab" data-classtab="seminarInsert">درج سمینار</div>
       </div>
 
       <!-- ===== CLASS TAB: لیست کلاس ===== -->
@@ -1966,6 +1968,77 @@
         </div>
       </div>
       <!-- ===== /CLASS TAB: پیش‌نیاز ===== -->
+
+      <!-- ===== CLASS TAB: لیست سمینار ===== -->
+      <div class="class-subview" data-classtab-view="seminarList">
+        <div class="hr-toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="seminarSearch" placeholder="جستجوی نام سمینار/کارگاه…">
+          </div>
+        </div>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table class="hr-table">
+            <thead>
+              <tr>
+                <th>نام</th>
+                <th>دپارتمان</th>
+                <th>نوع</th>
+                <th>روزهای برگزاری</th>
+                <th>مدرس</th>
+                <th>ظرفیت</th>
+                <th>ثبت‌نام‌شده</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="seminarTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- ===== /CLASS TAB: لیست سمینار ===== -->
+
+      <!-- ===== CLASS TAB: درج سمینار ===== -->
+      <div class="class-subview" data-classtab-view="seminarInsert">
+        <div style="background:#fff;border-radius:14px;padding:26px 24px;box-shadow:0 4px 16px rgba(0,0,0,.05);max-width:680px;">
+          <div class="form-grid">
+            <div class="field full"><label>نام سمینار/کارگاه<span class="req-star">*</span></label><input type="text" id="sm_name" placeholder="مثلاً «کارگاه فتوشاپ مقدماتی»"></div>
+
+            <div class="field full"><label>نوع برگزاری</label>
+              <div class="svq-kind-pick" style="display:flex;gap:16px;">
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smClassType" value="حضوری" checked><span>حضوری</span></label>
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smClassType" value="مجازی"><span>مجازی</span></label>
+              </div>
+            </div>
+            <div class="field full hide" id="sm_national_field"><label>دامنه</label>
+              <div class="svq-kind-pick" style="display:flex;gap:16px;">
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smNational" value="استانی" checked><span>استانی (فقط دانش‌پژوهان همین استان)</span></label>
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smNational" value="ملی"><span>ملی (همه‌ی استان‌ها)</span></label>
+              </div>
+            </div>
+
+            <div class="field full"><label>دپارتمان</label><select id="sm_dept"></select></div>
+            <div class="field full"><label>مدرس</label><select id="sm_teacher"><option value="">— ابتدا دپارتمان را انتخاب کنید —</option></select></div>
+            <div class="field"><label>ظرفیت<span class="req-star">*</span></label><input type="text" id="sm_capacity" placeholder="مثلاً ۲۰" inputmode="numeric"></div>
+
+            <div class="field full">
+              <label>روزهای برگزاری<span class="req-star">*</span></label>
+              <div id="sm_sessions_wrap"></div>
+              <button class="btn-ghost" id="btnAddSeminarSession" type="button" style="margin-top:8px;">+ افزودن روز</button>
+              <div class="field-hint" style="color:#8a9a9a;font-size:12px;margin-top:4px;">
+                اگر سمینار چندروزه است، برای هر روز یک ردیف جداگانه (با تاریخ و ساعتِ همان روز) اضافه کنید.
+              </div>
+            </div>
+
+            <div class="field full"><label>توضیحات (اختیاری)</label><textarea id="sm_desc" placeholder="در صورت تمایل، توضیحاتی درباره‌ی این سمینار بنویسید…" style="min-height:80px;"></textarea></div>
+          </div>
+          <div class="member-edit-error" id="seminarInsertError" role="alert"></div>
+          <button class="btn-primary" id="btnInsertSeminar" type="button" style="margin-top:14px;">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            ثبت سمینار/کارگاه
+          </button>
+        </div>
+      </div>
+      <!-- ===== /CLASS TAB: درج سمینار ===== -->
       </div>
     </section>
 
@@ -6981,6 +7054,11 @@
     document.querySelectorAll('.class-subtab').forEach(t => t.classList.toggle('active', t.dataset.classtab === name));
     document.querySelectorAll('.class-subview').forEach(v => v.classList.toggle('active', v.dataset.classtabView === name));
     if(name === 'prereq') renderClassPrereqTable();
+    if(name === 'seminarList') loadSeminars();
+    if(name === 'seminarInsert'){
+      if(!document.querySelector('.seminar-session-row')) addSeminarSessionRow();
+      refreshSmDeptOptions();
+    }
   }
   document.querySelectorAll('.class-subtab').forEach(t => {
     t.addEventListener('click', () => goToClassTab(t.dataset.classtab));
@@ -7957,6 +8035,186 @@
       });
     });
   })();
+
+  // ==================== سمینار و کارگاه ====================
+  // برخلاف کلاس (که هر هفته در یک روزِ ثابت تکرار می‌شود)، سمینار یک یا چند
+  // «روزِ مشخص» دارد (تاریخ + ساعتِ شروع/پایانِ همان روز)؛ به همین دلیل یک
+  // تب و فرمِ جداگانه دارد، نه یک فیلدِ اضافه در «درج کلاس».
+  let SEMINARS = [];
+  let seminarSessionRowCount = 0;
+
+  function smIsNationalMode(){
+    const classType = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
+    const national = (document.querySelector('input[name="smNational"]:checked') || {}).value || 'استانی';
+    return classType === 'مجازی' && national === 'ملی';
+  }
+
+  document.querySelectorAll('input[name="smClassType"]').forEach(r => r.addEventListener('change', () => {
+    const isVirtual = (document.querySelector('input[name="smClassType"]:checked') || {}).value === 'مجازی';
+    document.getElementById('sm_national_field').classList.toggle('hide', !isVirtual);
+    document.querySelector('input[name="smNational"][value="استانی"]').checked = true;
+    refreshSmTeacherOptions();
+  }));
+  document.querySelectorAll('input[name="smNational"]').forEach(r => r.addEventListener('change', refreshSmTeacherOptions));
+
+  // ---- دپارتمان/مدرس: دقیقاً همان پولِ مشترکِ «درج کلاس» (فعال‌شده برای همین شعبه) ----
+  function refreshSmDeptOptions(){
+    const smDept = document.getElementById('sm_dept');
+    const previousValue = smDept.value;
+    const branch = pickedClassBranch;
+    const activeIds = branch ? branchDeptIds(branch) : [];
+    const activeDepts = DEPARTMENTS.filter(d => activeIds.includes(d.id));
+    smDept.innerHTML = activeDepts.length
+      ? `<option value="">— انتخاب دپارتمان —</option>` + activeDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
+      : `<option value="">— دپارتمان فعالی برای این شعبه ثبت نشده —</option>`;
+    if(previousValue && activeDepts.some(d => String(d.id) === previousValue)) smDept.value = previousValue;
+    refreshSmTeacherOptions();
+  }
+
+  function refreshSmTeacherOptions(){
+    const smDept = document.getElementById('sm_dept');
+    const smTeacher = document.getElementById('sm_teacher');
+    const deptId = Number(smDept.value) || null;
+    if(!deptId){
+      smTeacher.innerHTML = `<option value="">— ابتدا دپارتمان را انتخاب کنید —</option>`;
+      return;
+    }
+    const deptName = (DEPARTMENTS.find(d => d.id === deptId) || {}).name || '';
+    const classTypeChoice = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
+    const teachers = (typeof REAL_TEACHERS !== 'undefined' ? REAL_TEACHERS : []).filter(t =>
+      (t.depts || []).includes(deptName) && (t.reqtype || []).includes(classTypeChoice) && (!pickedClassBranch || t.branch === pickedClassBranch)
+    );
+    smTeacher.innerHTML = `<option value="">— بدون مدرسِ مشخص —</option>` + teachers.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  }
+  document.getElementById('sm_dept').addEventListener('change', refreshSmTeacherOptions);
+
+  // ---- روزهای برگزاری: ردیف‌های قابلِ افزودن/حذف (تاریخ + ساعتِ شروع/پایان) ----
+  function addSeminarSessionRow(date, startTime, endTime){
+    seminarSessionRowCount += 1;
+    const rowId = `smSessionRow${seminarSessionRowCount}`;
+    const wrap = document.getElementById('sm_sessions_wrap');
+    const row = document.createElement('div');
+    row.id = rowId;
+    row.className = 'seminar-session-row';
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;';
+    row.innerHTML = `
+      <input type="text" class="sm-session-date" placeholder="تاریخ، مثلاً ۱۴۰۵/۰۸/۱۵" dir="rtl" style="flex:1 1 160px;" value="${date || ''}">
+      <input type="text" class="sm-session-start" placeholder="ساعت شروع، مثلاً ۰۹:۰۰" dir="ltr" style="flex:1 1 130px;" value="${startTime || ''}">
+      <input type="text" class="sm-session-end" placeholder="ساعت پایان، مثلاً ۱۲:۰۰" dir="ltr" style="flex:1 1 130px;" value="${endTime || ''}">
+      <button type="button" class="btn-ghost sm-session-remove" title="حذف این روز">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    `;
+    wrap.appendChild(row);
+    row.querySelector('.sm-session-remove').addEventListener('click', () => {
+      // همیشه حداقل یک ردیف باقی می‌ماند تا فرم خالی نشود
+      if(document.querySelectorAll('.seminar-session-row').length > 1) row.remove();
+    });
+  }
+  document.getElementById('btnAddSeminarSession').addEventListener('click', () => addSeminarSessionRow());
+
+  function readSeminarSessions(){
+    return Array.from(document.querySelectorAll('.seminar-session-row')).map(row => ({
+      date: row.querySelector('.sm-session-date').value.trim(),
+      start_time: row.querySelector('.sm-session-start').value.trim(),
+      end_time: row.querySelector('.sm-session-end').value.trim(),
+    })).filter(s => s.date || s.start_time || s.end_time);
+  }
+
+  function resetSeminarForm(){
+    document.getElementById('sm_name').value = '';
+    document.querySelector('input[name="smClassType"][value="حضوری"]').checked = true;
+    document.getElementById('sm_national_field').classList.add('hide');
+    document.querySelector('input[name="smNational"][value="استانی"]').checked = true;
+    document.getElementById('sm_capacity').value = '';
+    document.getElementById('sm_desc').value = '';
+    document.getElementById('sm_sessions_wrap').innerHTML = '';
+    addSeminarSessionRow();
+    refreshSmDeptOptions();
+  }
+
+  // ---- ثبت سمینار ----
+  const seminarErrorEl = document.getElementById('seminarInsertError');
+  function showSeminarError(msg){ seminarErrorEl.textContent = msg; seminarErrorEl.classList.add('show'); }
+  function clearSeminarError(){ seminarErrorEl.textContent = ''; seminarErrorEl.classList.remove('show'); }
+
+  document.getElementById('btnInsertSeminar').addEventListener('click', () => {
+    clearSeminarError();
+    const name = document.getElementById('sm_name').value.trim();
+    const deptId = Number(document.getElementById('sm_dept').value) || null;
+    const teacherId = Number(document.getElementById('sm_teacher').value) || null;
+    const capacity = document.getElementById('sm_capacity').value.trim();
+    const description = document.getElementById('sm_desc').value.trim();
+    const classTypeChoice = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
+    const sessions = readSeminarSessions();
+
+    if(!name){ showSeminarError('نام سمینار/کارگاه را وارد کنید.'); return; }
+    if(!deptId){ showSeminarError('دپارتمان را انتخاب کنید.'); return; }
+    if(!capacity || Number(capacity) <= 0){ showSeminarError('ظرفیت را درست وارد کنید.'); return; }
+    if(!pickedTerm){ showToast('دوره‌ی فعلی مشخص نیست؛ لطفاً از «مدیریت دوره و دپارتمان‌ها» یک دوره انتخاب کنید'); return; }
+    if(sessions.length === 0){ showSeminarError('حداقل یک روزِ برگزاری (تاریخ، ساعت شروع، ساعت پایان) لازم است.'); return; }
+    for(const s of sessions){
+      if(!s.date || !s.start_time || !s.end_time){ showSeminarError('برای هر روز، تاریخ و هر دو ساعت باید پر باشد.'); return; }
+    }
+
+    resolveCurrentTermId().then(termId => {
+      if(!termId){ showToast('دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید'); return; }
+      const btn = document.getElementById('btnInsertSeminar');
+      btn.disabled = true;
+      surveyApi('/classmgmt/seminars/', 'POST', {
+        name, department: deptId, teacher: teacherId, branch: pickedClassBranch, term: termId,
+        capacity: Number(capacity), description,
+        class_type: classTypeChoice, is_national: smIsNationalMode(), is_published: true,
+        sessions,
+      })
+        .then(() => { showToast('سمینار/کارگاه جدید با موفقیت ثبت شد'); resetSeminarForm(); loadSeminars(); })
+        .catch(err => showSeminarError(err.message || 'خطا در ثبت سمینار؛ دوباره تلاش کنید'))
+        .then(() => { btn.disabled = false; });
+    });
+  });
+
+  // ---- لیست سمینار ----
+  function loadSeminars(){
+    if(!pickedClassBranch){ SEMINARS = []; renderSeminars(); return; }
+    surveyApi(`/classmgmt/seminars/?branch=${encodeURIComponent(pickedClassBranch)}`, 'GET')
+      .then(list => { SEMINARS = list || []; renderSeminars(); })
+      .catch(() => { SEMINARS = []; renderSeminars(); });
+  }
+
+  window.deleteSeminar = function(id){
+    const s = SEMINARS.find(x => x.id === id);
+    if(!s) return;
+    if(!confirm(`آیا از حذف «${s.name}» مطمئن هستید؟`)) return;
+    surveyApi(`/classmgmt/seminars/${id}/`, 'DELETE')
+      .then(() => { showToast('سمینار/کارگاه حذف شد'); loadSeminars(); })
+      .catch(err => showToast(err.message || 'خطا در حذف'));
+  };
+
+  function renderSeminars(){
+    const q = document.getElementById('seminarSearch').value.trim();
+    const body = document.getElementById('seminarTableBody');
+    const filtered = SEMINARS.filter(s => !q || s.name.includes(q));
+    if(filtered.length === 0){
+      body.innerHTML = `<tr class="empty-row"><td colspan="8">سمیناری یافت نشد</td></tr>`;
+      return;
+    }
+    body.innerHTML = filtered.map(s => {
+      const typeLabel = s.class_type === 'مجازی' ? (s.is_national ? 'مجازی (ملی)' : 'مجازی (استانی)') : 'حضوری';
+      const dateList = (s.sessions || []).map(sess => `${sess.date} (${sess.start_time}–${sess.end_time})`).join('، ') || '—';
+      return `
+      <tr data-id="${s.id}">
+        <td>${s.name}</td>
+        <td>${s.department_name || '—'}</td>
+        <td>${typeLabel}</td>
+        <td>${dateList}</td>
+        <td>${s.teacher_name || '—'}</td>
+        <td>${finNum(s.capacity)}</td>
+        <td>${finNum(s.enrolled_count)}</td>
+        <td><button class="btn-ghost" onclick="deleteSeminar(${s.id})">حذف</button></td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('seminarSearch').addEventListener('input', renderSeminars);
 
   // ---- پیش‌نیاز کلاس‌ها ----
   let pendingClassPrereqs = {};

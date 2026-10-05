@@ -1,3 +1,4 @@
+# ===== مسیر این فایل در پروژه: class_management/urls.py (کنار manage.py) =====
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
@@ -10,6 +11,7 @@ router.register('questions', views.QuestionViewSet, basename='question')
 router.register('branch-departments', views.BranchDepartmentViewSet, basename='branch-department')
 router.register('classes', views.ClassViewSet, basename='class')
 router.register('enrollments', views.EnrollmentViewSet, basename='enrollment')
+router.register('seminars', views.SeminarViewSet, basename='seminar')
 
 urlpatterns = [
     path('site-settings/', views.SiteSettingsView.as_view(), name='site-settings'),

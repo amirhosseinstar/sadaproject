@@ -34,7 +34,10 @@ from logs.recorder import actor_info, record, record_dedup
 from members.models import Member
 
 from .eligibility import check_age_eligibility
-from .models import BranchDepartment, Class, Department, Enrollment, Lesson, Question, SiteSettings, TeacherLessonPermission
+from .models import (
+    BranchDepartment, Class, Department, Enrollment, Lesson, Question, Seminar, SeminarEnrollment, SiteSettings,
+    TeacherLessonPermission,
+)
 from .serializers import (
     BranchDepartmentSerializer,
     ClassSerializer,
@@ -42,6 +45,8 @@ from .serializers import (
     EnrollmentSerializer,
     LessonSerializer,
     QuestionSerializer,
+    SeminarEnrollmentSerializer,
+    SeminarSerializer,
     SiteSettingsSerializer,
 )
 
@@ -558,3 +563,152 @@ class TeacherLessonPermissionView(APIView):
             record(request, 'teacher', 'teacher_permission_update', f'ویرایش مجوزهای تدریس مدرس: {teacher.name}',
                    target_type='مدرس', target_id=str(teacher.pk), target_label=teacher.name, branch=teacher.branch, changes=changes)
         return Response(self._payload(teacher))
+
+
+def _log_seminar_rejected(request, seminar, member, reason):
+    """رد شدنِ ثبت‌نامِ سمینار، دقیقاً مثل _log_enroll_rejected برای کلاس."""
+    name = f'{member.user.first_name} {member.user.last_name}'.strip() or member.national_id
+    record_dedup(
+        request, 'class', 'seminar_enroll_rejected', f'رد شدن ثبت‌نام «{name}» در سمینار «{seminar.name}»: {reason}',
+        status='failed', target_type='سمینار', target_id=str(seminar.pk), target_label=seminar.name,
+        branch=seminar.branch, identifier=member.national_id,
+    )
+
+
+@audit('class', 'سمینار/کارگاه', {
+    'create': ('seminar_create', 'افزودن سمینار/کارگاه'),
+    'update': ('seminar_update', 'ویرایش سمینار/کارگاه'),
+    'destroy': ('seminar_delete', 'حذف سمینار/کارگاه'),
+})
+class SeminarViewSet(AuditedMixin, viewsets.ModelViewSet):
+    """
+    مدیریت سمینار/کارگاه + ثبت‌نامِ دانش‌پژوه در آن (اکشنِ enroll، دقیقاً هم‌خانواده‌ی
+    enroll کلاس، ولی بدون رده‌سنی/پیش‌نیاز - که مفهومِ سمینار نیستند).
+    """
+    queryset = Seminar.objects.select_related('department', 'teacher', 'term').prefetch_related('sessions')
+    serializer_class = SeminarSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        params = self.request.query_params
+        branch = params.get('branch')
+        if branch:
+            qs = qs.filter(branch=branch)
+        term = params.get('term')
+        if term:
+            qs = qs.filter(term_id=term)
+        class_type = params.get('class_type')
+        if class_type:
+            qs = qs.filter(class_type=class_type)
+        published = params.get('published')
+        if published is not None:
+            qs = qs.filter(is_published=published.lower() in ('1', 'true', 'yes'))
+        return qs
+
+    @action(detail=True, methods=['get'])
+    def students(self, request, pk=None):
+        seminar = self.get_object()
+        enrollments = seminar.enrollments.select_related('member', 'member__user').all()
+        return Response(SeminarEnrollmentSerializer(enrollments, many=True).data)
+
+    @action(detail=True, methods=['post'])
+    def enroll(self, request, pk=None):
+        seminar = self.get_object()
+        is_staff_request = request.user.is_authenticated and hasattr(request.user, 'employee')
+
+        if not is_staff_request and not SiteSettings.load().public_registration_enabled:
+            return Response(
+                {'detail': 'در حال حاضر ثبت‌نام در سمینارها و کارگاه‌ها برای عموم بسته است.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        national_id = (request.data.get('national_id') or '').strip()
+        membership_code = (request.data.get('membership_code') or '').strip()
+        if not national_id or not membership_code:
+            return Response({'detail': 'کد ملی و کد عضویت لازم است.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        ctx = None
+        if not is_staff_request:
+            ctx, blocked = throttle.guard(national_id)
+            if blocked:
+                return blocked
+
+        member = (
+            Member.objects
+            .filter(national_id=national_id, membership_code=membership_code)
+            .select_related('ban')
+            .first()
+        )
+        if member is None:
+            not_found = 'این کد ملی و کد عضویت در سامانه‌ی اعضا یافت نشد.'
+            if ctx is None:
+                return Response({'is_member': False, 'detail': not_found}, status=status.HTTP_400_BAD_REQUEST)
+            response = throttle.fail(request, ctx, 'identity_failed', 'تلاش ناموفق برای تأیید هویت هنگام ثبت‌نام سمینار (کد ملی و کد عضویت نخواند)',
+                                     not_found, status.HTTP_400_BAD_REQUEST)
+            if response.status_code == status.HTTP_400_BAD_REQUEST:
+                response.data['is_member'] = False
+            return response
+        if ctx is not None:
+            throttle.register_success(ctx['key'])
+        if hasattr(member, 'ban'):
+            _log_seminar_rejected(request, seminar, member, 'عضو محروم است')
+            return Response(
+                {'is_member': True, 'is_banned': True, 'ban_reason': member.ban.reason, 'detail': 'این عضو محروم شده است.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not member.is_membership_valid:
+            _log_seminar_rejected(request, seminar, member, 'عضویت منقضی شده است')
+            return Response(
+                {'is_member': True, 'is_valid': False, 'detail': 'عضویت این فرد منقضی شده است.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # همان قاعده‌ی استانِ کلاس‌های مجازی: فقط اگر سراسری نباشد، و فقط وقتی
+        # استانِ هم سمینار و هم دانش‌پژوه مشخص باشد
+        if not seminar.is_national:
+            from core.models import Branch
+
+            canonical_seminar_branch = canonical_branch_name(seminar.branch) or (seminar.branch or '').strip()
+            seminar_branch = Branch.objects.filter(name=canonical_seminar_branch).first()
+            seminar_province = (seminar_branch.province if seminar_branch else '') or ''
+            member_province = (member.province or '').strip()
+            if seminar_province and member_province and seminar_province != member_province:
+                _log_seminar_rejected(
+                    request, seminar, member,
+                    f'استان سمینار ({seminar_province}) با استان دانش‌پژوه ({member_province}) نمی‌خواند',
+                )
+                return Response(
+                    {
+                        'detail': 'استان انتخاب‌شده جزو استان‌های قابل ثبت‌نام برای شما نیست.',
+                        'wrong_province': True,
+                        'class_province': seminar_province,
+                        'member_province': member_province,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        if seminar.is_full:
+            _log_seminar_rejected(request, seminar, member, 'ظرفیت سمینار تکمیل است')
+            return Response({'detail': 'ظرفیت این سمینار/کارگاه تکمیل شده است.'}, status=status.HTTP_400_BAD_REQUEST)
+        if SeminarEnrollment.objects.filter(seminar=seminar, member=member).exists():
+            _log_seminar_rejected(request, seminar, member, 'قبلاً در این سمینار ثبت‌نام کرده است')
+            return Response(
+                {'detail': 'قبلاً در این سمینار/کارگاه ثبت‌نام کرده‌اید.', 'already_enrolled': True},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        enrollment = SeminarEnrollment.objects.create(seminar=seminar, member=member)
+        member_name = f'{member.user.first_name} {member.user.last_name}'.strip() or member.national_id
+        if is_staff_request:
+            actor_name, actor_role, _ = actor_info(request.user)
+            source_label = f'ثبت‌نام توسط {actor_name} ({actor_role})' if actor_name else 'ثبت‌نام توسط کارمند'
+        else:
+            source_label = 'ثبت‌نام اینترنتی (خودِ دانش‌پژوه از سایت)'
+        record(
+            request, 'class', 'seminar_enroll', f'ثبت‌نام «{member_name}» در سمینار «{seminar.name}»',
+            target_type='سمینار', target_id=str(seminar.pk), target_label=seminar.name, branch=seminar.branch,
+            identifier=member.national_id,
+            changes=[{'field': 'نحوه‌ی ثبت‌نام', 'old': '', 'new': source_label}],
+        )
+        return Response(SeminarEnrollmentSerializer(enrollment).data, status=status.HTTP_201_CREATED)
