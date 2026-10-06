@@ -15,18 +15,26 @@ API دپارتمان‌ها، کلاس‌ها و ثبت‌نام.
 
   GET /api/classmgmt/classes/<id>/students/                -> لیست دانش‌پژوهان ثبت‌نامی این کلاس
 
-TODO (فاز آینده - ورود مسئولین/ادمین‌ها): مثل بقیه‌ی این پروژه، فعلاً نوشتن
-برای همه باز است چون پنل ادمین HTML هنوز خودش وارد نمی‌شود.
+امنیت (قاعده‌ی کلی این فایل):
+  - خواندنِ داده‌ی عمومی (دپارتمان، درس، کلاس، سمینار، ترم) برای همه باز است چون صفحه‌های عمومی سایت لازم دارند.
+  - هر نوشتن فقط برای مدیر/مسئول آموزش است؛ مسئول آموزش فقط در شعبه‌ی خودش می‌نویسد.
+  - ثبت‌نام (enroll) عمومی است ولی هویت (کد ملی + کد عضویت) و محدودیت تلاش دارد.
+  - اطلاعات شخصی (لیست دانش‌پژوهان کلاس، ثبت‌نام‌ها و نمره‌ها، بانک سؤال) فقط برای کارکنان یا صاحب اطلاعات
+    (دانش‌پژوه: خودش؛ مدرس: کلاس‌های خودش) قابل دسترسی است.
 """
 
 from django.db import transaction
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.models import Employee
-from core.permissions import ROLE_OFFICER, IsEducationStaff, staff_role
+from core.permissions import (
+    ROLE_OFFICER, IsEducationStaff, ReadOnlyOrEducationManager, ReadOnlyOrEducationStaff, member_of,
+    officer_branch_name, same_branch, scope_to_officer_branch, staff_role, teacher_employee,
+)
 from feedback.branches import canonical_branch_name
 from logs import throttle
 from logs.mixins import AuditedMixin, audit
@@ -51,17 +59,45 @@ from .serializers import (
 )
 
 
+class OfficerBranchWriteMixin:
+    """
+    مسئول آموزش فقط روی رکوردهای «شعبه‌ی خودش» می‌نویسد (ساخت/ویرایش/حذف)؛ مدیر محدودیتی ندارد.
+    خواندن (عمومی) و اکشن ثبت‌نام (enroll) محدود نمی‌شود.
+    فیلد شعبه‌ی مدل با officer_branch_field مشخص می‌شود (پیش‌فرض: branch).
+    """
+    officer_branch_field = 'branch'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.method not in permissions.SAFE_METHODS and getattr(self, 'action', None) != 'enroll':
+            qs = scope_to_officer_branch(qs, self.request.user, self.officer_branch_field)
+        return qs
+
+    def _officer_check_branch(self, branch):
+        own = officer_branch_name(self.request.user)
+        if own is not None and not same_branch(branch, own):
+            raise PermissionDenied('شما فقط در شعبه‌ی خودتان می‌توانید ثبت یا ویرایش کنید.')
+
+    def perform_create(self, serializer):
+        self._officer_check_branch(serializer.validated_data.get('branch'))
+        super().perform_create(serializer)
+
+    def perform_update(self, serializer):
+        if 'branch' in serializer.validated_data:
+            self._officer_check_branch(serializer.validated_data.get('branch'))
+        super().perform_update(serializer)
+
+
 class SiteSettingsView(APIView):
     """
     تنظیمات سراسری سایت (فعلاً فقط «دسترسی همگان به دیدن و ثبت‌نام در
     کلاس‌ها»). چون فقط یک رکورد وجود دارد، GET همیشه همان یکی را برمی‌گرداند
     و PATCH همان را به‌روز می‌کند - نیازی به id در URL نیست.
 
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): طبق متن خودِ پنل ادمین، این
-    فقط باید توسط «مدیر آموزش» قابل تغییر باشد؛ فعلاً مثل بقیه‌ی پروژه
-    برای راحتی توسعه باز است.
+    امنیت: خواندن عمومی است (صفحه‌ها وضعیت ثبت‌نام را می‌پرسند)؛ تغییر فقط مدیر/مسئول آموزش
+    (و کلید انتقادات و پیشنهادات فقط مدیر آموزش؛ در patch زیر اجبار می‌شود).
     """
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationStaff]
 
     def get(self, request):
         return Response(SiteSettingsSerializer(SiteSettings.load()).data)
@@ -107,7 +143,7 @@ class SiteSettingsView(APIView):
 class DepartmentViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationManager]
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
 
     def get_queryset(self):
@@ -127,13 +163,13 @@ class DepartmentViewSet(AuditedMixin, viewsets.ModelViewSet):
     'update': ('lesson_update', 'ویرایش درس'),
     'destroy': ('lesson_delete', 'حذف درس'),
 })
-class LessonViewSet(AuditedMixin, viewsets.ModelViewSet):
+class LessonViewSet(AuditedMixin, OfficerBranchWriteMixin, viewsets.ModelViewSet):
     """
     درس (سرفصل) - قبل از ساخت هر کلاسی باید درسش اینجا تعریف شده باشد.
     """
     queryset = Lesson.objects.select_related('department').all()
     serializer_class = LessonSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationStaff]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -158,14 +194,29 @@ class QuestionViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
     queryset = Question.objects.select_related('lesson').all()
     serializer_class = QuestionSerializer
-    permission_classes = [permissions.AllowAny]
+    # امنیت: گزینه‌ها «پاسخ صحیح» را هم دارند؛ پس حتی خواندن هم فقط برای کارکنان است
+    permission_classes = [IsEducationStaff]
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = scope_to_officer_branch(super().get_queryset(), self.request.user, 'lesson__branch')
         lesson = self.request.query_params.get('lesson')
         if lesson:
             qs = qs.filter(lesson_id=lesson)
         return qs
+
+    def _check_lesson_branch(self, serializer):
+        lesson = serializer.validated_data.get('lesson')
+        own = officer_branch_name(self.request.user)
+        if own is not None and lesson is not None and not same_branch(lesson.branch, own):
+            raise PermissionDenied('شما فقط برای درس‌های شعبه‌ی خودتان می‌توانید سؤال ثبت کنید.')
+
+    def perform_create(self, serializer):
+        self._check_lesson_branch(serializer)
+        super().perform_create(serializer)
+
+    def perform_update(self, serializer):
+        self._check_lesson_branch(serializer)
+        super().perform_update(serializer)
 
 
 @audit('class', 'دپارتمان شعبه', {
@@ -175,7 +226,7 @@ class QuestionViewSet(AuditedMixin, viewsets.ModelViewSet):
 class BranchDepartmentViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = BranchDepartment.objects.select_related('department').all()
     serializer_class = BranchDepartmentSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationManager]
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
 
     def get_queryset(self):
@@ -212,10 +263,18 @@ def _class_summary(action_key, label, target_label, obj, request, response):
     'update': ('class_update', 'ویرایش کلاس'),
     'destroy': ('class_delete', 'حذف کلاس'),
 }, summary_func=_class_summary, skip_fields=('lesson', 'department', 'term', 'teacher', 'prerequisite'))
-class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
+class ClassViewSet(AuditedMixin, OfficerBranchWriteMixin, viewsets.ModelViewSet):
     queryset = Class.objects.select_related('department', 'teacher').all()
     serializer_class = ClassSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationStaff]
+
+    def get_permissions(self):
+        # ثبت‌نام عمومی است (هویت را خودش می‌سنجد)؛ لیست دانش‌پژوهان فقط با ورود (بررسی دقیق داخل action)
+        if self.action == 'enroll':
+            return [permissions.AllowAny()]
+        if self.action == 'students':
+            return [permissions.IsAuthenticated()]
+        return [ReadOnlyOrEducationStaff()]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -262,6 +321,14 @@ class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def students(self, request, pk=None):
         cls = self.get_object()
+        # فقط کارکنان (مسئول: شعبه‌ی خودش) و مدرسِ همین کلاس؛ لیست شامل کد ملی و تلفن دانش‌پژوهان است
+        teacher = teacher_employee(request.user)
+        own = officer_branch_name(request.user)
+        is_manager = staff_role(request.user) is not None and own is None
+        is_officer_of_branch = own is not None and same_branch(cls.branch, own)
+        is_class_teacher = teacher is not None and cls.teacher_id == teacher.id
+        if not (is_manager or is_officer_of_branch or is_class_teacher):
+            return Response({'detail': 'شما به لیست دانش‌پژوهان این کلاس دسترسی ندارید.'}, status=status.HTTP_403_FORBIDDEN)
         enrollments = cls.enrollments.select_related('member', 'member__user').all()
         return Response(EnrollmentSerializer(enrollments, many=True).data)
 
@@ -278,7 +345,7 @@ class ClassViewSet(AuditedMixin, viewsets.ModelViewSet):
         # مدیر/مسئول آموزش (نیروی انسانی) حتی اگر هفته‌ی ثبت‌نام هم گذشته
         # باشد، باید بتواند از پنل خودش دستی دانش‌پژوه اضافه کند؛ این
         # محدودیت فقط برای ثبت‌نام عمومی (خودِ دانش‌پژوهان از سایت اصلی) است
-        is_staff_request = request.user.is_authenticated and hasattr(request.user, 'employee')
+        is_staff_request = staff_role(request.user) is not None
 
         if not is_staff_request and not SiteSettings.load().public_registration_enabled:
             return Response(
@@ -461,18 +528,56 @@ class EnrollmentViewSet(AuditedMixin, viewsets.ModelViewSet):
         .all()
     )
     serializer_class = EnrollmentSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'patch', 'delete', 'head', 'options']
+
+    # فیلدهایی که «مدرس» اجازه‌ی تغییرشان را دارد (نه جابه‌جا کردن دانش‌پژوه یا کلاس)
+    TEACHER_EDITABLE_FIELDS = {'score', 'absent'}
+
+    def get_permissions(self):
+        # حذف ثبت‌نام فقط کارکنان؛ بقیه فقط با ورود (دسترسی دقیق در get_queryset و partial_update)
+        if self.action == 'destroy':
+            return [IsEducationStaff()]
+        return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
         qs = super().get_queryset()
-        national_id = self.request.query_params.get('member_national_id')
-        membership_code = self.request.query_params.get('member_membership_code')
-        if national_id:
-            qs = qs.filter(member__national_id=national_id)
-        if membership_code:
-            qs = qs.filter(member__membership_code=membership_code)
-        return qs
+        user = self.request.user
+        if staff_role(user) is not None:
+            national_id = self.request.query_params.get('member_national_id')
+            membership_code = self.request.query_params.get('member_membership_code')
+            if national_id:
+                qs = qs.filter(member__national_id=national_id)
+            if membership_code:
+                qs = qs.filter(member__membership_code=membership_code)
+            # مسئول آموزش در «تغییر/حذف» فقط ثبت‌نام‌های کلاس‌های شعبه‌ی خودش را می‌بیند (خواندن سوابق آزاد)
+            own = officer_branch_name(user)
+            if own is not None and self.request.method not in permissions.SAFE_METHODS:
+                ids = [
+                    e.pk for e in qs
+                    if same_branch(e.class_obj.branch if e.class_obj else (e.lesson.branch if e.lesson else ''), own)
+                ]
+                qs = qs.filter(pk__in=ids)
+            return qs
+        # دانش‌پژوه: فقط ثبت‌نام‌های خودش (پارامترهای کد ملی/کد عضویت نادیده گرفته می‌شوند)
+        member = member_of(user)
+        if member is not None:
+            return qs.filter(member=member)
+        # مدرس: فقط ثبت‌نام‌های کلاس‌های خودش
+        teacher = teacher_employee(user)
+        if teacher is not None:
+            return qs.filter(class_obj__teacher=teacher)
+        return qs.none()
+
+    def partial_update(self, request, *args, **kwargs):
+        # ثبت نمره/غیبت فقط کارکنان و مدرسِ همان کلاس؛ دانش‌پژوه هرگز
+        if staff_role(request.user) is None:
+            if teacher_employee(request.user) is None:
+                return Response({'detail': 'شما اجازه‌ی ویرایش ندارید.'}, status=status.HTTP_403_FORBIDDEN)
+            extra = set(request.data.keys()) - self.TEACHER_EDITABLE_FIELDS
+            if extra:
+                return Response({'detail': 'مدرس فقط نمره و غیبت را می‌تواند تغییر دهد.'}, status=status.HTTP_403_FORBIDDEN)
+        return super().partial_update(request, *args, **kwargs)
 
 
 def _branch_key(name):
@@ -580,14 +685,22 @@ def _log_seminar_rejected(request, seminar, member, reason):
     'update': ('seminar_update', 'ویرایش سمینار/کارگاه'),
     'destroy': ('seminar_delete', 'حذف سمینار/کارگاه'),
 })
-class SeminarViewSet(AuditedMixin, viewsets.ModelViewSet):
+class SeminarViewSet(AuditedMixin, OfficerBranchWriteMixin, viewsets.ModelViewSet):
     """
     مدیریت سمینار/کارگاه + ثبت‌نامِ دانش‌پژوه در آن (اکشنِ enroll، دقیقاً هم‌خانواده‌ی
     enroll کلاس، ولی بدون رده‌سنی/پیش‌نیاز - که مفهومِ سمینار نیستند).
     """
-    queryset = Seminar.objects.select_related('department', 'teacher', 'term').prefetch_related('sessions')
+    queryset = Seminar.objects.select_related('department', 'lesson', 'teacher', 'term').prefetch_related('sessions')
     serializer_class = SeminarSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationStaff]
+
+    def get_permissions(self):
+        # مثل کلاس: ثبت‌نام عمومی (با تأیید هویت)، لیست دانش‌پژوهان فقط با ورود و بررسی دقیق داخل action
+        if self.action == 'enroll':
+            return [permissions.AllowAny()]
+        if self.action == 'students':
+            return [permissions.IsAuthenticated()]
+        return [ReadOnlyOrEducationStaff()]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -609,13 +722,20 @@ class SeminarViewSet(AuditedMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def students(self, request, pk=None):
         seminar = self.get_object()
+        teacher = teacher_employee(request.user)
+        own = officer_branch_name(request.user)
+        is_manager = staff_role(request.user) is not None and own is None
+        is_officer_of_branch = own is not None and same_branch(seminar.branch, own)
+        is_seminar_teacher = teacher is not None and seminar.teacher_id == teacher.id
+        if not (is_manager or is_officer_of_branch or is_seminar_teacher):
+            return Response({'detail': 'شما به لیست شرکت‌کنندگان این سمینار دسترسی ندارید.'}, status=status.HTTP_403_FORBIDDEN)
         enrollments = seminar.enrollments.select_related('member', 'member__user').all()
         return Response(SeminarEnrollmentSerializer(enrollments, many=True).data)
 
     @action(detail=True, methods=['post'])
     def enroll(self, request, pk=None):
         seminar = self.get_object()
-        is_staff_request = request.user.is_authenticated and hasattr(request.user, 'employee')
+        is_staff_request = staff_role(request.user) is not None
 
         if not is_staff_request and not SiteSettings.load().public_registration_enabled:
             return Response(

@@ -23,23 +23,21 @@ from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.throttling import SimpleRateThrottle
 from rest_framework.views import APIView
 
 from .models import Branch, Employee, TeacherApplicant
 from .serializers import BranchSerializer, EmployeeSerializer, StaffSerializer, TeacherApplicantSerializer
-from core.permissions import STAFF_ROLES, IsEducationStaff
+from core.permissions import (
+    ROLE_MANAGER, ROLE_OFFICER, ROLE_TEACHER, STAFF_ROLES, IsEducationManager, IsEducationStaff,
+    ReadOnlyOrEducationManager, officer_branch_name, same_branch, scope_to_officer_branch, staff_role,
+)
 from logs.mixins import AuditedMixin, audit
 from .services import ApprovalError, approve_teacher_applicant, ensure_username_available
 from logs.recorder import record
 
 User = get_user_model()
 
-
-class IsStaffOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return bool(request.user and request.user.is_authenticated and request.user.is_staff)
 
 
 @audit('settings', 'شعبه', {
@@ -49,17 +47,12 @@ class IsStaffOrReadOnly(permissions.BasePermission):
 }, branch_field='name')
 class BranchViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): این ViewSet قبلاً با
-    IsStaffOrReadOnly محدود شده بود، اما هیچ‌کجای پروژه هنگام ساخته‌شدن
-    حساب یک «مدیر آموزش»/«مسئول آموزش» مقدار is_staff را True نمی‌کند
-    (فقط حساب‌های ادمین جنگو از پنل /admin چنین چیزی دارند) - در نتیجه
-    حتی مدیر آموزشِ واقعاً واردشده هم برای ویرایش/افزودن/حذف شعبه ۴۰۳
-    می‌گرفت. تا وقتی سیستم نقش‌ها کامل نشده، مثل بقیه‌ی ViewSetهای این
-    پروژه باز گذاشته شده است.
+    لیست شعب داده‌ی عمومی است (سایت اصلی و فرم ثبت‌نام مدرس آن را می‌خوانند)، ولی
+    افزودن/ویرایش/حذف شعبه فقط برای «مدیر آموزش» است (مسئول آموزش فقط می‌خواند).
     """
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationManager]
 
 
 @audit('teacher', 'مدرس', {
@@ -68,19 +61,21 @@ class BranchViewSet(AuditedMixin, viewsets.ModelViewSet):
 })
 class EmployeeViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
-    عمداً فقط GET/PUT/DELETE کاربردی است (create از طریق این مسیر معنی
+    عمداً فقط GET/PUT/PATCH/DELETE کاربردی است (create از طریق این مسیر معنی
     ندارد): تنها راه ساخته شدن یک نیروی «مدرس» تازه، تأیید درخواستش در
     TeacherApplicantViewSet.approve است - همان‌جایی که هم‌زمان حساب ورودش
     هم ساخته می‌شود. این محدودیت را http_method_names تضمین می‌کند.
 
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): مثل TeacherApplicantViewSet،
-    الان GET/PUT/DELETE برای راحتی توسعه باز است (چون پنل ادمین HTML هنوز
-    خودش وارد نمی‌شود/نشست ندارد). وقتی احراز هویت پنل ادمین ساخته شد،
-    حتماً این را به IsAdminUser محدود کنید.
+    امنیت:
+      - فقط مدیر/مسئول آموزش (اطلاعات مدرسین شخصی است: کد ملی، تلفن، آدرس، عکس).
+      - این مسیر فقط روی نیروهای با سمت «مدرس» کار می‌کند؛ مدیر/مسئول فقط از مسیر staff
+        (مخصوص مدیر آموزش) ساخته/ویرایش می‌شوند.
+      - «سمت» از این مسیر قابل تغییر نیست (read_only در سریالایزر) تا کسی نتواند یک مدرس را مدیر کند.
+      - مسئول آموزش فقط مدرسین شعبه‌ی خودش را می‌بیند/ویرایش/حذف می‌کند و نمی‌تواند شعبه‌ی مدرس را عوض کند.
     """
-    queryset = Employee.objects.all()
+    queryset = Employee.objects.filter(role=ROLE_TEACHER)
     serializer_class = EmployeeSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsEducationStaff]
     http_method_names = ['get', 'put', 'patch', 'delete', 'head', 'options']
 
     def perform_destroy(self, instance):
@@ -97,11 +92,55 @@ class EmployeeViewSet(AuditedMixin, viewsets.ModelViewSet):
             user.delete()
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = scope_to_officer_branch(super().get_queryset(), self.request.user)
         role = self.request.query_params.get('role')
         if role:
             qs = qs.filter(role=role)
         return qs
+
+    def perform_update(self, serializer):
+        # مسئول آموزش نمی‌تواند مدرس را به شعبه‌ی دیگری منتقل کند
+        if staff_role(self.request.user) == ROLE_OFFICER:
+            serializer.validated_data.pop('branch', None)
+
+        # نام‌کاربری و رمز «حساب ورودِ» مدرس (مدل User) فیلد خودِ Employee نیستند؛ سریالایزر آن‌ها را
+        # نمی‌شناسد و قبلاً بی‌صدا نادیده گرفته می‌شد (فرم می‌گفت ذخیره شد ولی چیزی عوض نمی‌شد).
+        # اینجا صریحاً از بدنه‌ی درخواست خوانده و روی User اعمال می‌شود. همه‌ی بررسی‌ها قبل از هر
+        # ذخیره‌سازی انجام می‌شود تا خطا، نیمه‌کاره‌ماندن تغییرات را نسازد.
+        username = (self.request.data.get('username') or '').strip()
+        password = self.request.data.get('password') or ''
+        instance = serializer.instance
+        user = instance.user
+
+        if password:
+            _ensure_password_strength_or_400(password)
+        username_changed = bool(username) and (user is None or username != user.username)
+        if username_changed:
+            _ensure_username_format_or_400(username)
+            _ensure_username_or_400(username, exclude_user_pk=user.pk if user else None)
+        if user is None and username and not password:
+            raise serializers.ValidationError({'detail': 'این مدرس هنوز حساب ورود ندارد؛ برای ساخت آن، رمز عبور را هم وارد کنید.'})
+
+        with transaction.atomic():
+            if user is not None:
+                if username_changed:
+                    user.username = username
+                if password:
+                    user.set_password(password)
+                if username_changed or password:
+                    user.save()
+                serializer.save()
+            elif username and password:
+                # مدرسِ قدیمی که حساب ورود نداشت: همین‌جا حسابش ساخته می‌شود
+                serializer.save(user=User.objects.create_user(username=username, password=password))
+            else:
+                serializer.save()
+
+
+def _ensure_username_format_or_400(username):
+    """نام‌کاربری فقط حروف/رقم انگلیسی و . _ - (هم‌سان با MyProfileView)؛ فاصله و حروف فارسی رد می‌شود."""
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+', username):
+        raise serializers.ValidationError({'detail': 'نام کاربری فقط می‌تواند شامل حروف/رقم انگلیسی و . _ - باشد.'})
 
 
 def _ensure_username_or_400(username, exclude_user_pk=None):
@@ -110,6 +149,17 @@ def _ensure_username_or_400(username, exclude_user_pk=None):
         ensure_username_available(username, exclude_user_pk=exclude_user_pk)
     except ApprovalError as e:
         raise serializers.ValidationError({'detail': str(e)})
+
+
+def _ensure_password_strength_or_400(password):
+    """حداقل طول رمز عبور (هم‌سان با ویرایش پروفایل خود کاربر: ۶ کاراکتر)."""
+    if len(password) < 6:
+        raise serializers.ValidationError({'detail': 'رمز عبور باید حداقل ۶ کاراکتر باشد.'})
+
+
+def _manager_count():
+    """تعداد حساب‌های «مدیر آموزش» که واقعاً می‌توانند وارد پنل شوند (دارای حساب کاربری)."""
+    return Employee.objects.filter(role=ROLE_MANAGER, user__isnull=False).count()
 
 
 @audit('staff', 'مدیر/مسئول آموزش', {
@@ -124,14 +174,12 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
     افزودن/ویرایش/حذف مستقیم مجاز است؛ این تنها راه ساخته‌شدن یک متصدی
     است - از پنل ادمین جنگو دیگر نمی‌شود متصدی ساخت.
 
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): فعلاً برای راحتی توسعه باز
-    است؛ وقتی احراز هویت واقعی آماده شد، این را به «فقط مدیر آموزش»
-    محدود کنید (چون همین الان هرکسی نظری به این آدرس بزند می‌تواند
-    متصدی جدید بسازد).
+    امنیت: فقط «مدیر آموزش» (ساختنِ حساب مدیر/مسئول = بالاترین سطح دسترسی است).
+    قفل‌های جلوگیری از حذف/تنزل حساب خود و آخرین مدیر هم در perform_destroy/perform_update است.
     """
     queryset = Employee.objects.filter(role__in=['مدیر آموزش', 'مسئول آموزش'])
     serializer_class = StaffSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsEducationManager]
 
     def get_queryset(self):
         qs = Employee.objects.filter(role__in=['مدیر آموزش', 'مسئول آموزش'])
@@ -145,11 +193,18 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
         password = serializer.validated_data.pop('password', '') or ''
         if not username or not password:
             raise serializers.ValidationError({'detail': 'نام‌کاربری و رمز عبور برای متصدی جدید الزامی است.'})
+        _ensure_password_strength_or_400(password)
+        _ensure_username_format_or_400(username)
         _ensure_username_or_400(username)
         user = User.objects.create_user(username=username, password=password)
         serializer.save(user=user)
 
     def perform_destroy(self, instance):
+        # حذف حساب خود یا آخرین مدیر آموزش، سامانه را بدون مدیر (قفل‌شده) می‌گذارد
+        if instance.user_id is not None and instance.user_id == self.request.user.pk:
+            raise serializers.ValidationError({'detail': 'نمی‌توانید حساب کاربری خودتان را حذف کنید.'})
+        if instance.role == ROLE_MANAGER and _manager_count() <= 1:
+            raise serializers.ValidationError({'detail': 'آخرین مدیر آموزش قابل حذف نیست.'})
         # مثل EmployeeViewSet.perform_destroy: حذف متصدی به‌تنهایی حساب User وصل‌شده را
         # حذف نمی‌کند و نام کاربری برای همیشه قفل می‌ماند. حساب مدیر سیستم
         # (superuser) هیچ‌وقت حذف نمی‌شود.
@@ -163,8 +218,16 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
         password = serializer.validated_data.pop('password', '') or ''
         instance = serializer.instance
 
+        # آخرین مدیر آموزش نباید به «مسئول آموزش» تنزل پیدا کند
+        new_role = serializer.validated_data.get('role', instance.role)
+        if instance.role == ROLE_MANAGER and new_role != ROLE_MANAGER and _manager_count() <= 1:
+            raise serializers.ValidationError({'detail': 'آخرین مدیر آموزش را نمی‌شود به مسئول آموزش تغییر داد.'})
+        if password:
+            _ensure_password_strength_or_400(password)
+
         if instance.user:
             if username and username != instance.user.username:
+                _ensure_username_format_or_400(username)
                 _ensure_username_or_400(username, exclude_user_pk=instance.user.pk)
                 instance.user.username = username
             if password:
@@ -185,21 +248,52 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
     'destroy': ('applicant_delete', 'حذف درخواست همکاری مدرس'),
     'approve': ('applicant_approve', 'تأیید درخواست همکاری مدرس و ساخت حساب'),
 })
+class ApplicantSubmitThrottle(SimpleRateThrottle):
+    """
+    محدودیت ثبت درخواست همکاریِ «عمومی» (بدون ورود): ۲۰ مورد در ساعت برای هر IP، تا نشود با
+    فرم عمومی (که فایل تا ۵ مگابایت می‌گیرد) دیسک و پنل را پر کرد. فقط ثبتِ ناشناس را محدود
+    می‌کند؛ ثبت دستی توسط مدیر/مسئولِ واردشده معاف است.
+    """
+    scope = 'applicant_submit'
+    rate = '20/hour'
+
+    def get_cache_key(self, request, view):
+        return self.cache_format % {'scope': self.scope, 'ident': self.get_ident(request)}
+
+
 class TeacherApplicantViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): الان همه‌ی این مسیرها برای
-    راحتی توسعه باز هستند (چون پنل ادمین HTML هنوز خودش وارد نمی‌شود/نشست
-    ندارد). وقتی احراز هویت پنل ادمین ساخته شد، حتماً GET/DELETE/approve
-    را به IsAdminUser (فقط کارکنان وارد‌شده) محدود کنید، چون این رکوردها
-    اطلاعات شخصی متقاضیان (تلفن، آدرس، عکس) را دارند.
+    امنیت:
+      - ثبت درخواست (POST) برای همه باز است (فرم عمومی teacher-registration.html) ولی محدودیت تعداد دارد.
+      - مشاهده/ویرایش/حذف/تأیید فقط برای مدیر/مسئول آموزش است (رکوردها اطلاعات شخصی متقاضیان
+        را دارند: تلفن، کد ملی، آدرس، عکس، رزومه).
+      - مسئول آموزش فقط درخواست‌های شعبه‌ی خودش را می‌بیند و درخواستی که خودش ثبت می‌کند همیشه
+        به شعبه‌ی خودش نسبت داده می‌شود.
     """
     queryset = TeacherApplicant.objects.all()
     serializer_class = TeacherApplicantSerializer
     permission_classes = [permissions.AllowAny]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return [IsEducationStaff()]
+
+    def get_throttles(self):
+        if self.action == 'create' and staff_role(self.request.user) is None:
+            return [ApplicantSubmitThrottle()]
+        return []
+
+    def perform_create(self, serializer):
+        own = officer_branch_name(self.request.user)
+        if own:
+            serializer.save(branch=own)
+        else:
+            serializer.save()
+
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = scope_to_officer_branch(super().get_queryset(), self.request.user)
         if self.action == 'list':
             # فهرست «مدرسین متقاضی» فقط درخواست‌های در انتظار بررسی را نشان
             # می‌دهد؛ درخواست‌های تأییدشده از اینجا محو می‌شوند و در فهرست

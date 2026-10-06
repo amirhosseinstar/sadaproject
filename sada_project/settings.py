@@ -141,3 +141,43 @@ CORS_ALLOW_CREDENTIALS = True
 # نشست (Session) و کوکی‌ها روی http ساده هم کار کنند (برای تست لوکال)
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+
+# ---------------------------------------------------------------------------
+# سخت‌گیری امنیتی برای سرور واقعی (production)
+# ---------------------------------------------------------------------------
+# این بخش «فقط» وقتی فعال می‌شود که DJANGO_DEBUG=False تنظیم شده باشد؛ در حالت توسعه
+# (پیش‌فرض) هیچ رفتاری عوض نمی‌شود. متغیرهای محیطی موردنیاز در سرور واقعی:
+#   DJANGO_DEBUG=False
+#   DJANGO_SECRET_KEY=<یک رشته‌ی تصادفیِ بلند و محرمانه>
+#   DJANGO_ALLOWED_HOSTS=example.ir,www.example.ir          (دامنه‌ها، با ویرگول)
+#   DJANGO_CORS_ORIGINS=https://example.ir                   (آدرس کاملِ سایت؛ اگر فرانت‌اند هم‌دامنه
+#                                                             است می‌تواند خالی بماند)
+#   DJANGO_HTTPS=True                                        (فقط اگر سایت با https سرو می‌شود)
+if not DEBUG:
+    from django.core.exceptions import ImproperlyConfigured
+
+    # ۱) کلید محرمانه نباید همان کلید آزمایشیِ داخل کد باشد (با آن می‌شود نشست جعل کرد)
+    if SECRET_KEY.startswith('django-insecure'):
+        raise ImproperlyConfigured('در حالت production باید DJANGO_SECRET_KEY با یک مقدار تصادفی تنظیم شود.')
+
+    # ۲) فقط دامنه‌های مشخص (نه '*') - جلوی حمله‌ی Host header را می‌گیرد
+    ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured('در حالت production باید DJANGO_ALLOWED_HOSTS (دامنه‌ی سایت) تنظیم شود.')
+
+    # ۳) CORS: فقط آدرس‌های مجاز، نه همه (همراه با کوکی نشست خطرناک است)
+    _origins = [o.strip() for o in os.environ.get('DJANGO_CORS_ORIGINS', '').split(',') if o.strip()]
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = _origins
+    CSRF_TRUSTED_ORIGINS = _origins
+
+    # ۴) کوکی‌ها فقط روی https (اگر سایت با https سرو می‌شود)
+    if os.environ.get('DJANGO_HTTPS', 'False') == 'True':
+        SESSION_COOKIE_SECURE = True
+        CSRF_COOKIE_SECURE = True
+        SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30      # یک ماه؛ بعد از اطمینان می‌شود بیشتر کرد
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'

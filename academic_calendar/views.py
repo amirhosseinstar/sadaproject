@@ -17,6 +17,7 @@ API تقویم آموزشی.
   POST /api/calendar/pdf/          -> آپلود/جایگزینی فایل PDF (فرم: year, pdf)
 """
 
+from core.permissions import ReadOnlyOrEducationManager
 from logs.mixins import AuditedMixin, audit
 from logs.recorder import record
 from rest_framework import permissions, viewsets
@@ -67,14 +68,12 @@ class AcademicTermViewSet(AuditedMixin, viewsets.ModelViewSet):
     CRUD کامل روی دوره‌های تقویم آموزشی - همان چیزی که دکمه‌ی
     «ویرایش تقویم» در پنل ادمین استفاده می‌کند.
 
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): مثل بقیه‌ی ViewSetهای این
-    پروژه، الان نوشتن (POST/PUT/DELETE) برای راحتی توسعه باز است (چون پنل
-    ادمین HTML هنوز خودش وارد نمی‌شود/نشست ندارد). وقتی احراز هویت پنل
-    ادمین ساخته شد، حتماً این را به IsAdminUser محدود کنید.
+    امنیت: خواندن عمومی است (سایت اصلی و صفحه‌ها ترم‌ها را نشان می‌دهند)؛
+    ساخت/ویرایش/حذف فقط «مدیر آموزش».
     """
     queryset = AcademicTerm.objects.all().order_by('year', 'order')
     serializer_class = AcademicTermSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationManager]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -90,10 +89,10 @@ class CalendarPdfView(APIView):
     AcademicTerm. دکمه‌ی «آپلود PDF تقویم» در پنل ادمین این را POST می‌کند؛
     سایت اصلی (سدا.html) با GET همین مسیر لینک دانلود را نشان می‌دهد.
 
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): مثل AcademicTermViewSet، فعلاً
-    POST هم برای همه باز است؛ وقتی احراز هویت پنل ادمین ساخته شد محدودش کنید.
+    امنیت: دانلود (GET) عمومی است؛ آپلود/جایگزینی PDF فقط «مدیر آموزش» (فایلی که
+    به همه‌ی بازدیدکنندگان سایت نشان داده می‌شود).
     """
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [ReadOnlyOrEducationManager]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get(self, request):

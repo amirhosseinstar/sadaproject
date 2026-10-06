@@ -257,6 +257,7 @@ class SeminarSessionSerializer(serializers.ModelSerializer):
 
 class SeminarSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source='department.name', read_only=True)
+    lesson_name = serializers.CharField(source='lesson.name', read_only=True, default=None)
     teacher_name = serializers.CharField(source='teacher.name', read_only=True, default=None)
     term_order = serializers.IntegerField(source='term.order', read_only=True, default=None)
     term_year = serializers.IntegerField(source='term.year', read_only=True, default=None)
@@ -269,9 +270,9 @@ class SeminarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seminar
         fields = [
-            'id', 'name', 'department', 'department_name', 'class_type', 'is_national', 'branch',
-            'term', 'term_order', 'term_year', 'teacher', 'teacher_name', 'capacity', 'description',
-            'is_published', 'enrolled_count', 'is_full', 'sessions',
+            'id', 'name', 'department', 'department_name', 'lesson', 'lesson_name', 'class_type',
+            'is_national', 'branch', 'term', 'term_order', 'term_year', 'teacher', 'teacher_name',
+            'capacity', 'description', 'is_published', 'enrolled_count', 'is_full', 'sessions',
         ]
 
     def validate_sessions(self, value):

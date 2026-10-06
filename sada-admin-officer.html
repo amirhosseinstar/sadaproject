@@ -2853,86 +2853,7 @@
               <label><input type="checkbox" name="apReqtypePick" value="مجازی"><span>مجازی</span></label>
             </div>
           </div>
-          <div class="field"><label>شعبه<span class="req-star">*</span></label><select id="ap_branch">
-              <option value="دفتر مرکزی خانه کارگر">دفتر مرکزی خانه کارگر</option>
-              <option value="تبریز">تبریز</option>
-              <option value="ارومیه">ارومیه</option>
-              <option value="پلدشت">پلدشت</option>
-              <option value="پیرانشهر">پیرانشهر</option>
-              <option value="خوی">خوی</option>
-              <option value="سلماس">سلماس</option>
-              <option value="مهاباد">مهاباد</option>
-              <option value="میاندوآب">میاندوآب</option>
-              <option value="اردبیل">اردبیل</option>
-              <option value="آران و بیدگل">آران و بیدگل</option>
-              <option value="اصفهان">اصفهان</option>
-              <option value="شاهین شهر">شاهین شهر</option>
-              <option value="شهرضا">شهرضا</option>
-              <option value="کاشان">کاشان</option>
-              <option value="نجف آباد">نجف آباد</option>
-              <option value="ساوجبلاغ">ساوجبلاغ</option>
-              <option value="کرج">کرج</option>
-              <option value="ایلام">ایلام</option>
-              <option value="دهلران">دهلران</option>
-              <option value="بوشهر">بوشهر</option>
-              <option value="اتحادیه">اتحادیه</option>
-              <option value="اسلامشهر">اسلامشهر</option>
-              <option value="بهارستان">بهارستان</option>
-              <option value="پاکدشت">پاکدشت</option>
-              <option value="تهران">تهران</option>
-              <option value="دفتر منطقه 15">دفتر منطقه 15</option>
-              <option value="دفتر منطقه 16">دفتر منطقه 16</option>
-              <option value="دفتر منطقه 18">دفتر منطقه 18</option>
-              <option value="دفتر منطقه 19">دفتر منطقه 19</option>
-              <option value="رباط کریم">رباط کریم</option>
-              <option value="شرق تهران(تهرانپارس)">شرق تهران(تهرانپارس)</option>
-              <option value="شهرری">شهرری</option>
-              <option value="شهرقدس">شهرقدس</option>
-              <option value="شهریار">شهریار</option>
-              <option value="غرب تهران(تهرانسر)">غرب تهران(تهرانسر)</option>
-              <option value="ورامین">ورامین</option>
-              <option value="شهرکرد">شهرکرد</option>
-              <option value="بیرجند">بیرجند</option>
-              <option value="طبس">طبس</option>
-              <option value="سبزوار">سبزوار</option>
-              <option value="مشهد">مشهد</option>
-              <option value="نیشابور">نیشابور</option>
-              <option value="بجنورد">بجنورد</option>
-              <option value="آبادان">آبادان</option>
-              <option value="اهواز">اهواز</option>
-              <option value="بندر امام خمینی (ره)">بندر امام خمینی (ره)</option>
-              <option value="دزفول">دزفول</option>
-              <option value="شوشتر">شوشتر</option>
-              <option value="خرمدره">خرمدره</option>
-              <option value="زنجان">زنجان</option>
-              <option value="سمنان">سمنان</option>
-              <option value="زاهدان">زاهدان</option>
-              <option value="شیراز">شیراز</option>
-              <option value="لارستان">لارستان</option>
-              <option value="لامرد">لامرد</option>
-              <option value="مرودشت">مرودشت</option>
-              <option value="مهر">مهر</option>
-              <option value="قزوین">قزوین</option>
-              <option value="قم">قم</option>
-              <option value="سنندج">سنندج</option>
-              <option value="جیرفت">جیرفت</option>
-              <option value="کرمان">کرمان</option>
-              <option value="کرمانشاه">کرمانشاه</option>
-              <option value="یاسوج">یاسوج</option>
-              <option value="گرگان">گرگان</option>
-              <option value="رشت">رشت</option>
-              <option value="بروجرد">بروجرد</option>
-              <option value="خرم آباد">خرم آباد</option>
-              <option value="آمل">آمل</option>
-              <option value="بهشهر">بهشهر</option>
-              <option value="ساری">ساری</option>
-              <option value="قائمشهر">قائمشهر</option>
-              <option value="اراک">اراک</option>
-              <option value="ساوه">ساوه</option>
-              <option value="بندر عباس">بندر عباس</option>
-              <option value="همدان">همدان</option>
-              <option value="یزد">یزد</option>
-            </select></div>
+          <div class="field"><label>شعبه<span class="req-star">*</span></label><select id="ap_branch"></select></div>
 
           <div class="field full">
             <label>عکس و رزومه<span class="req-star">*</span></label>
@@ -5461,6 +5382,21 @@
       return pickedClassBranch;
     })
     .catch(() => null);
+
+  // «ثبت دستی متقاضی» برای مسئول آموزش همیشه روی شعبه‌ی خودش ثبت می‌شود (سرور هم همین را اجبار می‌کند)؛
+  // پس به‌جای لیست همه‌ی شعب، فقط شعبه‌ی خودِ مسئول نمایش داده می‌شود.
+  pickedClassBranchReady.then(function(branch){
+    const sel = document.getElementById('ap_branch');
+    if(!sel) return;
+    sel.innerHTML = '';
+    if(branch){
+      const o = document.createElement('option');
+      o.value = branch;
+      o.textContent = branch;
+      sel.appendChild(o);
+    }
+    sel.disabled = true;
+  });
 
   function renderClassBranchBar(){
     const bar = document.getElementById('classBranchPickedBar');

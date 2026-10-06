@@ -46,7 +46,7 @@ from .models import Member, MemberBan, OTPCode, EmployeeOTPCode
 from .serializers import MemberSearchSerializer, MemberUpdateSerializer, build_profile_payload
 from .sms import send_sms
 from core.models import Employee
-from core.permissions import IsEducationStaff
+from core.permissions import IsEducationStaff, staff_role, teacher_employee
 from logs import throttle
 from logs.mixins import AuditedMixin, audit
 from logs.models import AuditLog
@@ -430,22 +430,23 @@ def _member_summary(action_key, label, target_label, obj, request, response):
    snapshot_extra_func=lambda m: {'نام': m.user.first_name, 'نام خانوادگی': m.user.last_name})
 class MemberViewSet(AuditedMixin, viewsets.ModelViewSet):
     """
-    TODO (فاز آینده - ورود مسئولین/ادمین‌ها): مثل بقیه‌ی ViewSetهای این
-    پروژه، فعلاً برای راحتی توسعه باز است. وقتی احراز هویت پنل ادمین ساخته
-    شد، این را به IsAdminUser محدود کنید - چون اطلاعات شخصی اعضا (تلفن،
-    کد ملی) را برمی‌گرداند.
+    مدیریت و جستجوی اعضا.
+
+    امنیت: هر مسیر این ViewSet اطلاعات شخصی دانش‌پژوه را برمی‌گرداند (کد ملی، تلفن و «کد عضویت» که همان
+    رمز ورود اوست)، پس همه‌ی آن‌ها فقط برای «مدیر آموزش» و «مسئول آموزش» باز است. تنها استثنا:
+    «محروم‌کردن» (ban) که مدرس هم می‌تواند فقط برای دانش‌پژوهِ غایبِ یکی از کلاس‌های خودش بزند
+    (پیامد ثبت «عدم حضور» در پیشخوان مدرس). رفع محرومیت فقط با کارکنان است.
     """
     queryset = Member.objects.select_related('user').all()
     serializer_class = MemberSearchSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsEducationStaff]
     http_method_names = ['get', 'post', 'patch', 'head', 'options']
 
     def get_permissions(self):
-        # ویرایش اطلاعات یک عضو فقط برای «مدیر آموزش» و «مسئول آموزش» است (بقیه‌ی
-        # کارهای این ViewSet مثل قبل باز می‌ماند؛ نگاه کنید به TODO بالای کلاس)
-        if self.action == 'partial_update':
-            return [IsEducationStaff()]
-        return super().get_permissions()
+        # ban برای مدرس هم باز است، ولی شرط دقیقش (کلاس خودش + غایب بودن) داخل خود action بررسی می‌شود
+        if self.action == 'ban':
+            return [permissions.IsAuthenticated()]
+        return [IsEducationStaff()]
 
     def create(self, request, *args, **kwargs):
         # ساخت عضو از این مسیر مجاز نیست؛ افزودن دانش‌پژوه/عضو جدید فقط از
@@ -489,7 +490,20 @@ class MemberViewSet(AuditedMixin, viewsets.ModelViewSet):
     def ban(self, request, pk=None):
         member = self.get_object()
         reason = request.data.get('reason', '')
+        is_staff = staff_role(request.user) is not None
+        if not is_staff:
+            # مدرس: فقط برای دانش‌پژوهی که در یکی از «کلاس‌های خودِ همین مدرس» غایب ثبت شده
+            from class_management.models import Enrollment
+            teacher = teacher_employee(request.user)
+            allowed = teacher is not None and Enrollment.objects.filter(
+                member=member, class_obj__teacher=teacher, absent=True,
+            ).exists()
+            if not allowed:
+                return Response({'detail': 'شما اجازه‌ی محروم‌کردن این دانش‌پژوه را ندارید.'}, status=403)
         MemberBan.objects.update_or_create(member=member, defaults={'reason': reason})
+        if not is_staff:
+            # به مدرس اطلاعات شخصی (کد عضویت و ...) برگردانده نمی‌شود
+            return Response({'id': member.id, 'is_banned': True, 'ban_reason': reason})
         return Response(self.get_serializer(member).data)
 
     @action(detail=True, methods=['post'])
@@ -522,7 +536,7 @@ class MemberVerifyView(APIView):
         # این مسیر عمومی «جفتِ کد ملی + کد عضویت» را می‌سنجد و کد عضویت همان چیزی است که دانش‌پژوه با آن
         # وارد می‌شود؛ پس بدون محدودیت، راهی برای حدس‌زدن رمز بود. جفت غلط مثل ورود ناموفق شمرده می‌شود
         # (مدیر/مسئولِ واردشده معاف است چون از پنل به‌جای دانش‌پژوه وارد می‌کند).
-        is_staff_request = request.user.is_authenticated and hasattr(request.user, 'employee')
+        is_staff_request = staff_role(request.user) is not None
         ctx = None
         if not is_staff_request:
             ctx, blocked = throttle.guard(national_id)

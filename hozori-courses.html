@@ -313,6 +313,13 @@
         </div>
         <div id="branchCourseList"></div>
       </div>
+
+      <div class="course-section">
+        <div class="course-section-title">
+          <span class="bar"></span><h2>سمینارها و کارگاه‌های حضوری شعبه</h2><span class="badge">شعبه‌ای</span>
+        </div>
+        <div id="branchSeminarList"></div>
+      </div>
     </div>
 
     <div class="announce-col">
@@ -536,6 +543,35 @@
     );
   }
 
+  // ---- سمینارها و کارگاه‌های حضوریِ این شعبه: دقیقاً هم‌خانواده‌ی تابعِ بالا،
+  // فقط به‌جایِ روز/ساعتِ هفتگی، چند «روزِ برگزاری» (تاریخ+ساعت) دارد ----
+  function loadBranchHozoriSeminars(branchName, deptName){
+    const params = new URLSearchParams();
+    if(branchName) params.set('branch', branchName);
+    if(deptName) params.set('department_name', deptName);
+    params.set('class_type', 'حضوری');
+    params.set('published', 'true');
+    return getActiveTermOrder().then(activeTermOrder =>
+      fetch(`${API_BASE_URL}/classmgmt/seminars/?${params.toString()}`, { credentials: 'include' })
+        .then(res => res.ok ? res.json() : [])
+        .then(list => (list || [])
+          .filter(s => activeTermOrder !== null && Number(s.term_order) === activeTermOrder)
+          .map(s => ({
+            id: s.id,
+            title: s.name,
+            teacher: s.teacher_name || 'هنوز مدرس تعیین نشده',
+            schedule: (s.sessions || []).map(sess => `${sess.date} (${sess.start_time} الی ${sess.end_time})`).join('، ') || '—',
+            price: 'رایگان',
+            location: 'سالن آموزشی شعبه ' + branchName,
+            isFull: !!s.is_full,
+            capacity: s.capacity,
+            enrolledCount: s.enrolled_count,
+            isSeminar: true,
+          })))
+        .catch(() => [])
+    );
+  }
+
   // ---- داده‌های نمونه‌ی اطلاعیه‌ها بر اساس استان/شعبه (Mock — تا اتصال به بک‌اند) ----
   // TODO: وقتی بک‌اند آماده شد، این داده‌ها از API واقعی اطلاعیه‌ها (فیلترشده بر اساس
   // شناسه‌ی استان و شعبه) دریافت شود. اطلاعیه‌های عمومی (بدون شعبه) هم باید از همان API بیایند.
@@ -642,6 +678,7 @@
     }
 
     const branchListEl = document.getElementById('branchCourseList');
+    const branchSeminarListEl = document.getElementById('branchSeminarList');
 
     // اول باید مطمئن شویم دسترسی همگان به دیدن/ثبت‌نام کلاس‌ها (سراسری،
     // از پنل مدیر آموزش) اصلاً باز است - اگر بسته باشد، حتی لیست کلاس‌ها
@@ -661,6 +698,9 @@
         }
         loadBranchHozoriCourses(branchName, deptName).then(courses => {
           renderCourseList(branchListEl, courses, 'هیچ کلاس فعالی برای این دپارتمان وجود ندارد.');
+          loadBranchHozoriSeminars(branchName, deptName).then(seminars => {
+            renderCourseList(branchSeminarListEl, seminars, 'هیچ سمینار یا کارگاهِ فعالی برای این دپارتمان وجود ندارد.');
+          });
           // اگر از صفحه‌ی ورود برگشته‌ایم (بعد از این‌که برای همین دوره
           // «ثبت‌نام» زده بودیم ولی هنوز وارد نشده بودیم)، ویزارد ثبت‌نام
           // را خودکار دوباره برای همان دوره باز کن.
@@ -835,7 +875,7 @@
     // مرحله‌ی «موفقیت» نشان داده می‌شود ----
     function enrollAndShowSuccess(){
       showStep('checking');
-      fetch(`${API_BASE_URL}/classmgmt/classes/${course.id}/enroll/`, {
+      fetch(`${API_BASE_URL}/classmgmt/${course.isSeminar ? 'seminars' : 'classes'}/${course.id}/enroll/`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },

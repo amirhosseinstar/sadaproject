@@ -25,12 +25,26 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'id', 'name', 'role', 'depts', 'reqtype', 'branch', 'phone', 'username',
             'national_id', 'father_name', 'birth_date', 'education_level', 'address', 'photo', 'resume',
         ]
+        # امنیت: «سمت» از این مسیر هرگز قابل تغییر نیست (جلوگیری از ارتقای مدرس به مدیر)
+        read_only_fields = ['role']
 
     def get_username(self, obj):
         return obj.user.username if obj.user else None
 
 
 STAFF_ROLES = ['مدیر آموزش', 'مسئول آموزش']
+
+
+def _canonical_branch_or_error(value):
+    """
+    شعبه باید یکی از شعبِ واقعیِ جدول Branch باشد؛ نام استاندارد همان جدول ذخیره می‌شود (نه متن آزاد)،
+    تا شعبه‌ی جعلی/غلط‌املایی ثبت نشود و فیلترهای «مسئول فقط شعبه‌ی خودش» دقیق کار کنند.
+    """
+    from feedback.branches import canonical_branch_name
+    canonical = canonical_branch_name(value)
+    if canonical is None:
+        raise serializers.ValidationError('شعبه‌ی انتخاب‌شده در لیست شعب وجود ندارد.')
+    return canonical
 
 
 class StaffSerializer(serializers.ModelSerializer):
@@ -55,6 +69,9 @@ class StaffSerializer(serializers.ModelSerializer):
         if value not in STAFF_ROLES:
             raise serializers.ValidationError('سمت باید «مدیر آموزش» یا «مسئول آموزش» باشد.')
         return value
+
+    def validate_branch(self, value):
+        return _canonical_branch_or_error(value)
 
 
 class DeptListField(serializers.Field):
@@ -131,6 +148,9 @@ class TeacherApplicantSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return f'{obj.first_name} {obj.last_name}'.strip()
+
+    def validate_branch(self, value):
+        return _canonical_branch_or_error(value)
 
     def validate_depts(self, value):
         if not value:

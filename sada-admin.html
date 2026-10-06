@@ -43,7 +43,7 @@
     .admin-header .logo-emblem{
     width:62px;height:45px;flex-shrink:0;
     background-image:var(--logo-url);background-repeat:no-repeat;background-position:center;
-    background-color:#fff;border-radius:50%;background-size:94%;
+    background-color:#fff;border-radius:50%;background-size:94% 94%;
     box-shadow:0 1px 4px rgba(0,0,0,.18);
   }
   .admin-header .logo-text{color:#fff;line-height:1.35;}
@@ -1741,8 +1741,6 @@
         <div class="class-subtab active" data-classtab="list">لیست کلاس</div>
         <div class="class-subtab" data-classtab="insert">درج کلاس</div>
         <div class="class-subtab" data-classtab="prereq">پیش‌نیاز</div>
-        <div class="class-subtab" data-classtab="seminarList">لیست سمینار</div>
-        <div class="class-subtab" data-classtab="seminarInsert">درج سمینار</div>
       </div>
 
       <!-- ===== CLASS TAB: لیست کلاس ===== -->
@@ -1784,6 +1782,12 @@
       <div class="class-subview" data-classtab-view="insert">
         <div style="background:#fff;border-radius:14px;padding:26px 24px;box-shadow:0 4px 16px rgba(0,0,0,.05);max-width:680px;">
           <div class="form-grid">
+            <div class="field full"><label>نوع ثبت</label>
+              <div class="svq-kind-pick" style="display:flex;gap:16px;">
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="ciEntryType" value="class" checked><span>کلاسِ عادی (تکرارِ هفتگی)</span></label>
+                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="ciEntryType" value="seminar"><span>سمینار و کارگاه (روزهای مشخص)</span></label>
+              </div>
+            </div>
             <div class="field full"><label>نوع کلاس</label>
               <div class="svq-kind-pick" style="display:flex;gap:16px;">
                 <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="ciClassType" value="حضوری" checked><span>حضوری</span></label>
@@ -1800,7 +1804,7 @@
               </div>
             </div>
             <div class="field full"><label>دپارتمان</label><select id="ci_dept"></select></div>
-            <div class="field full"><label>درس<span class="req-star">*</span></label>
+            <div class="field full" id="ci_lesson_field"><label>درس<span class="req-star">*</span></label>
               <select id="ci_lesson" disabled>
                 <option value="">— ابتدا دپارتمان را انتخاب کنید —</option>
               </select>
@@ -1808,14 +1812,14 @@
                 اگر درس مدنظرتان در لیست نیست، ابتدا از بخش «درس» اضافه‌اش کنید.
               </div>
             </div>
-            <div class="field full"><label>نام مستعار <span style="font-weight:400;color:#8a9a9a;">(اختیاری)</span></label><input type="text" id="ci_name" placeholder="ابتدا درس را انتخاب کنید" disabled></div>
+            <div class="field full" id="ci_name_field"><label id="ci_name_label">نام مستعار <span style="font-weight:400;color:#8a9a9a;">(اختیاری)</span></label><input type="text" id="ci_name" placeholder="ابتدا درس را انتخاب کنید" disabled></div>
             <div class="field"><label>مدرس</label>
               <select id="ci_teacher" disabled>
                 <option value="">— ابتدا دپارتمان را انتخاب کنید —</option>
               </select>
             </div>
             <div class="field"><label>ظرفیت</label><input type="text" id="ci_capacity" placeholder="مثلاً ۲۰" inputmode="numeric" disabled></div>
-            <div class="field full"><label>روز (امکان انتخاب چند روز)</label>
+            <div class="field full" id="ci_day_field"><label>روز (امکان انتخاب چند روز)</label>
               <div class="dept-branch-checklist" id="ci_day_checklist">
                 <label><input type="checkbox" name="ciDayPick" value="شنبه" disabled><span>شنبه</span></label>
                 <label><input type="checkbox" name="ciDayPick" value="یکشنبه" disabled><span>یکشنبه</span></label>
@@ -1826,6 +1830,14 @@
                 <label><input type="checkbox" name="ciDayPick" value="جمعه" disabled><span>جمعه</span></label>
               </div>
             </div>
+            <div class="field full hide" id="ci_sessions_field">
+              <label>روزهای برگزاری<span class="req-star">*</span></label>
+              <div id="ci_sessions_wrap"></div>
+              <button class="btn-ghost" id="btnAddCiSession" type="button" style="margin-top:8px;">+ افزودن روز</button>
+              <div class="field-hint" style="color:#8a9a9a;font-size:12px;margin-top:4px;">
+                اگر سمینار چندروزه است، برای هر روز یک ردیف جداگانه (با تاریخ و ساعتِ همان روز) اضافه کنید.
+              </div>
+            </div>
             <div class="field"><label>جنسیت</label>
               <select id="ci_gender" disabled>
                 <option value="">— انتخاب جنسیت —</option>
@@ -1834,7 +1846,7 @@
                 <option value="مختلط">مختلط</option>
               </select>
             </div>
-      <div class="time-spinner-box">
+      <div class="time-spinner-box" id="ci_time_box">
         <label class="time-spinner-box-title">ساعت کلاس</label>
         <div class="time-spinner-row">
             <div class="time-spinner-block" id="ci_start_block">
@@ -1969,76 +1981,6 @@
       </div>
       <!-- ===== /CLASS TAB: پیش‌نیاز ===== -->
 
-      <!-- ===== CLASS TAB: لیست سمینار ===== -->
-      <div class="class-subview" data-classtab-view="seminarList">
-        <div class="hr-toolbar">
-          <div class="search-box">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="seminarSearch" placeholder="جستجوی نام سمینار/کارگاه…">
-          </div>
-        </div>
-        <div class="table-wrap" style="overflow-x:auto;">
-          <table class="hr-table">
-            <thead>
-              <tr>
-                <th>نام</th>
-                <th>دپارتمان</th>
-                <th>نوع</th>
-                <th>روزهای برگزاری</th>
-                <th>مدرس</th>
-                <th>ظرفیت</th>
-                <th>ثبت‌نام‌شده</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody id="seminarTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      <!-- ===== /CLASS TAB: لیست سمینار ===== -->
-
-      <!-- ===== CLASS TAB: درج سمینار ===== -->
-      <div class="class-subview" data-classtab-view="seminarInsert">
-        <div style="background:#fff;border-radius:14px;padding:26px 24px;box-shadow:0 4px 16px rgba(0,0,0,.05);max-width:680px;">
-          <div class="form-grid">
-            <div class="field full"><label>نام سمینار/کارگاه<span class="req-star">*</span></label><input type="text" id="sm_name" placeholder="مثلاً «کارگاه فتوشاپ مقدماتی»"></div>
-
-            <div class="field full"><label>نوع برگزاری</label>
-              <div class="svq-kind-pick" style="display:flex;gap:16px;">
-                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smClassType" value="حضوری" checked><span>حضوری</span></label>
-                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smClassType" value="مجازی"><span>مجازی</span></label>
-              </div>
-            </div>
-            <div class="field full hide" id="sm_national_field"><label>دامنه</label>
-              <div class="svq-kind-pick" style="display:flex;gap:16px;">
-                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smNational" value="استانی" checked><span>استانی (فقط دانش‌پژوهان همین استان)</span></label>
-                <label style="display:flex;align-items:center;gap:6px;"><input type="radio" name="smNational" value="ملی"><span>ملی (همه‌ی استان‌ها)</span></label>
-              </div>
-            </div>
-
-            <div class="field full"><label>دپارتمان</label><select id="sm_dept"></select></div>
-            <div class="field full"><label>مدرس</label><select id="sm_teacher"><option value="">— ابتدا دپارتمان را انتخاب کنید —</option></select></div>
-            <div class="field"><label>ظرفیت<span class="req-star">*</span></label><input type="text" id="sm_capacity" placeholder="مثلاً ۲۰" inputmode="numeric"></div>
-
-            <div class="field full">
-              <label>روزهای برگزاری<span class="req-star">*</span></label>
-              <div id="sm_sessions_wrap"></div>
-              <button class="btn-ghost" id="btnAddSeminarSession" type="button" style="margin-top:8px;">+ افزودن روز</button>
-              <div class="field-hint" style="color:#8a9a9a;font-size:12px;margin-top:4px;">
-                اگر سمینار چندروزه است، برای هر روز یک ردیف جداگانه (با تاریخ و ساعتِ همان روز) اضافه کنید.
-              </div>
-            </div>
-
-            <div class="field full"><label>توضیحات (اختیاری)</label><textarea id="sm_desc" placeholder="در صورت تمایل، توضیحاتی درباره‌ی این سمینار بنویسید…" style="min-height:80px;"></textarea></div>
-          </div>
-          <div class="member-edit-error" id="seminarInsertError" role="alert"></div>
-          <button class="btn-primary" id="btnInsertSeminar" type="button" style="margin-top:14px;">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            ثبت سمینار/کارگاه
-          </button>
-        </div>
-      </div>
-      <!-- ===== /CLASS TAB: درج سمینار ===== -->
       </div>
     </section>
 
@@ -3087,86 +3029,7 @@
               <label><input type="checkbox" name="apReqtypePick" value="مجازی"><span>مجازی</span></label>
             </div>
           </div>
-          <div class="field"><label>شعبه<span class="req-star">*</span></label><select id="ap_branch">
-              <option value="دفتر مرکزی خانه کارگر">دفتر مرکزی خانه کارگر</option>
-              <option value="تبریز">تبریز</option>
-              <option value="ارومیه">ارومیه</option>
-              <option value="پلدشت">پلدشت</option>
-              <option value="پیرانشهر">پیرانشهر</option>
-              <option value="خوی">خوی</option>
-              <option value="سلماس">سلماس</option>
-              <option value="مهاباد">مهاباد</option>
-              <option value="میاندوآب">میاندوآب</option>
-              <option value="اردبیل">اردبیل</option>
-              <option value="آران و بیدگل">آران و بیدگل</option>
-              <option value="اصفهان">اصفهان</option>
-              <option value="شاهین شهر">شاهین شهر</option>
-              <option value="شهرضا">شهرضا</option>
-              <option value="کاشان">کاشان</option>
-              <option value="نجف آباد">نجف آباد</option>
-              <option value="ساوجبلاغ">ساوجبلاغ</option>
-              <option value="کرج">کرج</option>
-              <option value="ایلام">ایلام</option>
-              <option value="دهلران">دهلران</option>
-              <option value="بوشهر">بوشهر</option>
-              <option value="اتحادیه">اتحادیه</option>
-              <option value="اسلامشهر">اسلامشهر</option>
-              <option value="بهارستان">بهارستان</option>
-              <option value="پاکدشت">پاکدشت</option>
-              <option value="تهران">تهران</option>
-              <option value="دفتر منطقه 15">دفتر منطقه 15</option>
-              <option value="دفتر منطقه 16">دفتر منطقه 16</option>
-              <option value="دفتر منطقه 18">دفتر منطقه 18</option>
-              <option value="دفتر منطقه 19">دفتر منطقه 19</option>
-              <option value="رباط کریم">رباط کریم</option>
-              <option value="شرق تهران(تهرانپارس)">شرق تهران(تهرانپارس)</option>
-              <option value="شهرری">شهرری</option>
-              <option value="شهرقدس">شهرقدس</option>
-              <option value="شهریار">شهریار</option>
-              <option value="غرب تهران(تهرانسر)">غرب تهران(تهرانسر)</option>
-              <option value="ورامین">ورامین</option>
-              <option value="شهرکرد">شهرکرد</option>
-              <option value="بیرجند">بیرجند</option>
-              <option value="طبس">طبس</option>
-              <option value="سبزوار">سبزوار</option>
-              <option value="مشهد">مشهد</option>
-              <option value="نیشابور">نیشابور</option>
-              <option value="بجنورد">بجنورد</option>
-              <option value="آبادان">آبادان</option>
-              <option value="اهواز">اهواز</option>
-              <option value="بندر امام خمینی (ره)">بندر امام خمینی (ره)</option>
-              <option value="دزفول">دزفول</option>
-              <option value="شوشتر">شوشتر</option>
-              <option value="خرمدره">خرمدره</option>
-              <option value="زنجان">زنجان</option>
-              <option value="سمنان">سمنان</option>
-              <option value="زاهدان">زاهدان</option>
-              <option value="شیراز">شیراز</option>
-              <option value="لارستان">لارستان</option>
-              <option value="لامرد">لامرد</option>
-              <option value="مرودشت">مرودشت</option>
-              <option value="مهر">مهر</option>
-              <option value="قزوین">قزوین</option>
-              <option value="قم">قم</option>
-              <option value="سنندج">سنندج</option>
-              <option value="جیرفت">جیرفت</option>
-              <option value="کرمان">کرمان</option>
-              <option value="کرمانشاه">کرمانشاه</option>
-              <option value="یاسوج">یاسوج</option>
-              <option value="گرگان">گرگان</option>
-              <option value="رشت">رشت</option>
-              <option value="بروجرد">بروجرد</option>
-              <option value="خرم آباد">خرم آباد</option>
-              <option value="آمل">آمل</option>
-              <option value="بهشهر">بهشهر</option>
-              <option value="ساری">ساری</option>
-              <option value="قائمشهر">قائمشهر</option>
-              <option value="اراک">اراک</option>
-              <option value="ساوه">ساوه</option>
-              <option value="بندر عباس">بندر عباس</option>
-              <option value="همدان">همدان</option>
-              <option value="یزد">یزد</option>
-            </select></div>
+          <div class="field"><label>شعبه<span class="req-star">*</span></label><select id="ap_branch"></select></div>
 
           <div class="field full">
             <label>عکس و رزومه<span class="req-star">*</span></label>
@@ -3307,107 +3170,11 @@
             <div class="dept-branch-checklist" id="f_dept_checklist"></div>
           </div>
           <div class="field" id="f_branch_wrap"><label>شعبه</label>
-            <select id="f_branch">
-              <option value="دفتر مرکزی خانه کارگر">دفتر مرکزی خانه کارگر</option>
-              <option value="تبریز">تبریز</option>
-              <option value="ارومیه">ارومیه</option>
-              <option value="پلدشت">پلدشت</option>
-              <option value="پیرانشهر">پیرانشهر</option>
-              <option value="خوی">خوی</option>
-              <option value="سلماس">سلماس</option>
-              <option value="مهاباد">مهاباد</option>
-              <option value="میاندوآب">میاندوآب</option>
-              <option value="اردبیل">اردبیل</option>
-              <option value="آران و بیدگل">آران و بیدگل</option>
-              <option value="اصفهان">اصفهان</option>
-              <option value="شاهین شهر">شاهین شهر</option>
-              <option value="شهرضا">شهرضا</option>
-              <option value="کاشان">کاشان</option>
-              <option value="نجف آباد">نجف آباد</option>
-              <option value="ساوجبلاغ">ساوجبلاغ</option>
-              <option value="کرج">کرج</option>
-              <option value="ایلام">ایلام</option>
-              <option value="دهلران">دهلران</option>
-              <option value="بوشهر">بوشهر</option>
-              <option value="اتحادیه">اتحادیه</option>
-              <option value="اسلامشهر">اسلامشهر</option>
-              <option value="بهارستان">بهارستان</option>
-              <option value="پاکدشت">پاکدشت</option>
-              <option value="تهران">تهران</option>
-              <option value="دفتر منطقه 15">دفتر منطقه 15</option>
-              <option value="دفتر منطقه 16">دفتر منطقه 16</option>
-              <option value="دفتر منطقه 18">دفتر منطقه 18</option>
-              <option value="دفتر منطقه 19">دفتر منطقه 19</option>
-              <option value="رباط کریم">رباط کریم</option>
-              <option value="شرق تهران(تهرانپارس)">شرق تهران(تهرانپارس)</option>
-              <option value="شهرری">شهرری</option>
-              <option value="شهرقدس">شهرقدس</option>
-              <option value="شهریار">شهریار</option>
-              <option value="غرب تهران(تهرانسر)">غرب تهران(تهرانسر)</option>
-              <option value="ورامین">ورامین</option>
-              <option value="شهرکرد">شهرکرد</option>
-              <option value="بیرجند">بیرجند</option>
-              <option value="طبس">طبس</option>
-              <option value="سبزوار">سبزوار</option>
-              <option value="مشهد">مشهد</option>
-              <option value="نیشابور">نیشابور</option>
-              <option value="بجنورد">بجنورد</option>
-              <option value="آبادان">آبادان</option>
-              <option value="اهواز">اهواز</option>
-              <option value="بندر امام خمینی (ره)">بندر امام خمینی (ره)</option>
-              <option value="دزفول">دزفول</option>
-              <option value="شوشتر">شوشتر</option>
-              <option value="خرمدره">خرمدره</option>
-              <option value="زنجان">زنجان</option>
-              <option value="سمنان">سمنان</option>
-              <option value="زاهدان">زاهدان</option>
-              <option value="شیراز">شیراز</option>
-              <option value="لارستان">لارستان</option>
-              <option value="لامرد">لامرد</option>
-              <option value="مرودشت">مرودشت</option>
-              <option value="مهر">مهر</option>
-              <option value="قزوین">قزوین</option>
-              <option value="قم">قم</option>
-              <option value="سنندج">سنندج</option>
-              <option value="جیرفت">جیرفت</option>
-              <option value="کرمان">کرمان</option>
-              <option value="کرمانشاه">کرمانشاه</option>
-              <option value="یاسوج">یاسوج</option>
-              <option value="گرگان">گرگان</option>
-              <option value="رشت">رشت</option>
-              <option value="بروجرد">بروجرد</option>
-              <option value="خرم آباد">خرم آباد</option>
-              <option value="آمل">آمل</option>
-              <option value="بهشهر">بهشهر</option>
-              <option value="ساری">ساری</option>
-              <option value="قائمشهر">قائمشهر</option>
-              <option value="اراک">اراک</option>
-              <option value="ساوه">ساوه</option>
-              <option value="بندر عباس">بندر عباس</option>
-              <option value="همدان">همدان</option>
-              <option value="یزد">یزد</option>
-            </select>
+            <select id="f_branch"></select>
           </div>
           <div class="field"><label>شماره تماس</label><input type="text" id="f_phone" placeholder="09xxxxxxxxx" required=""></div>
-          <div class="field full"><label>آدرس</label><input type="text" id="f_address" placeholder="آدرس محل سکونت"></div>
           <div class="field"><label>نام کاربری</label><input type="text" id="f_username" placeholder="نام کاربری برای ورود به سایت" required=""></div>
           <div class="field"><label>رمز عبور</label><input type="password" id="f_password" placeholder="رمز عبور" required=""></div>
-
-          <div class="field full">
-            <label>عکس</label>
-            <div class="upload-row">
-              <div class="photo-col">
-                <div class="photo-upload-box" id="photoUploadBox" title="آپلود عکس">
-                  <input type="file" id="f_photo" accept="image/*" hidden="">
-                  <div class="photo-upload-placeholder" id="photoPlaceholder">
-                    <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                    <span>عکس</span>
-                  </div>
-                </div>
-                <span class="photo-hint">حداکثر حجم ۱۰۰ کیلوبایت</span>
-              </div>
-            </div>
-          </div>
         </div>
       </form>
     </div>
@@ -3433,7 +3200,8 @@
     <div class="modal-body">
       <div class="dept-branch-checklist" style="flex-direction:column;gap:10px;">
         <label><input type="radio" name="classTypeFilterPick" value="حضوری" checked><span>کلاس‌های حضوری</span></label>
-        <label><input type="radio" name="classTypeFilterPick" value="مجازی"><span>کلاس‌های مجازی (استانی)</span></label>
+        <label><input type="radio" name="classTypeFilterPick" value="مجازی"><span>کلاس‌های مجازی</span></label>
+        <label><input type="radio" name="classTypeFilterPick" value="سمینار"><span>سمینارها و کارگاه‌ها</span></label>
       </div>
     </div>
     <div class="modal-foot">
@@ -5739,7 +5507,31 @@
   }
   loadBranches();
 
+  // ---- پر کردن لیست‌های کشویی شعب از جدول واقعی شعب (به‌جای لیست ثابت داخل HTML) ----
+  // شعبه‌ی جدید یا تغییرنام‌داده بلافاصله در این لیست‌ها دیده می‌شود. انتخابِ فعلی تا حد ممکن حفظ
+  // می‌شود. (هنگام «ویرایش متصدی»، اگر شعبه‌ی ذخیره‌شده‌ی او دیگر در جدول نباشد، انتخاب خالی
+  // می‌ماند و برای مسئول آموزش ذخیره بدون انتخابِ شعبه‌ی معتبر ممکن نیست.)
+  function syncBranchSelects(){
+    const CENTRAL = 'دفتر مرکزی خانه کارگر';
+    const names = BRANCHES.map(b => b.name);
+    names.sort((a, b) => (a === CENTRAL ? -1 : b === CENTRAL ? 1 : 0));   // دفتر مرکزی اول؛ بقیه به ترتیب سرور
+    ['f_branch', 'ap_branch'].forEach(function(id){
+      const sel = document.getElementById(id);
+      if(!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '';
+      names.forEach(function(n){
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n;
+        sel.appendChild(o);
+      });
+      if(current && names.includes(current)) sel.value = current;
+    });
+  }
+
   function renderBranches(){
+    syncBranchSelects();
     const q = document.getElementById('branchSearch').value.trim();
     const filtered = BRANCHES.filter(b => !q || b.name.includes(q));
     const body = document.getElementById('branchTableBody');
@@ -6243,6 +6035,7 @@
       renderClassBranchBar();
       if(typeof renderLessonBranchBar === 'function') renderLessonBranchBar();
       if(typeof renderClasses === 'function') renderClasses();
+      if(typeof loadSeminars === 'function') loadSeminars();
       if(typeof renderLessons === 'function') renderLessons();
       if(typeof renderClassPrereqTable === 'function') renderClassPrereqTable();
     } else if(branchModalMode === 'survey'){
@@ -7054,11 +6847,6 @@
     document.querySelectorAll('.class-subtab').forEach(t => t.classList.toggle('active', t.dataset.classtab === name));
     document.querySelectorAll('.class-subview').forEach(v => v.classList.toggle('active', v.dataset.classtabView === name));
     if(name === 'prereq') renderClassPrereqTable();
-    if(name === 'seminarList') loadSeminars();
-    if(name === 'seminarInsert'){
-      if(!document.querySelector('.seminar-session-row')) addSeminarSessionRow();
-      refreshSmDeptOptions();
-    }
   }
   document.querySelectorAll('.class-subtab').forEach(t => {
     t.addEventListener('click', () => goToClassTab(t.dataset.classtab));
@@ -7095,7 +6883,8 @@
   let classListTypeFilter = 'حضوری';
   const classTypeFilterOverlay = document.getElementById('classTypeFilterModalOverlay');
   function renderClassTypeFilterBar(){
-    document.getElementById('classTypeFilterName').textContent = classListTypeFilter;
+    const labels = { 'حضوری': 'حضوری', 'مجازی': 'مجازی', 'سمینار': 'سمینار و کارگاه' };
+    document.getElementById('classTypeFilterName').textContent = labels[classListTypeFilter] || classListTypeFilter;
   }
   function openClassTypeFilterModal(){
     document.querySelector(`input[name="classTypeFilterPick"][value="${classListTypeFilter}"]`).checked = true;
@@ -7110,11 +6899,65 @@
     classListTypeFilter = (document.querySelector('input[name="classTypeFilterPick"]:checked') || {}).value || 'حضوری';
     renderClassTypeFilterBar();
     closeClassTypeFilterModal();
-    renderClasses();
+    if(classListTypeFilter === 'سمینار') loadSeminars(); else renderClasses();
   });
   renderClassTypeFilterBar();
 
+  // سمینار/کارگاه نوبتِ هفتگی و جنسیت ندارد؛ به‌جای تاریخِ آن ستون‌ها، همان
+  // جدولِ «لیست کلاس» را با ردیف‌هایی به‌شکلِ سمینار پر می‌کنیم
+  function renderSeminarRows(){
+    const q = document.getElementById('classSearch').value.trim();
+    const termNumber = pickedTerm ? parseInt(toEnglishDigits(pickedTerm), 10) : null;
+    const filtered = SEMINARS.filter(s =>
+      (!pickedClassBranch || s.branch === pickedClassBranch) &&
+      (!termNumber || Number(s.term_order) === termNumber) &&
+      (!q || s.name.includes(q))
+    );
+    const body = document.getElementById('classTableBody');
+    if(filtered.length === 0){
+      body.innerHTML = `<tr class="empty-row"><td colspan="10">سمیناری یافت نشد</td></tr>`;
+      return;
+    }
+    body.innerHTML = filtered.map((s, i) => {
+      const dateList = (s.sessions || []).map(sess => `${sess.date} (${sess.start_time}–${sess.end_time})`).join('، ') || '—';
+      return `
+      <tr data-id="${s.id}">
+        <td>${toPersianDigits(i + 1)}</td>
+        <td></td>
+        <td>${s.name}<div class="dept-tag" style="margin-top:4px;">سمینار/کارگاه</div></td>
+        <td>${s.department_name || '—'}</td>
+        <td>${s.teacher_name || '—'}</td>
+        <td>${dateList}</td>
+        <td>${finNum(s.capacity)}</td>
+        <td>${finNum(s.enrolled_count)}</td>
+        <td>
+          <button class="toggle-switch-sm seminar-publish-toggle ${s.is_published ? 'is-on' : ''}" type="button" aria-label="نمایش عمومی این سمینار">
+            <span class="knob"></span>
+          </button>
+        </td>
+        <td class="row-actions">
+          <div class="icon-btn danger seminar-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    body.querySelectorAll('.seminar-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteSeminar(Number(btn.closest('tr').dataset.id)));
+    });
+    body.querySelectorAll('.seminar-publish-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.closest('tr').dataset.id);
+        const s = SEMINARS.find(x => x.id === id);
+        if(!s) return;
+        surveyApi(`/classmgmt/seminars/${id}/`, 'PATCH', { is_published: !s.is_published })
+          .then(() => loadSeminars())
+          .catch(err => showToast(err.message || 'خطا در تغییرِ نمایشِ عمومی'));
+      });
+    });
+  }
+
   function renderClasses(){
+    if(classListTypeFilter === 'سمینار'){ renderSeminarRows(); return; }
     const q = document.getElementById('classSearch').value.trim();
     // هر دوره فقط کلاس‌های خودش را نشان می‌دهد (نه کلاس‌های دوره‌های
     // دیگر)، و هر شعبه هم فقط کلاس‌های خودش را - این دو فیلتر با هم اعمال می‌شوند.
@@ -7915,13 +7758,66 @@
 
     // «نوع کلاس» (حضوری/مجازی): اگر مجازی شد، انتخابِ «نوع برگزاری» (ملی/استانی) ظاهر می‌شود؛
     // در هر تغییر، چون پولِ دپارتمان/درس و فهرستِ مدرسین عوض می‌شود، همه‌چیز از نو ساخته می‌شود
-    document.querySelectorAll('input[name="ciClassType"]').forEach(r => r.addEventListener('change', () => {
+    // «نوع برگزاریِ» ملی/استانی فقط برای کلاسِ مجازی معنی دارد؛ سمینار/کارگاه
+    // اصلاً مجازیِ ملی ندارد (همیشه استانی است، حتی اگر مجازی باشد)
+    function updateCiNationalVisibility(){
       const isVirtual = (document.querySelector('input[name="ciClassType"]:checked') || {}).value === 'مجازی';
-      document.getElementById('ci_national_field').classList.toggle('hide', !isVirtual);
+      const isSeminar = (document.querySelector('input[name="ciEntryType"]:checked') || {}).value === 'seminar';
+      document.getElementById('ci_national_field').classList.toggle('hide', !isVirtual || isSeminar);
       document.querySelector('input[name="ciNational"][value="استانی"]').checked = true;
+    }
+    document.querySelectorAll('input[name="ciClassType"]').forEach(r => r.addEventListener('change', () => {
+      updateCiNationalVisibility();
       refreshCiDeptOptions();
     }));
     document.querySelectorAll('input[name="ciNational"]').forEach(r => r.addEventListener('change', refreshCiDeptOptions));
+
+    // «نوع ثبت»: کلاسِ عادی (تکرارِ هفتگی: روز+ساعت، نیازمندِ درس) یا
+    // سمینار/کارگاه (روزهای مشخص: چند ردیفِ تاریخ+ساعت، بدونِ درس)
+    function applyCiEntryType(){
+      const isSeminar = (document.querySelector('input[name="ciEntryType"]:checked') || {}).value === 'seminar';
+      // سمینار هم مثلِ کلاس، «درس» دارد؛ فقط روزِ هفتگی+ساعتِ تکرارشونده به
+      // چند روزِ مشخص عوض می‌شود، و برخلافِ کلاس، هیچ‌وقت «ملی» نمی‌شود
+      document.getElementById('ci_day_field').classList.toggle('hide', isSeminar);
+      document.getElementById('ci_time_box').classList.toggle('hide', isSeminar);
+      document.getElementById('ci_sessions_field').classList.toggle('hide', !isSeminar);
+      updateCiNationalVisibility();
+      if(isSeminar && !document.querySelector('.ci-session-row')) addCiSessionRow();
+    }
+    document.querySelectorAll('input[name="ciEntryType"]').forEach(r => r.addEventListener('change', applyCiEntryType));
+
+    // ---- روزهای برگزاریِ سمینار: ردیف‌های قابلِ افزودن/حذف (تاریخ + ساعتِ شروع/پایان) ----
+    let ciSessionRowCount = 0;
+    function addCiSessionRow(date, startTime, endTime){
+      ciSessionRowCount += 1;
+      const rowId = `ciSessionRow${ciSessionRowCount}`;
+      const wrap = document.getElementById('ci_sessions_wrap');
+      const row = document.createElement('div');
+      row.id = rowId;
+      row.className = 'ci-session-row';
+      row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;';
+      row.innerHTML = `
+        <input type="text" class="ci-session-date" placeholder="تاریخ، مثلاً ۱۴۰۵/۰۸/۱۵" dir="rtl" style="flex:1 1 160px;" value="${date || ''}">
+        <input type="text" class="ci-session-start" placeholder="ساعت شروع، مثلاً ۰۹:۰۰" dir="ltr" style="flex:1 1 130px;" value="${startTime || ''}">
+        <input type="text" class="ci-session-end" placeholder="ساعت پایان، مثلاً ۱۲:۰۰" dir="ltr" style="flex:1 1 130px;" value="${endTime || ''}">
+        <button type="button" class="btn-ghost ci-session-remove" title="حذف این روز">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      `;
+      wrap.appendChild(row);
+      row.querySelector('.ci-session-remove').addEventListener('click', () => {
+        if(document.querySelectorAll('.ci-session-row').length > 1) row.remove();
+      });
+    }
+    document.getElementById('btnAddCiSession').addEventListener('click', () => addCiSessionRow());
+
+    function readCiSessions(){
+      return Array.from(document.querySelectorAll('.ci-session-row')).map(row => ({
+        date: row.querySelector('.ci-session-date').value.trim(),
+        start_time: row.querySelector('.ci-session-start').value.trim(),
+        end_time: row.querySelector('.ci-session-end').value.trim(),
+      })).filter(s => s.date || s.start_time || s.end_time);
+    }
 
     refreshCiDeptOptions();
     window.refreshCiDeptOptions = refreshCiDeptOptions;
@@ -7930,7 +7826,64 @@
       refreshCiDeptOptions();
     };
 
+    // ---- ثبتِ سمینار/کارگاه (وقتی «نوع ثبت» روی سمینار باشد) ----
+    function submitSeminarEntry(){
+      const alias = ciName.value.trim();
+      const dept = Number(ciDept.value) || null;
+      const lesson = Number(ciLesson.value) || null;
+      const branch = pickedClassBranch;
+      const teacher = ciTeacher.value ? Number(ciTeacher.value) : null;
+      const capacity = ciCapacity.value.trim();
+      const desc = ciDesc.value.trim();
+      const classTypeChoice = (document.querySelector('input[name="ciClassType"]:checked') || {}).value || 'حضوری';
+      const sessions = readCiSessions();
+
+      if(!branch){ showToast('لطفاً ابتدا یک شعبه انتخاب کنید'); return; }
+      if(!dept){ showToast('لطفاً ابتدا یک دپارتمان انتخاب کنید'); return; }
+      if(!lesson){ showToast('لطفاً یک درس انتخاب کنید (اگه درسی نیست، اول از بخش «درس» اضافه‌اش کنید)'); return; }
+      if(!capacity || Number(capacity) <= 0){ showToast('ظرفیت را درست وارد کنید.'); return; }
+      if(!pickedTerm){ showToast('دوره‌ی فعلی مشخص نیست؛ لطفاً از «مدیریت دوره و دپارتمان‌ها» یک دوره انتخاب کنید'); return; }
+      if(sessions.length === 0){ showToast('حداقل یک روزِ برگزاری (تاریخ، ساعت شروع، ساعت پایان) لازم است.'); return; }
+      for(const s of sessions){
+        if(!s.date || !s.start_time || !s.end_time){ showToast('برای هر روز، تاریخ و هر دو ساعت باید پر باشد.'); return; }
+      }
+      // عنوانِ نهاییِ سمینار: دقیقاً مثلِ کلاس - نامِ درس + (اختیاری) نامِ مستعار
+      const lessonObj = LESSONS.find(l => l.id === lesson);
+      const lessonName = lessonObj ? lessonObj.name : '';
+      const name = alias ? `${lessonName} - ${alias}` : lessonName;
+
+      const insertBtn = document.getElementById('btnInsertClass');
+      insertBtn.disabled = true;
+      resolveCurrentTermId().then(term => {
+        if(!term){
+          showToast('دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید');
+          insertBtn.disabled = false;
+          return;
+        }
+        surveyApi('/classmgmt/seminars/', 'POST', {
+          name, lesson, department: dept, teacher, branch, term,
+          capacity: Number(capacity), description: desc,
+          class_type: classTypeChoice, is_national: ciIsNationalMode(), is_published: true,
+          sessions,
+        })
+          .then(() => { showToast('سمینار/کارگاه جدید با موفقیت ثبت شد'); resetCiSeminarForm(); loadSeminars(); })
+          .catch(err => showToast(err.message || 'خطا در ثبت سمینار؛ دوباره تلاش کنید'))
+          .then(() => { insertBtn.disabled = false; });
+      });
+    }
+
+    function resetCiSeminarForm(){
+      ciName.value = '';
+      ciLesson.selectedIndex = 0;
+      ciCapacity.value = '';
+      ciDesc.value = '';
+      document.getElementById('ci_sessions_wrap').innerHTML = '';
+      addCiSessionRow();
+    }
+
     document.getElementById('btnInsertClass').addEventListener('click', () => {
+      const entryType = (document.querySelector('input[name="ciEntryType"]:checked') || {}).value || 'class';
+      if(entryType === 'seminar'){ submitSeminarEntry(); return; }
       const alias    = ciName.value.trim();
       const dept     = Number(ciDept.value) || null;
       const lesson   = Number(ciLesson.value) || null;
@@ -8036,149 +7989,14 @@
     });
   })();
 
-  // ==================== سمینار و کارگاه ====================
-  // برخلاف کلاس (که هر هفته در یک روزِ ثابت تکرار می‌شود)، سمینار یک یا چند
-  // «روزِ مشخص» دارد (تاریخ + ساعتِ شروع/پایانِ همان روز)؛ به همین دلیل یک
-  // تب و فرمِ جداگانه دارد، نه یک فیلدِ اضافه در «درج کلاس».
   let SEMINARS = [];
-  let seminarSessionRowCount = 0;
 
-  function smIsNationalMode(){
-    const classType = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
-    const national = (document.querySelector('input[name="smNational"]:checked') || {}).value || 'استانی';
-    return classType === 'مجازی' && national === 'ملی';
-  }
-
-  document.querySelectorAll('input[name="smClassType"]').forEach(r => r.addEventListener('change', () => {
-    const isVirtual = (document.querySelector('input[name="smClassType"]:checked') || {}).value === 'مجازی';
-    document.getElementById('sm_national_field').classList.toggle('hide', !isVirtual);
-    document.querySelector('input[name="smNational"][value="استانی"]').checked = true;
-    refreshSmTeacherOptions();
-  }));
-  document.querySelectorAll('input[name="smNational"]').forEach(r => r.addEventListener('change', refreshSmTeacherOptions));
-
-  // ---- دپارتمان/مدرس: دقیقاً همان پولِ مشترکِ «درج کلاس» (فعال‌شده برای همین شعبه) ----
-  function refreshSmDeptOptions(){
-    const smDept = document.getElementById('sm_dept');
-    const previousValue = smDept.value;
-    const branch = pickedClassBranch;
-    const activeIds = branch ? branchDeptIds(branch) : [];
-    const activeDepts = DEPARTMENTS.filter(d => activeIds.includes(d.id));
-    smDept.innerHTML = activeDepts.length
-      ? `<option value="">— انتخاب دپارتمان —</option>` + activeDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
-      : `<option value="">— دپارتمان فعالی برای این شعبه ثبت نشده —</option>`;
-    if(previousValue && activeDepts.some(d => String(d.id) === previousValue)) smDept.value = previousValue;
-    refreshSmTeacherOptions();
-  }
-
-  function refreshSmTeacherOptions(){
-    const smDept = document.getElementById('sm_dept');
-    const smTeacher = document.getElementById('sm_teacher');
-    const deptId = Number(smDept.value) || null;
-    if(!deptId){
-      smTeacher.innerHTML = `<option value="">— ابتدا دپارتمان را انتخاب کنید —</option>`;
-      return;
-    }
-    const deptName = (DEPARTMENTS.find(d => d.id === deptId) || {}).name || '';
-    const classTypeChoice = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
-    const teachers = (typeof REAL_TEACHERS !== 'undefined' ? REAL_TEACHERS : []).filter(t =>
-      (t.depts || []).includes(deptName) && (t.reqtype || []).includes(classTypeChoice) && (!pickedClassBranch || t.branch === pickedClassBranch)
-    );
-    smTeacher.innerHTML = `<option value="">— بدون مدرسِ مشخص —</option>` + teachers.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-  }
-  document.getElementById('sm_dept').addEventListener('change', refreshSmTeacherOptions);
-
-  // ---- روزهای برگزاری: ردیف‌های قابلِ افزودن/حذف (تاریخ + ساعتِ شروع/پایان) ----
-  function addSeminarSessionRow(date, startTime, endTime){
-    seminarSessionRowCount += 1;
-    const rowId = `smSessionRow${seminarSessionRowCount}`;
-    const wrap = document.getElementById('sm_sessions_wrap');
-    const row = document.createElement('div');
-    row.id = rowId;
-    row.className = 'seminar-session-row';
-    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;';
-    row.innerHTML = `
-      <input type="text" class="sm-session-date" placeholder="تاریخ، مثلاً ۱۴۰۵/۰۸/۱۵" dir="rtl" style="flex:1 1 160px;" value="${date || ''}">
-      <input type="text" class="sm-session-start" placeholder="ساعت شروع، مثلاً ۰۹:۰۰" dir="ltr" style="flex:1 1 130px;" value="${startTime || ''}">
-      <input type="text" class="sm-session-end" placeholder="ساعت پایان، مثلاً ۱۲:۰۰" dir="ltr" style="flex:1 1 130px;" value="${endTime || ''}">
-      <button type="button" class="btn-ghost sm-session-remove" title="حذف این روز">
-        <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    `;
-    wrap.appendChild(row);
-    row.querySelector('.sm-session-remove').addEventListener('click', () => {
-      // همیشه حداقل یک ردیف باقی می‌ماند تا فرم خالی نشود
-      if(document.querySelectorAll('.seminar-session-row').length > 1) row.remove();
-    });
-  }
-  document.getElementById('btnAddSeminarSession').addEventListener('click', () => addSeminarSessionRow());
-
-  function readSeminarSessions(){
-    return Array.from(document.querySelectorAll('.seminar-session-row')).map(row => ({
-      date: row.querySelector('.sm-session-date').value.trim(),
-      start_time: row.querySelector('.sm-session-start').value.trim(),
-      end_time: row.querySelector('.sm-session-end').value.trim(),
-    })).filter(s => s.date || s.start_time || s.end_time);
-  }
-
-  function resetSeminarForm(){
-    document.getElementById('sm_name').value = '';
-    document.querySelector('input[name="smClassType"][value="حضوری"]').checked = true;
-    document.getElementById('sm_national_field').classList.add('hide');
-    document.querySelector('input[name="smNational"][value="استانی"]').checked = true;
-    document.getElementById('sm_capacity').value = '';
-    document.getElementById('sm_desc').value = '';
-    document.getElementById('sm_sessions_wrap').innerHTML = '';
-    addSeminarSessionRow();
-    refreshSmDeptOptions();
-  }
-
-  // ---- ثبت سمینار ----
-  const seminarErrorEl = document.getElementById('seminarInsertError');
-  function showSeminarError(msg){ seminarErrorEl.textContent = msg; seminarErrorEl.classList.add('show'); }
-  function clearSeminarError(){ seminarErrorEl.textContent = ''; seminarErrorEl.classList.remove('show'); }
-
-  document.getElementById('btnInsertSeminar').addEventListener('click', () => {
-    clearSeminarError();
-    const name = document.getElementById('sm_name').value.trim();
-    const deptId = Number(document.getElementById('sm_dept').value) || null;
-    const teacherId = Number(document.getElementById('sm_teacher').value) || null;
-    const capacity = document.getElementById('sm_capacity').value.trim();
-    const description = document.getElementById('sm_desc').value.trim();
-    const classTypeChoice = (document.querySelector('input[name="smClassType"]:checked') || {}).value || 'حضوری';
-    const sessions = readSeminarSessions();
-
-    if(!name){ showSeminarError('نام سمینار/کارگاه را وارد کنید.'); return; }
-    if(!deptId){ showSeminarError('دپارتمان را انتخاب کنید.'); return; }
-    if(!capacity || Number(capacity) <= 0){ showSeminarError('ظرفیت را درست وارد کنید.'); return; }
-    if(!pickedTerm){ showToast('دوره‌ی فعلی مشخص نیست؛ لطفاً از «مدیریت دوره و دپارتمان‌ها» یک دوره انتخاب کنید'); return; }
-    if(sessions.length === 0){ showSeminarError('حداقل یک روزِ برگزاری (تاریخ، ساعت شروع، ساعت پایان) لازم است.'); return; }
-    for(const s of sessions){
-      if(!s.date || !s.start_time || !s.end_time){ showSeminarError('برای هر روز، تاریخ و هر دو ساعت باید پر باشد.'); return; }
-    }
-
-    resolveCurrentTermId().then(termId => {
-      if(!termId){ showToast('دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید'); return; }
-      const btn = document.getElementById('btnInsertSeminar');
-      btn.disabled = true;
-      surveyApi('/classmgmt/seminars/', 'POST', {
-        name, department: deptId, teacher: teacherId, branch: pickedClassBranch, term: termId,
-        capacity: Number(capacity), description,
-        class_type: classTypeChoice, is_national: smIsNationalMode(), is_published: true,
-        sessions,
-      })
-        .then(() => { showToast('سمینار/کارگاه جدید با موفقیت ثبت شد'); resetSeminarForm(); loadSeminars(); })
-        .catch(err => showSeminarError(err.message || 'خطا در ثبت سمینار؛ دوباره تلاش کنید'))
-        .then(() => { btn.disabled = false; });
-    });
-  });
-
-  // ---- لیست سمینار ----
+  // ---- بارگذاریِ سمینارها (برای نمایشِ یکجا در همان «لیست کلاس») ----
   function loadSeminars(){
-    if(!pickedClassBranch){ SEMINARS = []; renderSeminars(); return; }
+    if(!pickedClassBranch){ SEMINARS = []; renderClasses(); return; }
     surveyApi(`/classmgmt/seminars/?branch=${encodeURIComponent(pickedClassBranch)}`, 'GET')
-      .then(list => { SEMINARS = list || []; renderSeminars(); })
-      .catch(() => { SEMINARS = []; renderSeminars(); });
+      .then(list => { SEMINARS = list || []; renderClasses(); })
+      .catch(() => { SEMINARS = []; renderClasses(); });
   }
 
   window.deleteSeminar = function(id){
@@ -8189,32 +8007,6 @@
       .then(() => { showToast('سمینار/کارگاه حذف شد'); loadSeminars(); })
       .catch(err => showToast(err.message || 'خطا در حذف'));
   };
-
-  function renderSeminars(){
-    const q = document.getElementById('seminarSearch').value.trim();
-    const body = document.getElementById('seminarTableBody');
-    const filtered = SEMINARS.filter(s => !q || s.name.includes(q));
-    if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="8">سمیناری یافت نشد</td></tr>`;
-      return;
-    }
-    body.innerHTML = filtered.map(s => {
-      const typeLabel = s.class_type === 'مجازی' ? (s.is_national ? 'مجازی (ملی)' : 'مجازی (استانی)') : 'حضوری';
-      const dateList = (s.sessions || []).map(sess => `${sess.date} (${sess.start_time}–${sess.end_time})`).join('، ') || '—';
-      return `
-      <tr data-id="${s.id}">
-        <td>${s.name}</td>
-        <td>${s.department_name || '—'}</td>
-        <td>${typeLabel}</td>
-        <td>${dateList}</td>
-        <td>${s.teacher_name || '—'}</td>
-        <td>${finNum(s.capacity)}</td>
-        <td>${finNum(s.enrolled_count)}</td>
-        <td><button class="btn-ghost" onclick="deleteSeminar(${s.id})">حذف</button></td>
-      </tr>`;
-    }).join('');
-  }
-  document.getElementById('seminarSearch').addEventListener('input', renderSeminars);
 
   // ---- پیش‌نیاز کلاس‌ها ----
   let pendingClassPrereqs = {};
@@ -10924,8 +10716,6 @@
   const deptWrap = document.getElementById('f_dept_wrap');
   const branchWrap = document.getElementById('f_branch_wrap');
   let editingId = null;
-  let currentPhotoDataUrl = null;
-  let currentResumeName = null;
 
   function syncDeptVisibility(){
     const role = document.getElementById('f_role').value;
@@ -10937,45 +10727,6 @@
     if(!showsBranch) document.getElementById('f_branch').selectedIndex = 0;
   }
   document.getElementById('f_role').addEventListener('change', syncDeptVisibility);
-
-  // ---- photo (3x4) preview ----
-  function resetPhotoPreview(photoDataUrl){
-    currentPhotoDataUrl = photoDataUrl || null;
-    const box = document.getElementById('photoUploadBox');
-    box.querySelectorAll('img').forEach(img => img.remove());
-    const placeholder = document.getElementById('photoPlaceholder');
-    if(currentPhotoDataUrl){
-      placeholder.style.display = 'none';
-      const img = document.createElement('img');
-      img.src = currentPhotoDataUrl;
-      box.appendChild(img);
-    } else {
-      placeholder.style.display = '';
-    }
-  }
-  document.getElementById('photoUploadBox').addEventListener('click', () => document.getElementById('f_photo').click());
-  document.getElementById('f_photo').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const allowedTypes = ['image/jpeg','image/png','image/webp'];
-    const maxSizeBytes = 100 * 1024; // 100KB
-
-    if(!allowedTypes.includes(file.type)){
-      showToast('فرمت عکس باید JPG، PNG یا WebP باشد');
-      e.target.value = '';
-      return;
-    }
-    if(file.size > maxSizeBytes){
-      showToast('حجم عکس نباید بیشتر از 100 کیلوبایت باشد');
-      e.target.value = '';
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = ev => resetPhotoPreview(ev.target.result);
-    reader.readAsDataURL(file);
-  });
 
   function openAddEmp(defaultRole){
     editingId = null;
@@ -11039,13 +10790,18 @@
     const lname = document.getElementById('f_lname').value.trim();
     const name = `${fname} ${lname}`.trim();
     const role = document.getElementById('f_role').value;
-    const branch = document.getElementById('f_branch').value.trim();
+    // مسئول آموزش حتماً باید شعبه‌ی معتبر داشته باشد؛ شعبه‌ی «مدیر آموزش» همیشه دفتر مرکزی است
+    const branch = document.getElementById('f_branch').value.trim() || (role === 'مدیر آموزش' ? 'دفتر مرکزی خانه کارگر' : '');
     const phone = document.getElementById('f_phone').value.trim();
     const username = document.getElementById('f_username').value.trim();
     const password = document.getElementById('f_password').value;
 
     if(!fname || !lname || !role || !phone){
       showToast('لطفاً همه فیلدهای الزامی را تکمیل کنید');
+      return;
+    }
+    if(role === 'مسئول آموزش' && !branch){
+      showToast('لطفاً یک شعبه‌ی معتبر برای مسئول آموزش انتخاب کنید');
       return;
     }
     if(!editingId && (!username || !password)){

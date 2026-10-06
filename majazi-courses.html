@@ -320,6 +320,13 @@
         </div>
         <div id="nationalCourseList"></div>
       </div>
+
+      <div class="course-section">
+        <div class="course-section-title">
+          <span class="bar"></span><h2>سمینارها و کارگاه‌های مجازیِ شعبه</h2><span class="badge">شعبه‌ای</span>
+        </div>
+        <div id="branchSeminarList"></div>
+      </div>
     </div>
 
     <div class="announce-col">
@@ -525,6 +532,40 @@
     };
   }
 
+  // ---- سمینار/کارگاهِ مجازی: دقیقاً هم‌خانواده‌ی mapClassToCourse/loadVirtualCourses،
+  // فقط به‌جایِ روز/ساعتِ هفتگی، چند «روزِ برگزاری» (تاریخ+ساعت) دارد ----
+  function mapSeminarToCourse(s, branchName){
+    return {
+      id: s.id,
+      title: s.name,
+      teacher: s.teacher_name || 'هنوز مدرس تعیین نشده',
+      schedule: (s.sessions || []).map(sess => `${sess.date} (${sess.start_time} الی ${sess.end_time})`).join('، ') || '—',
+      price: 'رایگان',
+      isFull: !!s.is_full,
+      capacity: s.capacity,
+      enrolledCount: s.enrolled_count,
+      isSeminar: true,
+    };
+  }
+
+  // سمینار/کارگاه هیچ‌وقت «ملی» نیست - همیشه فقط برای همان استان/شعبه‌ی خودش است
+  function loadVirtualSeminars(branchName, deptName){
+    const params = new URLSearchParams();
+    params.set('class_type', 'مجازی');
+    params.set('published', 'true');
+    params.set('is_national', 'false');
+    if(branchName) params.set('branch', branchName);
+    if(deptName) params.set('department_name', deptName);
+    return getActiveTermOrder().then(activeTermOrder =>
+      fetch(`${API_BASE_URL}/classmgmt/seminars/?${params.toString()}`, { credentials: 'include' })
+        .then(res => res.ok ? res.json() : [])
+        .then(list => (list || [])
+          .filter(s => activeTermOrder !== null && Number(s.term_order) === activeTermOrder)
+          .map(s => mapSeminarToCourse(s, branchName)))
+        .catch(() => [])
+    );
+  }
+
   function loadVirtualCourses(branchName, deptName, isNational){
     const params = new URLSearchParams();
     params.set('type', 'مجازی');
@@ -651,6 +692,8 @@
 
     const branchListEl = document.getElementById('branchCourseList');
     const nationalListEl = document.getElementById('nationalCourseList');
+    const branchSeminarListEl = document.getElementById('branchSeminarList');
+
 
     fetch(`${API_BASE_URL}/classmgmt/site-settings/`, { credentials: 'include' })
       .then(res => res.ok ? res.json() : { public_registration_enabled: false })
@@ -665,6 +708,8 @@
             </div>`;
           branchListEl.innerHTML = closedMsg;
           nationalListEl.innerHTML = closedMsg;
+          branchSeminarListEl.innerHTML = closedMsg;
+
           return;
         }
         Promise.all([
@@ -673,6 +718,9 @@
           }),
           loadVirtualCourses(branchName, deptName, true).then(courses => {
             renderCourseList(nationalListEl, courses, 'هیچ کلاس فعالی برای این دپارتمان وجود ندارد.', true);
+          }),
+          loadVirtualSeminars(branchName, deptName).then(seminars => {
+            renderCourseList(branchSeminarListEl, seminars, 'هیچ سمینار یا کارگاهِ فعالی برای این دپارتمان وجود ندارد.', false);
           }),
         ]).then(() => {
           // اگر از صفحه‌ی ورود برگشته‌ایم (بعد از این‌که برای همین دوره
@@ -849,7 +897,7 @@
     // می‌کند و رکورد ثبت‌نام واقعی می‌سازد ----
     function enrollAndShowSuccess(){
       showStep('checking');
-      fetch(`${API_BASE_URL}/classmgmt/classes/${course.id}/enroll/`, {
+      fetch(`${API_BASE_URL}/classmgmt/${course.isSeminar ? 'seminars' : 'classes'}/${course.id}/enroll/`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },

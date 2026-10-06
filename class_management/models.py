@@ -370,6 +370,11 @@ class Seminar(models.Model):
 
     name = models.CharField('نام سمینار/کارگاه', max_length=200)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='seminars')
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.SET_NULL, null=True, blank=True, related_name='seminars',
+        verbose_name='درس',
+        help_text='سمینار هم مثل کلاس، بر اساس یک درسِ از قبل تعریف‌شده ساخته می‌شود.',
+    )
     class_type = models.CharField('نوع برگزاری', max_length=10, choices=TYPE_CHOICES, default='حضوری')
     is_national = models.BooleanField(
         'سراسری (بدون وابستگی به استان)', default=False,
