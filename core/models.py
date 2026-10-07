@@ -64,6 +64,9 @@ class Employee(models.Model):
     # نوع کلاسی که این مدرس تدریس می‌کند: ['حضوری']، ['مجازی'] یا هر دو با هم.
     # برای مدرسینِ قدیمی (قبل از این فیلد) خالی می‌ماند تا ادمین بعداً تکمیل کند.
     reqtype = models.JSONField('نوع تدریس', default=list, blank=True)
+    # فقط برای «مسئول آموزش»: کلیدِ بخش‌هایی که مدیر آموزش دسترسی او را به آن‌ها «بسته» است
+    # (فهرست بخش‌ها: core/sections.py). پیش‌فرض خالی = به همه‌ی بخش‌ها دسترسی دارد.
+    denied_sections = models.JSONField('بخش‌های بسته‌شده', default=list, blank=True)
     branch = models.CharField('شعبه', max_length=100)
     phone = models.CharField('شماره تماس', max_length=20)
 

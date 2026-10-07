@@ -969,8 +969,16 @@
 <script>
   // ---- محافظت پنل: تا وقتی مطمئن نشویم کاربر «مدیر آموزش» است، محتوای
   // صفحه اصلاً نمایش داده نمی‌شود (تا لحظه‌ی آخر مخفی است) ----
+  // آدرس API (قاعده‌اش در بقیه‌ی صفحه‌ها هم همین است): همان دامنه‌ی صفحه، مگر وقتی فایل از جای دیگری باز شده باشد
+  window.SADA_API_BASE = (function(){
+    if(window.SADA_API_ORIGIN) return window.SADA_API_ORIGIN + '/api';
+    const isWeb = location.protocol === 'http:' || location.protocol === 'https:';
+    const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+    if(!isWeb || (isLocal && location.port !== '8000')) return 'http://127.0.0.1:8000/api';
+    return location.origin + '/api';
+  })();
   (function guardAdminPanel(){
-    fetch('http://127.0.0.1:8000/api/auth/me/', { credentials: 'include' })
+    fetch(window.SADA_API_BASE + '/auth/me/', { credentials: 'include' })
       .then(function(res){ return res.ok ? res.json() : null; })
       .then(function(data){
         if(!data || data.employee_role !== 'مدیر آموزش'){
@@ -2938,6 +2946,7 @@
             <tr>
               <th style="width:70px;">#</th>
               <th>نام شعبه</th>
+              <th>استان</th>
               <th>آدرس</th>
               <th>شماره تلفن</th>
               <th>عملیات</th>
@@ -3508,6 +3517,7 @@
       <form id="branchForm">
         <div class="form-grid">
           <div class="field full"><label>نام شعبه</label><input type="text" id="f_branch_name" placeholder="نام شعبه" required=""></div>
+          <div class="field full"><label>استان<span class="req-star">*</span></label><select id="f_branch_province"></select></div>
           <div class="field full"><label>آدرس</label><input type="text" id="f_branch_address" placeholder="آدرس شعبه"></div>
           <div class="field full"><label>شماره تلفن</label><input type="text" id="f_branch_phone" placeholder="شماره تلفن شعبه" dir="ltr"></div>
         </div>
@@ -3516,6 +3526,31 @@
     <div class="modal-foot">
       <button class="btn-ghost" id="branchModalCancel" type="button">انصراف</button>
       <button class="btn-primary" id="branchModalSave" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        ذخیره
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="accessModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="accessModalTitle">دسترسی‌های مسئول آموزش</h3>
+      <button class="modal-close" id="accessModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:#5c6f72;line-height:1.9;margin-bottom:12px;">
+        بخش‌های تیک‌خورده برای این مسئول باز است. با برداشتن تیک، آن بخش برایش بسته می‌شود (از همان درخواست بعدی).
+        مسئول آموزش در هر حال فقط به اطلاعات «شعبه‌ی خودش» دسترسی دارد؛ مدیر آموزش به همه‌چیز دسترسی دارد.
+      </p>
+      <div class="dept-branch-checklist" id="accessChecklist"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="accessModalCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="accessModalSave" type="button">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
         ذخیره
       </button>
@@ -4242,7 +4277,7 @@
   // ---- تنظیمات مشترک اتصال به بک‌اند ----
   // TODO: وقتی سایت روی دامنه‌ی واقعی قرار گرفت، این آدرس را با آدرس واقعی
   // سرور بک‌اند عوض کنید.
-  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+  const API_BASE_URL = window.SADA_API_BASE;
 
   function getCookie(name){
     const value = `; ${document.cookie}`;
@@ -4261,6 +4296,39 @@
     });
   });
 
+  // ---- استخراج «اولین پیام خطای قابل‌فهم» از پاسخ خطای سرور ----
+  // سرور دو قالب برمی‌گرداند: {"detail": "..."} یا خطای فیلدها مثل {"name": ["شعبه با این نام ..."]}
+  // (و گاهی لیست یا دیکشنریِ تودرتو). قبلاً فقط detail خوانده می‌شد و بقیه‌ی خطاها به
+  // «خطا در ارتباط با سرور» تبدیل می‌شد.
+  function extractApiError(data){
+    const FIELD_LABELS = {
+      name: 'نام', province: 'استان', address: 'آدرس', phone: 'شماره تلفن', username: 'نام کاربری',
+      password: 'رمز عبور', branch: 'شعبه', role: 'سمت'
+    };
+    function first(v){
+      if(v === null || v === undefined) return '';
+      if(typeof v === 'string') return v;
+      if(Array.isArray(v)){
+        for(const x of v){ const t = first(x); if(t) return t; }
+        return '';
+      }
+      if(typeof v === 'object'){
+        for(const k of Object.keys(v)){ const t = first(v[k]); if(t) return t; }
+      }
+      return '';
+    }
+    if(!data) return 'خطا در ارتباط با سرور';
+    if(typeof data === 'string') return data;
+    const detail = first(data.detail);
+    if(detail) return detail;
+    for(const key of Object.keys(data)){
+      if(key === 'detail' || key === 'non_field_errors') continue;
+      const t = first(data[key]);
+      if(t) return FIELD_LABELS[key] ? `${FIELD_LABELS[key]}: ${t}` : t;
+    }
+    return first(data.non_field_errors) || 'خطا در ارتباط با سرور';
+  }
+
   // برای درخواست‌های نویسنده (POST/PUT/PATCH/DELETE) لازم است.
   function apiWrite(path, method, body){
     return fetch(`${API_BASE_URL}${path}`, {
@@ -4272,13 +4340,18 @@
       },
       body: body ? JSON.stringify(body) : undefined
     }).then(async function(res){
-      if(res.status === 401 || res.status === 403){
+      const data = await res.json().catch(function(){ return null; });
+      // «وارد نشده/نشست منقضی» (۴۰۱، یا ۴۰۳ با پیام اعتبارسنجی/CSRF) با «نبودِ اجازه‌ی این کار برای کاربرِ واردشده»
+      // (۴۰۳ با پیامِ مشخصِ سرور، مثلاً «مدیران آموزش نمی‌توانند یکدیگر را حذف کنند») فرق دارد؛ دومی باید خودِ پیام را نشان دهد
+      const detailText = data && data.detail ? extractApiError({ detail: data.detail }) : '';
+      const notLoggedIn = res.status === 401 ||
+        (res.status === 403 && (!detailText || detailText.indexOf('اعتبارسنجی') !== -1 || /csrf/i.test(detailText)));
+      if(notLoggedIn){
         showToast('برای این کار باید با حساب مدیر آموزش وارد شده باشید (از /admin وارد شوید)');
         throw new Error('auth-required');
       }
-      const data = await res.json().catch(function(){ return null; });
       if(!res.ok){
-        throw new Error((data && data.detail) || 'خطا در ارتباط با سرور');
+        throw new Error(extractApiError(data));
       }
       return data;
     });
@@ -4352,6 +4425,9 @@
         EMPLOYEES = (list || []).map(s => ({
           id: s.id, name: s.name, role: s.role, branch: s.branch, phone: s.phone,
           hasLogin: s.has_login,
+          // مدیرانِ آموزش نمی‌توانند ردیف یکدیگر را ویرایش/حذف کنند (و حساب خود را حذف نمی‌کنند)؛ سرور تعیین می‌کند
+          canManage: s.can_manage !== false,
+          canDelete: s.can_delete !== false,
         }));
         if(typeof renderManagers === 'function') renderManagers();
         if(typeof renderEmployeesCountBadge === 'function') renderEmployeesCountBadge();
@@ -4406,24 +4482,87 @@
         <td>${e.phone}</td>
         <td>
           <div class="row-actions">
+            ${e.canManage ? `
             <button class="icon-btn" title="ویرایش" onclick="openEditEmp(${e.id})">
               <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="icon-btn" title="دسترسی‌های خاص" onclick="openManagerAccess(${e.id})">
+            </button>` : ''}
+            ${(e.canManage && e.role === 'مسئول آموزش') ? `
+            <button class="icon-btn" title="دسترسی‌های خاص (باز/بسته‌کردن بخش‌ها)" onclick="openManagerAccess(${e.id})">
               <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </button>
+            </button>` : ''}
+            ${e.canDelete ? `
             <button class="icon-btn danger" title="حذف" onclick="deleteEmp(${e.id})">
               <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+            </button>` : ''}
+            ${(!e.canManage && !e.canDelete) ? '<span class="dept-empty" title="مدیران آموزش نمی‌توانند اطلاعات یا مجوز یکدیگر را تغییر دهند یا یکدیگر را حذف کنند">—</span>' : ''}
           </div>
         </td>
       </tr>
     `).join('');
   }
 
+  // ---- دسترسی‌های خاص: باز/بسته‌کردن دسترسی «مسئول آموزش» به بخش‌های مختلف (فقط مدیر آموزش) ----
+  // فهرست بخش‌ها و وضعیتشان از سرور می‌آید (/core/staff/<id>/access/)، نه لیست ثابت؛ اجرای قفل هم سمت سرور است.
+  let accessEditingId = null;
+  const accessOverlay = document.getElementById('accessModalOverlay');
+  function closeAccessModal(){ accessOverlay.classList.remove('open'); accessEditingId = null; }
+
   window.openManagerAccess = function(id){
-    showToast('این بخش (دسترسی‌های خاص) به‌زودی تکمیل می‌شود');
+    const e = EMPLOYEES.find(x => x.id === id);
+    if(!e) return;
+    if(e.role !== 'مسئول آموزش'){
+      showToast('مدیر آموزش همیشه به همه‌ی بخش‌ها دسترسی دارد');
+      return;
+    }
+    accessEditingId = id;
+    document.getElementById('accessModalTitle').textContent = `دسترسی‌های «${e.name}»`;
+    const list = document.getElementById('accessChecklist');
+    list.innerHTML = '<p class="no-match">در حال دریافت…</p>';
+    document.getElementById('accessModalSave').disabled = true;
+    accessOverlay.classList.add('open');
+    fetch(`${API_BASE_URL}/core/staff/${id}/access/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : Promise.reject(new Error('fetch')); })
+      .then(function(data){
+        list.innerHTML = '';
+        data.sections.forEach(function(sec){
+          const label = document.createElement('label');
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.value = sec.key;
+          cb.checked = !!sec.enabled;
+          const text = document.createElement('span');
+          text.textContent = sec.label;
+          label.appendChild(cb);
+          label.appendChild(text);
+          list.appendChild(label);
+        });
+        document.getElementById('accessModalSave').disabled = false;
+      })
+      .catch(function(){
+        showToast('خطا در دریافت دسترسی‌ها از سرور');
+        closeAccessModal();
+      });
   };
+
+  document.getElementById('accessModalClose').addEventListener('click', closeAccessModal);
+  document.getElementById('accessModalCancel').addEventListener('click', closeAccessModal);
+  accessOverlay.addEventListener('click', function(ev){ if(ev.target === accessOverlay) closeAccessModal(); });
+  document.getElementById('accessModalSave').addEventListener('click', function(){
+    if(!accessEditingId) return;
+    const sections = {};
+    document.querySelectorAll('#accessChecklist input[type="checkbox"]').forEach(function(cb){ sections[cb.value] = cb.checked; });
+    const saveBtn = document.getElementById('accessModalSave');
+    saveBtn.disabled = true;
+    apiWrite(`/core/staff/${accessEditingId}/access/`, 'POST', { sections })
+      .then(function(){
+        showToast('دسترسی‌های مسئول آموزش ذخیره شد');
+        closeAccessModal();
+      })
+      .catch(function(err){
+        if(err && err.message !== 'auth-required') showToast(err.message);
+      })
+      .finally(function(){ saveBtn.disabled = false; });
+  });
 
   // «نوع تدریس» یک مدرس: حضوری/مجازی/هر دو (از روی reqtype که موقع تأیید
   // درخواست همکاری تعیین شده، یا بعداً از «ویرایش» قابل‌تغییر است)
@@ -4804,7 +4943,7 @@
       const username = usernameInput.value.trim();
       const password = passwordInput.value;
       if(!username){ showErr('لطفاً نام کاربری را وارد کنید'); return; }
-      if(!password || password.length < 4){ showErr('رمز عبور باید حداقل ۴ کاراکتر باشد'); return; }
+      if(!password || password.length < 6){ showErr('رمز عبور باید حداقل ۶ کاراکتر باشد'); return; }
       errorEl.hidden = true;
       submitBtn.disabled = true;
       submitBtn.textContent = 'در حال تأیید…';
@@ -5537,7 +5676,7 @@
     const body = document.getElementById('branchTableBody');
 
     if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="5">شعبه‌ای یافت نشد</td></tr>`;
+      body.innerHTML = `<tr class="empty-row"><td colspan="6">شعبه‌ای یافت نشد</td></tr>`;
       return;
     }
 
@@ -5545,6 +5684,7 @@
       <tr data-id="${b.id}">
         <td>${toPersianDigits(i + 1)}</td>
         <td>${b.name}</td>
+        <td>${b.province ? b.province : '<span class="dept-empty">— (تعیین نشده)</span>'}</td>
         <td>${b.address ? b.address : '—'}</td>
         <td dir="ltr" style="text-align:right;">${b.phone ? toPersianDigits(b.phone) : '—'}</td>
         <td class="row-actions">
@@ -5562,6 +5702,39 @@
     });
   }
 
+  // ---- استان‌ها: از سرور (/api/core/branches/provinces/) خوانده می‌شود، نه لیست ثابت ----
+  // استان شعبه برای چک «استان کلاس با استان دانش‌پژوه» هنگام ثبت‌نام لازم است؛ شعبه‌ی بدون استان این چک را بی‌صدا غیرفعال می‌کند.
+  let PROVINCES = [];
+  function fillProvinceSelect(selected){
+    const sel = document.getElementById('f_branch_province');
+    if(!sel) return;
+    const current = selected !== undefined ? selected : sel.value;
+    sel.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'انتخاب استان';
+    sel.appendChild(placeholder);
+    PROVINCES.forEach(function(p){
+      const o = document.createElement('option');
+      o.value = p;
+      o.textContent = p;
+      sel.appendChild(o);
+    });
+    sel.value = PROVINCES.includes(current) ? current : '';
+  }
+  fetch(`${API_BASE_URL}/core/branches/provinces/`, { credentials: 'include' })
+    .then(function(res){ return res.ok ? res.json() : []; })
+    .then(function(list){ PROVINCES = list || []; fillProvinceSelect(); })
+    .catch(function(){ /* اگر نیامد، در لحظه‌ی باز شدن مودال دوباره تلاش نمی‌شود؛ ذخیره بدون استان هم رد می‌شود */ });
+
+  // بعد از تغییر نام یا حذف شعبه، لیست‌هایی که شعبه‌ی هر ردیف را نشان می‌دهند باید دوباره از سرور خوانده شوند
+  function reloadBranchDependentLists(){
+    if(typeof loadManagers === 'function') loadManagers();
+    if(typeof loadTeachers === 'function') loadTeachers();
+    if(typeof loadApplicants === 'function') loadApplicants();
+    if(typeof loadClasses === 'function') loadClasses();
+  }
+
   const branchOverlay = document.getElementById('branchModalOverlay');
   const branchNameInput = document.getElementById('f_branch_name');
   const branchAddressInput = document.getElementById('f_branch_address');
@@ -5571,6 +5744,7 @@
     editingBranchId = null;
     document.getElementById('branchModalTitle').textContent = 'افزودن شعبه جدید';
     branchNameInput.value = '';
+    fillProvinceSelect('');
     branchAddressInput.value = '';
     branchPhoneInput.value = '';
     branchOverlay.classList.add('open');
@@ -5581,6 +5755,7 @@
     editingBranchId = id;
     document.getElementById('branchModalTitle').textContent = 'ویرایش شعبه';
     branchNameInput.value = b.name;
+    fillProvinceSelect(b.province || '');
     branchAddressInput.value = b.address || '';
     branchPhoneInput.value = b.phone || '';
     branchOverlay.classList.add('open');
@@ -5589,15 +5764,59 @@
   function deleteBranch(id){
     const b = BRANCHES.find(x => x.id === id);
     if(!b) return;
-    if(!confirm(`آیا از حذف شعبه‌ی «${b.name}» مطمئن هستید؟`)) return;
-    apiWrite(`/core/branches/${id}/`, 'DELETE')
-      .then(function(){
-        BRANCHES = BRANCHES.filter(x => x.id !== id);
-        renderBranches();
-        showToast('شعبه حذف شد');
+    // اول پیامدهای حذف را از سرور می‌پرسیم تا مدیر بداند دقیقاً چه چیزی حذف می‌شود
+    fetch(`${API_BASE_URL}/core/branches/${id}/impact/`, { credentials: 'include' })
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(impact){
+        if(!impact){
+          showToast('دریافت پیامدهای حذف شعبه از سرور ممکن نشد؛ دوباره تلاش کنید');
+          return;
+        }
+        if(impact.managers > 0){
+          showToast('این شعبه مدیر آموزش دارد و حذف نمی‌شود؛ ابتدا شعبه‌ی آن مدیر را عوض کنید');
+          return;
+        }
+        const n = function(v){ return toPersianDigits(v); };
+        // با حذف شعبه «همه‌چیزِ آن» برای همیشه حذف می‌شود؛ فهرست دقیقش پیش از تأیید نشان داده می‌شود
+        const items = [
+          [impact.officers, 'مسئول آموزش'],
+          [impact.teachers, 'مدرس'],
+          [impact.classes, 'کلاس'],
+          [impact.seminars, 'سمینار'],
+          [impact.lessons, 'درس'],
+          [impact.departments, 'دپارتمانِ فعال‌شده‌ی شعبه'],
+          [impact.applicants, 'درخواست همکاری مدرس'],
+          [impact.feedback, 'انتقاد/پیشنهاد']
+        ].filter(function(x){ return x[0] > 0; });
+        let msg = `آیا از حذف شعبه‌ی «${b.name}» مطمئن هستید؟`;
+        if(items.length){
+          msg = `⚠️ حذف شعبه‌ی «${b.name}» غیرقابل بازگشت است و همه‌ی اطلاعات آن برای همیشه حذف می‌شود:\n\n` +
+            items.map(function(x){ return `• ${n(x[0])} ${x[1]}`; }).join('\n') +
+            '\n\n(لاگ‌ها و سوابق امور مالی حذف نمی‌شوند.)';
+        }
+        // اعضا (دانش‌پژوهان) با حذف شعبه حذف نمی‌شوند؛ حساب، ثبت‌نام‌ها و سوابقشان می‌ماند
+        if(impact.members > 0){
+          msg += `\n\n${n(impact.members)} عضو (دانش‌پژوه) این شعبه حذف نمی‌شوند؛ حساب، ثبت‌نام‌ها و سوابقشان می‌ماند.`;
+        }
+        if(!confirm(msg)) return;
+        // کلاس/سمینار دارد: تأیید دوم با تایپ نام شعبه، تا با یک کلیک اشتباهی حذف نشود
+        if(impact.classes > 0 || impact.seminars > 0){
+          const typed = prompt(`برای تأیید نهایی، نام شعبه را دقیقاً تایپ کنید:\n«${b.name}»`);
+          if(typed === null) return;
+          if(typed.trim() !== b.name){
+            showToast('نام واردشده با نام شعبه یکی نیست؛ حذف انجام نشد');
+            return;
+          }
+        }
+        return apiWrite(`/core/branches/${id}/`, 'DELETE').then(function(){
+          BRANCHES = BRANCHES.filter(x => x.id !== id);
+          renderBranches();
+          reloadBranchDependentLists();
+          showToast('شعبه حذف شد');
+        });
       })
       .catch(function(err){
-        if(err.message !== 'auth-required') showToast(err.message);
+        if(err && err.message !== 'auth-required') showToast(err.message);
       });
   }
 
@@ -5607,14 +5826,19 @@
   branchOverlay.addEventListener('click', (e) => { if(e.target === branchOverlay) closeBranchModal(); });
   document.getElementById('branchModalSave').addEventListener('click', () => {
     const name = branchNameInput.value.trim();
+    const province = document.getElementById('f_branch_province').value;
     const address = branchAddressInput.value.trim();
     const phone = branchPhoneInput.value.trim();
     if(!name){
       showToast('لطفاً نام شعبه را وارد کنید');
       return;
     }
+    if(!province){
+      showToast('لطفاً استان شعبه را انتخاب کنید');
+      return;
+    }
 
-    const payload = { name, address, phone };
+    const payload = { name, province, address, phone };
     const isEditing = !!editingBranchId;
     const promise = isEditing
       ? apiWrite(`/core/branches/${editingBranchId}/`, 'PATCH', payload)
@@ -5624,8 +5848,11 @@
       .then(function(saved){
         if(isEditing){
           const b = BRANCHES.find(x => x.id === editingBranchId);
+          const renamed = b && b.name !== saved.name;
           Object.assign(b, saved);
-          showToast('اطلاعات شعبه به‌روزرسانی شد');
+          // با تغییر نام، سرور نام شعبه را در مدرسین، مسئولان، کلاس‌ها، اعضا و ... هم به‌روز می‌کند
+          if(renamed) reloadBranchDependentLists();
+          showToast(renamed ? 'نام شعبه در همه‌ی بخش‌ها (نیروها، کلاس‌ها، اعضا و ...) به‌روزرسانی شد' : 'اطلاعات شعبه به‌روزرسانی شد');
         } else {
           BRANCHES.push(saved);
           showToast('شعبه‌ی جدید افزوده شد');
@@ -10730,6 +10957,7 @@
 
   function openAddEmp(defaultRole){
     editingId = null;
+    document.getElementById('f_role').disabled = false;
     document.getElementById('empModalTitle').textContent = 'افزودن متصدی جدید';
     document.getElementById('f_fname').value = '';
     document.getElementById('f_lname').value = '';
@@ -10755,6 +10983,8 @@
     document.getElementById('f_fname').value = nameParts[0] || '';
     document.getElementById('f_lname').value = nameParts.slice(1).join(' ');
     document.getElementById('f_role').value = e.role;
+    // «مدیر آموزش» (که فقط ردیفِ خودش قابل ویرایش است) سمت خودش را نمی‌تواند تغییر دهد؛ سرور هم رد می‌کند
+    document.getElementById('f_role').disabled = (e.role === 'مدیر آموزش');
     document.getElementById('f_branch').value = e.branch || 'دفتر مرکزی خانه کارگر';
     document.getElementById('f_phone').value = e.phone;
     document.getElementById('f_username').value = '';
@@ -10771,9 +11001,15 @@
       method: 'DELETE', credentials: 'include',
       headers: { 'X-CSRFToken': getCookie('csrftoken') || '' }
     })
-      .then(res => { if(!res.ok && res.status !== 204) throw new Error(); return loadManagers(); })
+      .then(async res => {
+        if(!res.ok && res.status !== 204){
+          const data = await res.json().catch(() => null);
+          throw new Error(extractApiError(data));
+        }
+        return loadManagers();
+      })
       .then(() => showToast('متصدی حذف شد'))
-      .catch(() => showToast('خطا در حذف متصدی؛ دوباره تلاش کنید'));
+      .catch(err => showToast((err && err.message) || 'خطا در حذف متصدی؛ دوباره تلاش کنید'));
   };
 
   function closeEmpModal(){ empOverlay.classList.remove('open'); }
@@ -10831,9 +11067,8 @@
     request
       .then(async res => {
         if(!res.ok){
-          const data = await res.json().catch(() => ({}));
-          const firstError = data.detail || (data && typeof data === 'object' ? Object.values(data).flat().filter(Boolean)[0] : null);
-          throw new Error(firstError || 'خطا در ذخیره‌ی متصدی');
+          const data = await res.json().catch(() => null);
+          throw new Error(extractApiError(data) || 'خطا در ذخیره‌ی متصدی');
         }
         return loadManagers();
       })

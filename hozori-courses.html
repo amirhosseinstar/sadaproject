@@ -428,7 +428,16 @@
 
 <script>
   // ---- تنظیمات اتصال به بک‌اند ----
-  const API_BASE_URL = 'http://127.0.0.1:8000/api';
+  // آدرس API: وقتی صفحه از خودِ سرور جنگو یا دامنه‌ی واقعی باز شده، همان دامنه استفاده می‌شود (روی سرور واقعی هم کار
+  // می‌کند)؛ فقط وقتی فایل HTML از جای دیگری باز شود (file:// یا Live Server روی پورتی غیر از ۸۰۰۰) به سرور محلی
+  // 127.0.0.1:8000 وصل می‌شود. برای حالتِ خاص، پیش از این اسکریپت می‌شود window.SADA_API_ORIGIN را تنظیم کرد.
+  const API_BASE_URL = (function(){
+    if(window.SADA_API_ORIGIN) return window.SADA_API_ORIGIN + '/api';
+    const isWeb = location.protocol === 'http:' || location.protocol === 'https:';
+    const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+    if(!isWeb || (isLocal && location.port !== '8000')) return 'http://127.0.0.1:8000/api';
+    return location.origin + '/api';
+  })();
 
   function getCookie(name){
     const value = `; ${document.cookie}`;

@@ -36,6 +36,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -46,7 +47,7 @@ from .models import Member, MemberBan, OTPCode, EmployeeOTPCode
 from .serializers import MemberSearchSerializer, MemberUpdateSerializer, build_profile_payload
 from .sms import send_sms
 from core.models import Employee
-from core.permissions import IsEducationStaff, staff_role, teacher_employee
+from core.permissions import IsEducationStaff, branch_values, officer_branch_name, staff_role, teacher_employee
 from logs import throttle
 from logs.mixins import AuditedMixin, audit
 from logs.models import AuditLog
@@ -470,6 +471,9 @@ class MemberViewSet(AuditedMixin, viewsets.ModelViewSet):
         first_name = (params.get('first_name') or '').strip()
         last_name = (params.get('last_name') or '').strip()
 
+        # مسئول آموزش فقط اعضای «شعبه‌ی خودش» و دانش‌پژوهانی را می‌بیند که در کلاس/سمینارِ شعبه‌ی او ثبت‌نام‌اند
+        qs = self._scope_for_officer(qs)
+
         # بدون هیچ فیلتری، عمداً لیست خالی برمی‌گردانیم (نه همه‌ی اعضا) -
         # همان چیزی که فرانت‌اند هم قبل از جستجو نمایش می‌دهد ("حداقل یک
         # فیلد را وارد کنید")؛ این از دیده‌شدن اتفاقی کل فهرست اعضا جلوگیری می‌کند.
@@ -485,6 +489,21 @@ class MemberViewSet(AuditedMixin, viewsets.ModelViewSet):
         if last_name:
             qs = qs.filter(user__last_name__icontains=last_name)
         return qs
+
+    def _scope_for_officer(self, qs):
+        own = officer_branch_name(self.request.user)
+        if own is None:
+            return qs
+        if not own:
+            return qs.none()
+        from class_management.models import Class, Enrollment, Seminar, SeminarEnrollment
+        class_branches = branch_values(Class, own)
+        seminar_branches = branch_values(Seminar, own)
+        return qs.filter(
+            Q(branch__in=branch_values(Member, own))
+            | Q(pk__in=Enrollment.objects.filter(class_obj__branch__in=class_branches).values('member_id'))
+            | Q(pk__in=SeminarEnrollment.objects.filter(seminar__branch__in=seminar_branches).values('member_id'))
+        )
 
     @action(detail=True, methods=['post'])
     def ban(self, request, pk=None):

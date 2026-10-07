@@ -21,6 +21,7 @@ from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.db import transaction
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
@@ -33,6 +34,9 @@ from core.permissions import (
     ReadOnlyOrEducationManager, officer_branch_name, same_branch, scope_to_officer_branch, staff_role,
 )
 from logs.mixins import AuditedMixin, audit
+from .branch_refs import branch_impact, delete_branch_data, employees_of_branch, rename_branch_references
+from .sections import SECTION_KEYS, SECTION_LABELS, SECTIONS
+from .serializers import IRAN_PROVINCES
 from .services import ApprovalError, approve_teacher_applicant, ensure_username_available
 from logs.recorder import record
 
@@ -53,6 +57,70 @@ class BranchViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
     permission_classes = [ReadOnlyOrEducationManager]
+
+    def get_permissions(self):
+        # «پیامدهای حذف» شمارش‌هایی از اطلاعات داخلی است؛ فقط مدیر آموزش
+        if self.action == 'impact':
+            return [IsEducationManager()]
+        return super().get_permissions()
+
+    @action(detail=False, methods=['get'])
+    def provinces(self, request):
+        """فهرست استان‌ها برای فرم شعبه (عمومی؛ داده‌ی ثابت کشوری است)."""
+        return Response(IRAN_PROVINCES)
+
+    @action(detail=True, methods=['get'])
+    def impact(self, request, pk=None):
+        """پیش از حذف: چند مدیر/مسئول/مدرس حذف می‌شوند و چه چیزی می‌ماند."""
+        return Response(branch_impact(self.get_object().name))
+
+    def perform_update(self, serializer):
+        # شعبه در بقیه‌ی مدل‌ها «متن» است؛ با تغییر نام، همه‌ی ارجاع‌ها هم‌زمان به‌روز می‌شوند
+        # (وگرنه مسئول/مدرس/کلاس‌های آن شعبه با نام قدیمی یتیم می‌مانند و مسئول بی‌دسترسی می‌شود)
+        old_name = serializer.instance.name
+        with transaction.atomic():
+            branch = serializer.save()
+            if branch.name != old_name:
+                rename_branch_references(old_name, branch.name)
+
+    def perform_destroy(self, instance):
+        """
+        با حذف شعبه این‌ها برای همیشه حذف می‌شوند: مسئولان آموزش و مدرسین (با حساب ورودشان)، کلاس‌ها،
+        سمینارها، درس‌ها، دپارتمان‌های فعال‌شده‌ی شعبه، درخواست‌های همکاری و انتقادات
+        (جزئیات: branch_refs.delete_branch_data).
+        «مدیر آموزش» هرگز با حذف شعبه حذف نمی‌شود؛ اگر شعبه مدیر دارد، حذف رد می‌شود.
+        اعضا (دانش‌پژوهان) با حساب، ثبت‌نام‌ها و محرومیت‌هایشان، لاگ و ردیف‌های امور مالی دست‌نخورده می‌مانند.
+        """
+        people = employees_of_branch(instance.name)
+        if any(e.role == ROLE_MANAGER for e in people):
+            raise serializers.ValidationError({'detail': (
+                'این شعبه مدیر آموزش دارد و حذف نمی‌شود. ابتدا شعبه‌ی آن مدیر را عوض کنید '
+                '(مدیران آموزش با حذف شعبه حذف نمی‌شوند).'
+            )})
+        with transaction.atomic():
+            for person in people:
+                is_teacher = person.role == ROLE_TEACHER
+                user = person.user
+                label = person.name
+                person.delete()
+                # حذف Employee به‌تنهایی حساب User را حذف نمی‌کند و نام‌کاربری برای همیشه قفل می‌ماند
+                if user is not None and not user.is_superuser and not user.is_staff:
+                    user.delete()
+                record(
+                    self.request, 'teacher' if is_teacher else 'staff',
+                    'teacher_delete_by_branch' if is_teacher else 'staff_delete_by_branch',
+                    f'حذف {"مدرس" if is_teacher else "مسئول آموزش"} «{label}» به‌دلیل حذف شعبه‌ی «{instance.name}»',
+                    target_type='مدرس' if is_teacher else 'مدیر/مسئول آموزش', target_label=label,
+                    branch=instance.name,
+                )
+            counts = delete_branch_data(instance.name)
+            if counts:
+                record(
+                    self.request, 'settings', 'branch_delete_data',
+                    f'حذف اطلاعات شعبه‌ی «{instance.name}»: ' + '، '.join(f'{n} {t}' for t, n in counts.items()),
+                    target_type='شعبه', target_label=instance.name, branch=instance.name,
+                )
+            instance.delete()
 
 
 @audit('teacher', 'مدرس', {
@@ -199,7 +267,68 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
         user = User.objects.create_user(username=username, password=password)
         serializer.save(user=user)
 
+    def _access_payload(self, employee):
+        closed = set(employee.denied_sections or [])
+        return {
+            'id': employee.id,
+            'name': employee.name,
+            'sections': [{'key': k, 'label': label, 'enabled': k not in closed} for k, label in SECTIONS],
+        }
+
+    @action(detail=True, methods=['get', 'post'], url_path='access')
+    def access(self, request, pk=None):
+        """
+        دسترسی یک «مسئول آموزش» به بخش‌های مختلف (فقط مدیر آموزش این را می‌بیند/تغییر می‌دهد).
+          GET : وضعیت هر بخش (باز/بسته)
+          POST: {"sections": {"finance": false, "logs": true, ...}} - فقط کلیدهای ذکرشده عوض می‌شوند
+        «مدیر آموزش» همیشه به همه‌چیز دسترسی دارد و چیزی برای تنظیم ندارد.
+        """
+        employee = self.get_object()
+        if employee.role != ROLE_OFFICER:
+            raise serializers.ValidationError({'detail': (
+                'مدیر آموزش همیشه به همه‌ی بخش‌ها دسترسی دارد؛ فقط دسترسی «مسئول آموزش» قابل تنظیم است.'
+            )})
+        if request.method == 'POST':
+            wanted = request.data.get('sections')
+            if not isinstance(wanted, dict) or not wanted:
+                raise serializers.ValidationError({'detail': 'فهرست بخش‌ها (sections) ارسال نشده است.'})
+            unknown = [k for k in wanted if k not in SECTION_LABELS]
+            if unknown:
+                raise serializers.ValidationError({'detail': f'بخش نامعتبر: {unknown[0]}'})
+            old_closed = set(employee.denied_sections or [])
+            new_closed = set(old_closed)
+            for key, enabled in wanted.items():
+                if not isinstance(enabled, bool):
+                    raise serializers.ValidationError({'detail': 'مقدار هر بخش باید «باز» (true) یا «بسته» (false) باشد.'})
+                (new_closed.discard if enabled else new_closed.add)(key)
+            # ترتیبِ ثابت (همان ترتیب فهرست بخش‌ها) تا مقایسه و ذخیره یکسان باشد
+            ordered = [k for k in SECTION_KEYS if k in new_closed]
+            employee.denied_sections = ordered
+            employee.save(update_fields=['denied_sections'])
+            changes = [
+                {'field': SECTION_LABELS[k], 'old': 'بسته' if k in old_closed else 'باز', 'new': 'بسته' if k in new_closed else 'باز'}
+                for k in SECTION_KEYS if (k in old_closed) != (k in new_closed)
+            ]
+            if changes:
+                record(
+                    request, 'staff', 'officer_access_update',
+                    f'تغییر دسترسی مسئول آموزش «{employee.name}» به بخش‌ها',
+                    target_type='مسئول آموزش', target_id=str(employee.pk), target_label=employee.name,
+                    branch=employee.branch, changes=changes,
+                )
+        return Response(self._access_payload(employee))
+
+    def _is_other_manager(self, instance):
+        """آیا این رکورد «مدیر آموزشِ دیگری» است؟ (ابرکاربر سیستم از این قید معاف است)"""
+        return (
+            instance.role == ROLE_MANAGER
+            and instance.user_id != self.request.user.pk
+            and not self.request.user.is_superuser
+        )
+
     def perform_destroy(self, instance):
+        if self._is_other_manager(instance):
+            raise PermissionDenied('مدیران آموزش نمی‌توانند یکدیگر را حذف کنند.')
         # حذف حساب خود یا آخرین مدیر آموزش، سامانه را بدون مدیر (قفل‌شده) می‌گذارد
         if instance.user_id is not None and instance.user_id == self.request.user.pk:
             raise serializers.ValidationError({'detail': 'نمی‌توانید حساب کاربری خودتان را حذف کنید.'})
@@ -218,8 +347,14 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
         password = serializer.validated_data.pop('password', '') or ''
         instance = serializer.instance
 
-        # آخرین مدیر آموزش نباید به «مسئول آموزش» تنزل پیدا کند
+        # مدیران آموزش نمی‌توانند اطلاعات، رمز یا «مجوز» (سمت) یکدیگر را تغییر دهند
+        if self._is_other_manager(instance):
+            raise PermissionDenied('مدیران آموزش نمی‌توانند اطلاعات یا مجوزهای یکدیگر را تغییر دهند.')
         new_role = serializer.validated_data.get('role', instance.role)
+        if instance.user_id == self.request.user.pk and new_role != instance.role:
+            raise serializers.ValidationError({'detail': 'نمی‌توانید سمت حساب خودتان را تغییر دهید.'})
+
+        # آخرین مدیر آموزش نباید به «مسئول آموزش» تنزل پیدا کند
         if instance.role == ROLE_MANAGER and new_role != ROLE_MANAGER and _manager_count() <= 1:
             raise serializers.ValidationError({'detail': 'آخرین مدیر آموزش را نمی‌شود به مسئول آموزش تغییر داد.'})
         if password:
@@ -233,6 +368,10 @@ class StaffViewSet(AuditedMixin, viewsets.ModelViewSet):
             if password:
                 instance.user.set_password(password)
             instance.user.save()
+            # تغییر رمزِ «حساب خودِ» مدیر، نشست فعلی را باطل می‌کرد (بیرون‌افتادن از پنل و خطای بارگذاری لیست)؛
+            # پس نشست را با رمز جدید هماهنگ می‌کنیم. برای ویرایشِ حساب یک مسئول، نشستِ مدیر ربطی ندارد.
+            if password and instance.user_id == self.request.user.pk:
+                update_session_auth_hash(self.request, instance.user)
         elif username and password:
             _ensure_username_or_400(username)
             user = User.objects.create_user(username=username, password=password)

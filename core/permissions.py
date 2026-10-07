@@ -96,6 +96,15 @@ def scope_to_officer_branch(queryset, user, field='branch'):
     return queryset.filter(pk__in=ids)
 
 
+def branch_values(model, branch_name, field='branch'):
+    """
+    مقادیر متمایزِ یک فیلد شعبه در این مدل که (با اختلاف‌های نگارشی) همان شعبه‌ی branch_name هستند.
+    برای ساختنِ فیلتر کارآمد در پایگاه‌داده: queryset.filter(branch__in=branch_values(...)) - بدون پیمایشِ همه‌ی رکوردها.
+    """
+    values = model._default_manager.order_by().values_list(field, flat=True).distinct()
+    return [v for v in values if same_branch(v, branch_name)]
+
+
 # ---------------------------------------------------------------------------
 # کلاس‌های دسترسی
 # ---------------------------------------------------------------------------

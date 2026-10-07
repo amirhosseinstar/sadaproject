@@ -11,12 +11,15 @@ API خواندن لاگ (فقط مدیر آموزش و مسئول آموزش؛ �
 
 import csv
 import io
+import re
 from datetime import datetime, time, timedelta
 
-from django.db.models import Q
+from django.db.models import F, Q, Value
+from django.db.models.functions import Replace
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import status as http_status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -70,6 +73,46 @@ def _scoped_queryset(request):
     return qs
 
 
+def _digits_to_english_expr(field_name):
+    """
+    عبارت SQL که ارقام فارسی (۰-۹) و عربی (٠-٩) ستون را به انگلیسی تبدیل می‌کند.
+    متن لاگ‌ها (مثل «۹۶۰٬۰۰۰ تومان») ارقام فارسی دارد ولی کاربر ممکن است با ارقام انگلیسی جستجو کند.
+    """
+    expr = F(field_name)
+    for i in range(10):
+        expr = Replace(expr, Value(chr(0x06F0 + i)), Value(str(i)))
+        expr = Replace(expr, Value(chr(0x0660 + i)), Value(str(i)))
+    return expr
+
+
+_THOUSANDS_SEPARATORS = ('٬', ',', '،')
+
+
+def _apply_search(qs, q):
+    """
+    جستجوی متنی لاگ. هم ارقامِ فارسی/انگلیسی و هم جداکننده‌ی هزارگان («٬» «,» «،») را یکسان می‌بیند، پس
+    «960000»، «۹۶۰۰۰۰»، «960,000» و «۹۶۰٬۰۰۰» همه رویدادِ «۹۶۰٬۰۰۰ تومان» را پیدا می‌کنند.
+    همچنین «ي/ك» عربیِ صفحه‌کلید با «ی/ک» فارسی یکی حساب می‌شود.
+    """
+    q = to_english_digits(q).replace('ي', 'ی').replace('ك', 'ک')
+    numeric_only = re.fullmatch(r'[0-9\s,٬،]+', q) is not None
+    plain_number = re.sub(r'[\s,٬،]', '', q) if numeric_only else ''
+
+    qs = qs.annotate(summary_en=_digits_to_english_expr('summary'), target_en=_digits_to_english_expr('target_label'))
+    condition = (
+        Q(summary_en__icontains=q) | Q(target_en__icontains=q) | Q(actor_name__icontains=q)
+        | Q(identifier__icontains=q) | Q(ip__icontains=q) | Q(action__icontains=q)
+    )
+    if plain_number:
+        # عدد: در متنِ بدون جداکننده‌ی هزارگان هم جستجو کن (۹۶۰٬۰۰۰ ← 960000)
+        summary_plain = Replace(
+            Replace(Replace(F('summary_en'), Value('٬'), Value('')), Value(','), Value('')), Value('،'), Value(''),
+        )
+        qs = qs.annotate(summary_plain=summary_plain)
+        condition |= Q(summary_plain__icontains=plain_number)
+    return qs.filter(condition)
+
+
 def _filtered(request):
     qs = _scoped_queryset(request)
     params = request.query_params
@@ -92,13 +135,18 @@ def _filtered(request):
         qs = qs.filter(target_type='کلاس', target_id=str(class_id))
     q = (params.get('q') or '').strip()
     if q:
-        q = to_english_digits(q)
-        qs = qs.filter(
-            Q(summary__icontains=q) | Q(actor_name__icontains=q) | Q(target_label__icontains=q)
-            | Q(identifier__icontains=q) | Q(ip__icontains=q) | Q(action__icontains=q)
-        )
-    start = _jalali_to_datetime(params.get('date_from'), end_of_day=False)
-    end = _jalali_to_datetime(params.get('date_to'), end_of_day=True)
+        qs = _apply_search(qs, q)
+    # تاریخ نامعتبر قبلاً بی‌صدا نادیده گرفته می‌شد و «همه‌ی لاگ‌ها» برمی‌گشت؛ کاربر فکر می‌کرد فیلتر اعمال شده
+    raw_from = (params.get('date_from') or '').strip()
+    raw_to = (params.get('date_to') or '').strip()
+    start = _jalali_to_datetime(raw_from, end_of_day=False)
+    end = _jalali_to_datetime(raw_to, end_of_day=True)
+    if raw_from and start is None:
+        raise ValidationError({'detail': 'تاریخ شروع نامعتبر است؛ یک تاریخ شمسی مثل ۱۴۰۵/۰۷/۱۰ وارد کنید.'})
+    if raw_to and end is None:
+        raise ValidationError({'detail': 'تاریخ پایان نامعتبر است؛ یک تاریخ شمسی مثل ۱۴۰۵/۰۷/۱۰ وارد کنید.'})
+    if start and end and start > end:
+        raise ValidationError({'detail': 'تاریخ شروع نباید بعد از تاریخ پایان باشد.'})
     if start:
         qs = qs.filter(created_at__gte=start)
     if end:
@@ -160,6 +208,16 @@ class LogListView(APIView):
         return Response({'count': total, 'page': page, 'page_size': size, 'results': rows, 'summary': summary})
 
 
+def _csv_safe(value):
+    """
+    جلوگیری از «تزریق فرمول» در اکسل: سلولی که با = + - @ (یا تب/ENTER) شروع شود، در اکسل فرمول اجرا می‌کند.
+    متن لاگ شاملِ ورودیِ کاربرانِ عمومی است (مثلاً نامِ متقاضیِ فرم عمومی)، پس چنین سلولی با «'» شروع
+    می‌شود تا فقط به‌عنوان متن نشان داده شود.
+    """
+    text = '' if value is None else str(value)
+    return "'" + text if text and text[0] in ('=', '+', '-', '@', '\t', '\r') else text
+
+
 class LogExportView(APIView):
     permission_classes = [IsEducationStaff]
 
@@ -173,11 +231,11 @@ class LogExportView(APIView):
                 f"{c.get('field', '')}: {c.get('old', '')} ← {c.get('new', '')}" if c.get('old') else f"{c.get('field', '')}: {c.get('new', '')}"
                 for c in (log.changes or [])
             )
-            writer.writerow([
+            writer.writerow([_csv_safe(cell) for cell in [
                 timezone.localtime(log.created_at).strftime('%Y-%m-%d %H:%M:%S'), CATEGORY_LABELS.get(effective_category(log), log.category), log.summary,
                 log.get_status_display(), log.actor_name, log.actor_role, log.branch, log.target_label,
                 log.identifier, log.ip or '', changes,
-            ])
+            ]])
         # BOM تا اکسل متن فارسی را درست باز کند
         response = HttpResponse('\ufeff' + buffer.getvalue(), content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = 'attachment; filename="audit-log.csv"'

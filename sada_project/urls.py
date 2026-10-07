@@ -15,11 +15,8 @@
 - /officer-panel        -> پنل مسئول آموزش (sada-admin-officer.html)
 - /teacher-login        -> ورود مدرسین (teacher-login.html)
 - /teacher-registration -> ثبت درخواست همکاری مدرس (teacher-registration.html)
-- /department           -> صفحه‌ی دپارتمان (department.html)
-- /province             -> صفحه‌ی استان (province.html)
 - /hozori-courses       -> دوره‌های حضوری (hozori-courses.html)
 - /majazi-courses       -> دوره‌های مجازی (majazi-courses.html)
-- /majazi-courses-ostan -> دوره‌های مجازی بر اساس استان (majazi-courses-ostan.html)
 - /certificate          -> آزمون آنلاین و گواهینامه/مشاهده نمرات دانش‌پژوه (certificate.html)
 - /teacher-profile      -> پیشخوان مدرس: لیست کلاس‌ها و دانش‌پژوهان خودش (teacher-profile.html)
 """
@@ -42,6 +39,21 @@ urlpatterns = [
     path('api/finance/', include('finance.urls')),
     path('api/logs/', include('logs.urls')),
 ]
+
+def favicon(request):
+    """
+    آیکن تب مرورگر. مرورگرها خودشان همیشه /favicon.ico را می‌خواهند؛ بدون این مسیر، هر بار یک خط «Not Found»
+    در ترمینال می‌آمد. فایل favicon.png (ساخته‌شده از لوگوی سایت) کنار manage.py است؛ اگر نبود، پاسخ خالیِ بدون خطا (۲۰۴).
+    """
+    icon = Path(settings.BASE_DIR) / 'favicon.png'
+    if not icon.is_file():
+        return HttpResponse(status=204)
+    response = HttpResponse(icon.read_bytes(), content_type='image/png')
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
+
+
+urlpatterns.append(path('favicon.ico', favicon))
 
 # فایل‌های آپلودی (عکس/رزومه‌ی متقاضیان) در حالت توسعه از همین سرور جنگو
 # سرو می‌شوند. در production معمولاً این کار را nginx انجام می‌دهد.
@@ -72,11 +84,8 @@ FRONTEND_ROUTES = {
     'officer-panel': 'sada-admin-officer.html',
     'teacher-login': 'teacher-login.html',
     'teacher-registration': 'teacher-registration.html',
-    'department': 'department.html',
-    'province': 'province.html',
     'hozori-courses': 'hozori-courses.html',
     'majazi-courses': 'majazi-courses.html',
-    'majazi-courses-ostan': 'majazi-courses-ostan.html',
     'certificate': 'certificate.html',
     'teacher-profile': 'teacher-profile.html',
 }

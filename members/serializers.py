@@ -2,6 +2,7 @@
 import re
 
 from django.db import transaction
+from core.sections import allowed_sections
 from rest_framework import serializers
 
 from core.services import ApprovalError, ensure_username_available
@@ -217,4 +218,7 @@ def build_profile_payload(user):
         # «نیروی انسانی» ثبت شده و در هدر پنل و فرم «بروزرسانی حساب من» استفاده می‌شوند.
         'employee_name': employee.name if employee else None,
         'employee_phone': employee.phone if employee else None,
+        # بخش‌هایی از پنل که این کاربرِ مدیریتی اجازه‌ی استفاده از آن‌ها را دارد (مدیر: همه؛ مسئول: همه به‌جز
+        # بخش‌هایی که مدیر بسته؛ بقیه: هیچ). پنل می‌تواند منوی بخش‌های بسته را مخفی کند؛ سرور هر حال رد می‌کند.
+        'allowed_sections': allowed_sections(user),
     }

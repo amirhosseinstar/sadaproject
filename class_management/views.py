@@ -24,6 +24,7 @@ API دپارتمان‌ها، کلاس‌ها و ثبت‌نام.
 """
 
 from django.db import transaction
+from django.db.models import Q
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -32,7 +33,7 @@ from rest_framework.views import APIView
 
 from core.models import Employee
 from core.permissions import (
-    ROLE_OFFICER, IsEducationStaff, ReadOnlyOrEducationManager, ReadOnlyOrEducationStaff, member_of,
+    ROLE_OFFICER, IsEducationStaff, ReadOnlyOrEducationManager, ReadOnlyOrEducationStaff, branch_values, member_of,
     officer_branch_name, same_branch, scope_to_officer_branch, staff_role, teacher_employee,
 )
 from feedback.branches import canonical_branch_name
@@ -550,14 +551,16 @@ class EnrollmentViewSet(AuditedMixin, viewsets.ModelViewSet):
                 qs = qs.filter(member__national_id=national_id)
             if membership_code:
                 qs = qs.filter(member__membership_code=membership_code)
-            # مسئول آموزش در «تغییر/حذف» فقط ثبت‌نام‌های کلاس‌های شعبه‌ی خودش را می‌بیند (خواندن سوابق آزاد)
+            # مسئول آموزش فقط ثبت‌نام‌های «کلاس‌های شعبه‌ی خودش» را می‌بیند و تغییر می‌دهد
+            # (ثبت‌نامی که کلاسش حذف شده، با شعبه‌ی «درس» سنجیده می‌شود)
             own = officer_branch_name(user)
-            if own is not None and self.request.method not in permissions.SAFE_METHODS:
-                ids = [
-                    e.pk for e in qs
-                    if same_branch(e.class_obj.branch if e.class_obj else (e.lesson.branch if e.lesson else ''), own)
-                ]
-                qs = qs.filter(pk__in=ids)
+            if own is not None:
+                if not own:
+                    return qs.none()
+                qs = qs.filter(
+                    Q(class_obj__branch__in=branch_values(Class, own))
+                    | Q(class_obj__isnull=True, lesson__branch__in=branch_values(Lesson, own))
+                )
             return qs
         # دانش‌پژوه: فقط ثبت‌نام‌های خودش (پارامترهای کد ملی/کد عضویت نادیده گرفته می‌شوند)
         member = member_of(user)

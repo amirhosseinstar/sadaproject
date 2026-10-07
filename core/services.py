@@ -5,6 +5,8 @@
 هیچ‌وقت این دو جا با هم فرق نکنند.
 """
 
+import re
+
 from django.contrib.auth import get_user_model
 
 from .models import Employee, TeacherApplicant
@@ -64,6 +66,11 @@ def approve_teacher_applicant(applicant: TeacherApplicant, username: str, passwo
         raise ApprovalError('برای تأیید، نام کاربری لازم است.')
     if not password:
         raise ApprovalError('برای تأیید، رمز عبور لازم است.')
+    # حداقل رمز و قالب نام‌کاربری، هم‌سان با ساخت متصدی و ویرایش پروفایل (قبلاً این‌جا هیچ محدودیتی نبود)
+    if len(password) < 6:
+        raise ApprovalError('رمز عبور باید حداقل ۶ کاراکتر باشد.')
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+', username):
+        raise ApprovalError('نام کاربری فقط می‌تواند شامل حروف/رقم انگلیسی و . _ - باشد.')
     ensure_username_available(username)
 
     user = User.objects.create_user(
