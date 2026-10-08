@@ -1365,6 +1365,79 @@
   .feedback-back svg{width:13px;height:13px;stroke:var(--teal-dark);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:.15s;}
   .feedback-back:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
   .feedback-back:hover svg{stroke:#fff;transform:translateX(-3px);}
+
+  /* ====================================================================
+     اصلاحات ریسپانسیو گوشی (فقط موبایل؛ دسکتاپ دست‌نخورده)
+     ==================================================================== */
+
+  /* شمارنده‌ی اسلایدر («۲ / ۱۲»): در متن راست‌به‌چپ ترتیبش برعکس نشان داده می‌شد («12 / 2») */
+  .dept-slide .dept-index{direction:ltr;unicode-bidi:isolate;}
+
+  @media (max-width:900px){
+    /* ---- هدر: همیشه یک ردیف و هرگز نشکند ----
+       قبلاً gap:32px و flex-wrap:wrap باعث می‌شد در عرض‌های کوچک دکمه‌ی «ورود» (یا نشان کاربرِ واردشده)
+       به ردیف دوم بیفتد و هدر از هم بپاشد؛ و قاعده‌ی اندازه‌ی لوگو (.logo-emblem) چون
+       از «.site-header .logo-emblem» ضعیف‌تر بود هرگز اعمال نمی‌شد. */
+    header.site-header{padding:8px 12px;}
+    header.site-header .header-inner{flex-wrap:nowrap;align-items:center;gap:8px;}
+    header.site-header .logo-block{flex:1 1 auto;min-width:0;gap:8px;}
+    /* همان نسبت بیضیِ دسکتاپ (۶۲×۴۵) در اندازه‌ی کوچک‌تر */
+    header.site-header .logo-emblem{width:54px;height:39px;flex:0 0 auto;}
+    header.site-header .logo-text{min-width:0;}
+    header.site-header .logo-text .title{font-size:15px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    header.site-header .logo-text .subtitle{font-size:10.5px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    header.site-header .mobile-toggle{flex:0 0 auto;width:40px;height:40px;}
+    header.site-header .btn-login-mobile{flex:0 0 auto;margin-inline-start:0;padding:7px 14px;font-size:12.5px;white-space:nowrap;}
+    /* نشان «سلام، نام + خروج» برای کاربرِ واردشده: نام بلند با «…» کوتاه می‌شود، دکمه‌ی خروج همیشه دیده می‌شود */
+    header.site-header .user-badge-mobile{
+      flex:0 1 auto;min-width:0;margin-inline-start:0;max-width:52%;gap:6px;
+      background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);
+      border-radius:16px;padding:3px 4px 3px 8px;
+    }
+    header.site-header .user-badge-mobile #userGreetingMobile{
+      min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;
+    }
+    header.site-header .user-badge-mobile button{flex:0 0 auto;}
+  }
+  /* گوشی‌های باریک: زیرعنوان لوگو جا ندارد */
+  @media (max-width:380px){
+    header.site-header{padding:8px 10px;}
+    header.site-header .header-inner{gap:6px;}
+    header.site-header .logo-block{gap:6px;}
+    header.site-header .logo-emblem{width:48px;height:35px;}
+    header.site-header .logo-text .subtitle{display:none;}
+    header.site-header .logo-text .title{font-size:14px;}
+    header.site-header .user-badge-mobile{max-width:40%;}
+    header.site-header .mobile-toggle{width:36px;}
+    header.site-header .btn-login-mobile{padding:7px 12px;}
+  }
+
+  @media (max-width:820px){
+    /* ستون‌ها flex:1 1 420px (و ۴۶۰) داشتند؛ در چیدمان عمودیِ موبایل این «مبنا» به ارتفاعِ حداقل تبدیل
+       می‌شد و زیر نقشه (و بقیه‌ی بخش‌ها) فضای خالیِ بزرگ می‌انداخت */
+    .slider-col,.grid-col,.map-col,.announce-col{flex:0 0 auto;}
+    /* فاصله‌ی بین بخش‌ها از gap خودِ پنل می‌آید؛ margin-bottom عنوان دوباره اضافه‌اش می‌کرد */
+    .panel-title{margin-bottom:0;}
+    /* دکمه‌های طلایی زیر عنوان بروند (نه کنارش)؛ وگرنه عنوان در یک ستونِ باریک کلمه‌به‌کلمه می‌شکست */
+    .panel-title-actions{flex:1 1 100%;}
+    footer.site-footer{margin-top:0;}
+  }
+
+  @media (max-width:520px){
+    main.page-main{padding:14px 10px 24px;}
+    .services-panel{padding:16px 14px 20px;gap:22px;}
+    .panel-title{font-size:15px;line-height:1.8;padding-bottom:12px;gap:8px;}
+    /* عنوان طولانی: خط‌ها متعادل شکسته شوند تا یک کلمه‌ی تنها («کارگر») در خط آخر نماند */
+    .panel-title > span:nth-child(2){text-wrap:balance;}
+    /* دکمه‌های طلایی: به‌جای چیدمانِ پلکانی و نامرتب، یک شبکه‌ی دو ستونه‌ی هم‌اندازه */
+    .panel-title-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;flex-basis:100%;}
+    .panel-title-actions > :last-child:nth-child(odd){grid-column:1 / -1;}
+    .panel-gold-btn,.calendar-btn{
+      justify-content:center;text-align:center;white-space:normal;line-height:1.55;
+      padding:10px 8px;font-size:12.5px;min-height:44px;
+    }
+    footer.site-footer{padding:32px 16px 22px;}
+  }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1767,7 +1840,6 @@
               <option value="اسلامشهر">اسلامشهر</option>
               <option value="بهارستان">بهارستان</option>
               <option value="پاکدشت">پاکدشت</option>
-              <option value="تهران">تهران</option>
               <option value="دفتر منطقه 15">دفتر منطقه 15</option>
               <option value="دفتر منطقه 16">دفتر منطقه 16</option>
               <option value="دفتر منطقه 18">دفتر منطقه 18</option>
@@ -2319,7 +2391,6 @@
     { name:"اسلامشهر",             province:"tehran" },
     { name:"بهارستان",             province:"tehran" },
     { name:"پاکدشت",               province:"tehran" },
-    { name:"تهران",                province:"tehran" },
     { name:"دفتر منطقه 15",        province:"tehran" },
     { name:"دفتر منطقه 16",        province:"tehran" },
     { name:"دفتر منطقه 18",        province:"tehran" },
