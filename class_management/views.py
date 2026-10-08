@@ -33,7 +33,7 @@ from rest_framework.views import APIView
 
 from core.models import Employee
 from core.permissions import (
-    ROLE_OFFICER, IsEducationStaff, ReadOnlyOrEducationManager, ReadOnlyOrEducationStaff, branch_values, member_of,
+    IsEducationManager, ROLE_OFFICER, IsEducationStaff, ReadOnlyOrEducationManager, ReadOnlyOrEducationStaff, branch_values, member_of,
     officer_branch_name, same_branch, scope_to_officer_branch, staff_role, teacher_employee,
 )
 from feedback.branches import canonical_branch_name
@@ -45,7 +45,7 @@ from members.models import Member
 from .eligibility import check_age_eligibility
 from .models import (
     BranchDepartment, Class, Department, Enrollment, Lesson, Question, Seminar, SeminarEnrollment, SiteSettings,
-    TeacherLessonPermission,
+    Announcement, Slide, TeacherLessonPermission,
 )
 from .serializers import (
     BranchDepartmentSerializer,
@@ -56,7 +56,10 @@ from .serializers import (
     QuestionSerializer,
     SeminarEnrollmentSerializer,
     SeminarSerializer,
+    AnnouncementSerializer,
     SiteSettingsSerializer,
+    SlideSerializer,
+    SlideSettingsSerializer,
 )
 
 
@@ -183,6 +186,27 @@ class LessonViewSet(AuditedMixin, OfficerBranchWriteMixin, viewsets.ModelViewSet
         return qs
 
 
+class IsEducationStaffOrTeacher(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return staff_role(request.user) is not None or teacher_employee(request.user) is not None
+
+
+class TeacherMyLessonsView(APIView):
+    """درس‌هایی که مدرسِ واردشده مجوز درج سؤال برایشان دارد."""
+    permission_classes = [IsEducationStaffOrTeacher]
+
+    def get(self, request):
+        teacher = teacher_employee(request.user)
+        if teacher is None:
+            return Response([])
+        perms = TeacherLessonPermission.objects.filter(teacher=teacher).select_related('lesson', 'lesson__department')
+        return Response([
+            {'id': p.lesson_id, 'name': p.lesson.name, 'department': p.lesson.department.name,
+             'branch': p.lesson.branch, 'question_count': p.lesson.questions.count()}
+            for p in perms
+        ])
+
+
 @audit('class', 'سؤال آزمون', {
     'create': ('question_create', 'افزودن سؤال آزمون'),
     'update': ('question_update', 'ویرایش سؤال آزمون'),
@@ -196,10 +220,20 @@ class QuestionViewSet(AuditedMixin, viewsets.ModelViewSet):
     queryset = Question.objects.select_related('lesson').all()
     serializer_class = QuestionSerializer
     # امنیت: گزینه‌ها «پاسخ صحیح» را هم دارند؛ پس حتی خواندن هم فقط برای کارکنان است
-    permission_classes = [IsEducationStaff]
+    # کارکنان آموزش + مدرس (فقط برای درس‌هایی که در «ویرایش مجوزها» دارد)
+    permission_classes = [IsEducationStaffOrTeacher]
+
+    def _teacher_lesson_ids(self):
+        teacher = teacher_employee(self.request.user)
+        if teacher is None:
+            return None
+        return set(TeacherLessonPermission.objects.filter(teacher=teacher).values_list('lesson_id', flat=True))
 
     def get_queryset(self):
         qs = scope_to_officer_branch(super().get_queryset(), self.request.user, 'lesson__branch')
+        allowed = self._teacher_lesson_ids()
+        if allowed is not None:
+            qs = qs.filter(lesson_id__in=allowed)
         lesson = self.request.query_params.get('lesson')
         if lesson:
             qs = qs.filter(lesson_id=lesson)
@@ -207,6 +241,9 @@ class QuestionViewSet(AuditedMixin, viewsets.ModelViewSet):
 
     def _check_lesson_branch(self, serializer):
         lesson = serializer.validated_data.get('lesson')
+        allowed = self._teacher_lesson_ids()
+        if allowed is not None and (lesson is None or lesson.id not in allowed):
+            raise PermissionDenied('برای این درس مجوز درج سؤال ندارید.')
         own = officer_branch_name(self.request.user)
         if own is not None and lesson is not None and not same_branch(lesson.branch, own):
             raise PermissionDenied('شما فقط برای درس‌های شعبه‌ی خودتان می‌توانید سؤال ثبت کنید.')
@@ -835,3 +872,216 @@ class SeminarViewSet(AuditedMixin, OfficerBranchWriteMixin, viewsets.ModelViewSe
             changes=[{'field': 'نحوه‌ی ثبت‌نام', 'old': '', 'new': source_label}],
         )
         return Response(SeminarEnrollmentSerializer(enrollment).data, status=status.HTTP_201_CREATED)
+
+
+# ============================ مدیریت اسلاید شو ============================
+
+@audit('settings', 'اسلاید', {
+    'create': ('slide_create', 'افزودن اسلاید'),
+    'update': ('slide_update', 'ویرایش اسلاید'),
+    'destroy': ('slide_delete', 'حذف اسلاید'),
+}, label_func=lambda s: s.title or f'اسلاید {s.pk}', skip_fields=('image', 'mobile_image'))
+class SlideViewSet(AuditedMixin, viewsets.ModelViewSet):
+    """
+    مدیریت اسلایدهای صفحه‌ی اصلی - فقط «مدیر آموزش».
+    ترتیب با اکشن reorder (کشیدن و رها کردن در پنل) و کپی با duplicate انجام می‌شود.
+    """
+    queryset = Slide.objects.all()
+    serializer_class = SlideSerializer
+    permission_classes = [IsEducationManager]
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def perform_create(self, serializer):
+        # اسلاید جدید همیشه آخرِ لیست قرار می‌گیرد
+        last = Slide.objects.order_by('-order').first()
+        serializer.save(order=(last.order + 1) if last else 0)
+
+    def perform_update(self, serializer):
+        # با عوض شدن تصویر، فایل قبلی از روی دیسک پاک می‌شود
+        old = serializer.instance
+        old_files = {'image': old.image.name if old.image else None,
+                     'mobile_image': old.mobile_image.name if old.mobile_image else None}
+        super().perform_update(serializer)
+        new = serializer.instance
+        for field, name in old_files.items():
+            f = getattr(new, field)
+            if name and (not f or f.name != name):
+                old.__class__._meta.get_field(field).storage.delete(name)
+
+    def perform_destroy(self, instance):
+        files = [f for f in (instance.image, instance.mobile_image) if f]
+        names = [(f.storage, f.name) for f in files]
+        super().perform_destroy(instance)
+        for storage, name in names:
+            storage.delete(name)
+
+    @action(detail=False, methods=['post'])
+    def reorder(self, request):
+        """بدنه: {"ids": [3,1,2]} - ترتیب جدید همه‌ی اسلایدها."""
+        ids = request.data.get('ids')
+        if not isinstance(ids, list) or not all(isinstance(i, int) for i in ids):
+            return Response({'detail': 'فهرست شناسه‌ها نامعتبر است.'}, status=400)
+        existing = set(Slide.objects.values_list('id', flat=True))
+        if set(ids) != existing or len(ids) != len(existing):
+            return Response({'detail': 'فهرست باید شامل همه‌ی اسلایدها باشد؛ صفحه را تازه کنید.'}, status=400)
+        with transaction.atomic():
+            for pos, sid in enumerate(ids):
+                Slide.objects.filter(pk=sid).update(order=pos)
+        record(request, 'settings', 'slide_reorder', 'تغییر ترتیب اسلایدها', target_type='اسلاید')
+        return Response({'ok': True})
+
+    @action(detail=True, methods=['post'])
+    def duplicate(self, request, pk=None):
+        from django.core.files.base import ContentFile
+        src = self.get_object()
+        last = Slide.objects.order_by('-order').first()
+        copy = Slide(
+            title=(src.title + ' (کپی)')[:120], subtitle=src.subtitle, alt_text=src.alt_text,
+            button_text=src.button_text, link_url=src.link_url, open_new_tab=src.open_new_tab,
+            text_position=src.text_position, text_color=src.text_color, overlay=src.overlay,
+            is_active=False, start_at=src.start_at, end_at=src.end_at, order=(last.order + 1) if last else 0,
+        )
+        for field in ('image', 'mobile_image'):
+            f = getattr(src, field)
+            if f:
+                with f.open('rb') as fh:
+                    getattr(copy, field).save(f.name.rsplit('/', 1)[-1], ContentFile(fh.read()), save=False)
+        copy.save()
+        record(request, 'settings', 'slide_create', 'کپی اسلاید', target_type='اسلاید', target_label=copy.title)
+        return Response(SlideSerializer(copy, context={'request': request}).data, status=201)
+
+
+class SlideSettingsView(APIView):
+    """تنظیمات سراسری اسلاید شو (پخش خودکار، مدت، افکت...) - فقط مدیر آموزش."""
+    permission_classes = [IsEducationManager]
+
+    def get(self, request):
+        return Response(SlideSettingsSerializer(SiteSettings.load()).data)
+
+    def patch(self, request):
+        obj = SiteSettings.load()
+        ser = SlideSettingsSerializer(obj, data=request.data, partial=True)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        record(request, 'settings', 'slide_settings', 'تغییر تنظیمات اسلاید شو', target_type='تنظیمات')
+        return Response(ser.data)
+
+
+class PublicSlidesView(APIView):
+    """اسلایدهای فعالِ همین لحظه برای صفحه‌ی اصلی (عمومی، فقط خواندنی)."""
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        from django.utils import timezone
+        now = timezone.now()
+        slides = [s for s in Slide.objects.filter(is_active=True) if s.status(now) == 'live']
+        cfg = SlideSettingsSerializer(SiteSettings.load()).data
+
+        def url(f):
+            return request.build_absolute_uri(f.url) if f else None
+        resp = Response({
+            'settings': cfg,
+            'slides': [{
+                'id': s.id, 'title': s.title, 'subtitle': s.subtitle, 'image': url(s.image),
+                'mobile_image': url(s.mobile_image), 'alt': s.alt_text or s.title,
+                'button_text': s.button_text, 'link_url': s.link_url, 'new_tab': s.open_new_tab,
+                'position': s.text_position, 'color': s.text_color, 'overlay': s.overlay,
+            } for s in slides],
+        })
+        resp['Cache-Control'] = 'no-cache'
+        return resp
+
+
+class RulesView(APIView):
+    """
+    متن «قوانین و مقررات» سایت. خواندن عمومی است (صفحه‌ی /rules)؛ ویرایش فقط مدیر آموزش.
+    """
+    permission_classes = [ReadOnlyOrEducationManager]
+    MAX_LEN = 30000
+
+    def _data(self, obj):
+        # تا وقتی هیچ‌بار ویرایش نشده، متن پیش‌فرض نمایش داده می‌شود
+        from .default_rules import DEFAULT_RULES
+        text = obj.rules_text if obj.rules_updated_at else DEFAULT_RULES
+        return {'text': text, 'updated_at': obj.rules_updated_at, 'is_default': not obj.rules_updated_at}
+
+    def get(self, request):
+        return Response(self._data(SiteSettings.load()))
+
+    def patch(self, request):
+        text = request.data.get('text')
+        if not isinstance(text, str):
+            return Response({'detail': 'متن قوانین نامعتبر است.'}, status=400)
+        text = text.replace('\r\n', '\n').strip()
+        if len(text) > self.MAX_LEN:
+            return Response({'detail': f'متن قوانین نباید بیشتر از {self.MAX_LEN} نویسه باشد.'}, status=400)
+        from django.utils import timezone
+        obj = SiteSettings.load()
+        obj.rules_text = text
+        obj.rules_updated_at = timezone.now()
+        obj.save(update_fields=['rules_text', 'rules_updated_at'])
+        record(request, 'settings', 'rules_update', 'ویرایش قوانین و مقررات', target_type='تنظیمات')
+        return Response(self._data(obj))
+
+
+@audit('settings', 'اطلاعیه', {
+    'create': ('announcement_create', 'افزودن اطلاعیه'),
+    'update': ('announcement_update', 'ویرایش اطلاعیه'),
+    'destroy': ('announcement_delete', 'حذف اطلاعیه'),
+}, label_func=lambda a: a.title, branch_func=lambda a: a.branch)
+class AnnouncementViewSet(AuditedMixin, viewsets.ModelViewSet):
+    """
+    مدیریت اطلاعیه‌ها. مدیر آموزش: همه؛ مسئول آموزش: اطلاعیه‌های شعبه‌ی خودش را می‌سازد/ویرایش می‌کند
+    (اطلاعیه‌های «همه‌ی شعب» را فقط می‌بیند).
+    """
+    queryset = Announcement.objects.all()
+    serializer_class = AnnouncementSerializer
+    permission_classes = [IsEducationStaff]
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        own = officer_branch_name(self.request.user)
+        if own is not None:
+            qs = qs.filter(Q(branch=own) | Q(branch=''))
+        return qs
+
+    def _own_or_403(self, obj_branch):
+        own = officer_branch_name(self.request.user)
+        if own is not None and not same_branch(obj_branch, own):
+            raise PermissionDenied('شما فقط اطلاعیه‌های شعبه‌ی خودتان را می‌توانید مدیریت کنید.')
+
+    def perform_create(self, serializer):
+        own = officer_branch_name(self.request.user)
+        if own is not None:
+            serializer.save(branch=own)   # مسئول آموزش: همیشه شعبه‌ی خودش
+        else:
+            serializer.save()
+
+    def perform_update(self, serializer):
+        own = officer_branch_name(self.request.user)
+        self._own_or_403(serializer.instance.branch)
+        if own is not None:
+            serializer.save(branch=own)
+        else:
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        self._own_or_403(instance.branch)
+        super().perform_destroy(instance)
+
+
+class PublicAnnouncementsView(APIView):
+    """
+    اطلاعیه‌های صفحه‌ی لیست کلاس‌ها: ?branch=<نام شعبه> → اطلاعیه‌های همان شعبه + «همه‌ی شعب».
+    بدون branch فقط اطلاعیه‌های «همه‌ی شعب». عمومی و فقط خواندنی.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        branch = canonical_branch_name(request.query_params.get('branch', ''))
+        qs = Announcement.objects.filter(Q(branch='') | Q(branch=branch)) if branch else Announcement.objects.filter(branch='')
+        return Response([
+            {'id': a.id, 'title': a.title, 'text': a.text, 'date': a.jalali_date, 'branch': a.branch}
+            for a in qs[:50]
+        ])

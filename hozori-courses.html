@@ -275,6 +275,10 @@
   }
   .user-badge button:hover{background:rgba(255,255,255,.32);}
 </style>
+<script>
+  // لیست کلاس‌ها فقط بعد از پذیرش «قوانین و مقررات» در صفحه‌ی اصلی قابل مشاهده است
+  try{ if(sessionStorage.getItem('sadaRulesAccepted') !== '1'){ location.replace('/?rules=1'); } }catch(e){ location.replace('/?rules=1'); }
+</script>
 </head>
 <body>
 
@@ -581,29 +585,14 @@
     );
   }
 
-  // ---- داده‌های نمونه‌ی اطلاعیه‌ها بر اساس استان/شعبه (Mock — تا اتصال به بک‌اند) ----
-  // TODO: وقتی بک‌اند آماده شد، این داده‌ها از API واقعی اطلاعیه‌ها (فیلترشده بر اساس
-  // شناسه‌ی استان و شعبه) دریافت شود. اطلاعیه‌های عمومی (بدون شعبه) هم باید از همان API بیایند.
-  function getAnnouncementsForBranch(provinceName, branchName){
-    const announcements = [];
-    if(branchName){
-      announcements.push({
-        title: "برگزاری کلاس‌های حضوری شعبه " + branchName,
-        text: "ثبت‌نام کلاس‌های حضوری این دوره در شعبه " + branchName + " آغاز شده است.",
-        date: "۱۴۰۴/۰۵/۰۶"
-      });
-      announcements.push({
-        title: "تغییر ساعت کاری شعبه " + branchName,
-        text: "ساعت کاری شعبه " + branchName + " تا اطلاع ثانوی یک ساعت زودتر خواهد بود.",
-        date: "۱۴۰۴/۰۴/۲۸"
-      });
-    }
-    announcements.push({
-      title: "اطلاعیه‌ی عمومی سامانه سدا",
-      text: "اطلاعیه‌ها به‌زودی تکمیل می‌شود.",
-      date: "۱۴۰۴/۰۴/۱۵"
-    });
-    return announcements;
+  // ---- اطلاعیه‌ها (از بک‌اند: اطلاعیه‌های همین شعبه + اطلاعیه‌های «همه‌ی شعب») ----
+  function escAnn(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function fetchAnnouncementsForBranch(branchName){
+    return fetch(`${API_BASE_URL}/classmgmt/announcements-public/?branch=${encodeURIComponent(branchName || '')}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .catch(() => []);
   }
 
   // ---- احراز هویت و بررسی عضویت ----
@@ -736,18 +725,20 @@
         : 'اطلاعیه‌های عمومی سامانه سدا';
     }
     if(announceListEl){
-      const announcements = getAnnouncementsForBranch(provinceName, branchName);
-      if(!announcements.length){
-        announceListEl.innerHTML = '<div class="announce-empty">در حال حاضر اطلاعیه‌ای ثبت نشده است.</div>';
-      } else {
-        announceListEl.innerHTML = announcements.map(a => `
-          <div class="announce-item">
-            <div class="announce-title">${a.title}</div>
-            <div class="announce-text">${a.text}</div>
-            <div class="announce-date">${a.date}</div>
-          </div>
-        `).join('');
-      }
+      announceListEl.innerHTML = '<div class="announce-empty">در حال بارگذاری…</div>';
+      fetchAnnouncementsForBranch(branchName).then(function(announcements){
+        if(!announcements.length){
+          announceListEl.innerHTML = '<div class="announce-empty">در حال حاضر اطلاعیه‌ای ثبت نشده است.</div>';
+        } else {
+          announceListEl.innerHTML = announcements.map(a => `
+            <div class="announce-item">
+              <div class="announce-title">${escAnn(a.title)}</div>
+              <div class="announce-text">${escAnn(a.text)}</div>
+              <div class="announce-date">${escAnn(a.date)}</div>
+            </div>
+          `).join('');
+        }
+      });
     }
 
     document.addEventListener('click', function(e){

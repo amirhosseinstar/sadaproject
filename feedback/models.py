@@ -129,7 +129,14 @@ class ClassSurveyQuestion(models.Model):
     KIND_TEXT = 'text'
     KIND_CHOICES = [(KIND_CHOICE, 'تستی'), (KIND_TEXT, 'تشریحی')]
 
-    survey = models.ForeignKey(ClassSurvey, on_delete=models.CASCADE, related_name='questions')
+    # سؤال «قالب مشترک»: survey پر است و class_obj خالی.
+    # سؤال «اختصاصی یک کلاس»: class_obj پر است و survey خالی (با حذف کلاس، سؤال‌هایش هم حذف می‌شود؛
+    # پاسخ‌های قبلی به‌صورت «عکس لحظه‌ای» در ClassSurveyResponse می‌مانند).
+    survey = models.ForeignKey(ClassSurvey, on_delete=models.CASCADE, related_name='questions', null=True, blank=True)
+    class_obj = models.ForeignKey(
+        'class_management.Class', on_delete=models.CASCADE, related_name='survey_questions',
+        null=True, blank=True, verbose_name='کلاس (فقط برای سؤال اختصاصی)',
+    )
     text = models.CharField('متن سؤال', max_length=500)
     kind = models.CharField('نوع', max_length=6, choices=KIND_CHOICES, default=KIND_CHOICE)
     options = models.JSONField('گزینه‌ها', default=list, blank=True)
@@ -165,6 +172,12 @@ class ClassSurveyResponse(models.Model):
         'class_management.Enrollment', on_delete=models.SET_NULL, null=True, blank=True,
         related_name='survey_response', verbose_name='ثبت‌نام',
     )
+    # نظرسنجی «سمینار/کارگاه» (به‌جای کلاس): هر ثبت‌نام سمینار فقط یک‌بار؛ سؤال‌هایش همان قالب کلی است.
+    # (برای هر پاسخ فقط یکی از enrollment / seminar_enrollment پر است.)
+    seminar_enrollment = models.OneToOneField(
+        'class_management.SeminarEnrollment', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='survey_response', verbose_name='ثبت‌نام سمینار',
+    )
     class_name = models.CharField('نام کلاس', max_length=200, blank=True)
     branch = models.CharField('شعبه', max_length=100, blank=True)
     # [{"question_id": 3, "question": "...", "kind": "choice", "answer": "خوب"}, ...]
@@ -178,3 +191,82 @@ class ClassSurveyResponse(models.Model):
 
     def __str__(self):
         return f'{self.member} - {self.class_name}'
+
+
+def effective_questions(klass):
+    """
+    سؤال‌های نظرسنجیِ «یک کلاس»: اگر مدیر برای همین کلاس سؤال اختصاصی گذاشته باشد همان‌ها،
+    وگرنه سؤال‌های «قالب مشترک». (کلاسِ حذف‌شده/نامشخص = قالب مشترک)
+    خروجی: لیستی از ClassSurveyQuestion به ترتیب نمایش.
+    """
+    if klass is not None:
+        own = list(klass.survey_questions.all())
+        if own:
+            return own
+    return list(ClassSurvey.load().questions.all())
+
+
+# ---------------------------------------------------------------------------
+# نظرسنجی‌های کلی (دلخواه)
+# ---------------------------------------------------------------------------
+# برخلاف نظرسنجی کلاسی (که برای دریافت مدرک اجباری است)، این‌ها «دلخواه»اند: مدیر آموزش
+# هر تعداد نظرسنجی می‌سازد و هر دانش‌پژوهِ واردشده می‌تواند (اگر خواست) فقط یک‌بار در هرکدام شرکت کند.
+
+class GeneralSurvey(models.Model):
+    title = models.CharField('عنوان', max_length=200)
+    description = models.TextField('توضیحات', blank=True, default='')
+    is_active = models.BooleanField('فعال', default=True)
+    created_at = models.DateTimeField('تاریخ ایجاد', auto_now_add=True)
+    updated_at = models.DateTimeField('آخرین ویرایش', auto_now=True)
+
+    class Meta:
+        verbose_name = 'نظرسنجی کلی'
+        verbose_name_plural = 'نظرسنجی‌های کلی'
+        ordering = ['-created_at', '-id']
+
+    def __str__(self):
+        return self.title
+
+
+class GeneralSurveyQuestion(models.Model):
+    """سؤال تستی (گزینه‌ای) یا تشریحی یک نظرسنجی کلی؛ همان قاعده‌ی سؤال‌های کلاسی."""
+    KIND_CHOICE = 'choice'
+    KIND_TEXT = 'text'
+    KIND_CHOICES = [(KIND_CHOICE, 'تستی'), (KIND_TEXT, 'تشریحی')]
+
+    survey = models.ForeignKey(GeneralSurvey, on_delete=models.CASCADE, related_name='questions')
+    text = models.CharField('متن سؤال', max_length=500)
+    kind = models.CharField('نوع', max_length=6, choices=KIND_CHOICES, default=KIND_CHOICE)
+    options = models.JSONField('گزینه‌ها', default=list, blank=True)
+    order = models.PositiveIntegerField('ترتیب', default=0)
+
+    class Meta:
+        verbose_name = 'سؤال نظرسنجی کلی'
+        verbose_name_plural = 'سؤال‌های نظرسنجی کلی'
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.text
+
+
+class GeneralSurveyResponse(models.Model):
+    """شرکت یک دانش‌پژوه در یک نظرسنجی کلی (هر نفر فقط یک‌بار). پاسخ‌ها «عکس لحظه‌ای»اند (متن سؤال + پاسخ)."""
+    survey = models.ForeignKey(GeneralSurvey, on_delete=models.CASCADE, related_name='responses')
+    member = models.ForeignKey(
+        'members.Member', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='general_survey_responses', verbose_name='دانش‌پژوه',
+    )
+    branch = models.CharField('شعبه', max_length=100, blank=True)
+    answers = models.JSONField('پاسخ‌ها', default=list)
+    submitted_at = models.DateTimeField('زمان شرکت', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'پاسخ نظرسنجی کلی'
+        verbose_name_plural = 'پاسخ‌های نظرسنجی کلی'
+        ordering = ['-submitted_at', '-id']
+        constraints = [
+            models.UniqueConstraint(fields=['survey', 'member'], name='uniq_general_survey_member'),
+        ]
+
+    def __str__(self):
+        return f'{self.member} - {self.survey}'

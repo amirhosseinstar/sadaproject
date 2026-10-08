@@ -2428,7 +2428,7 @@
 
       <div class="section-disabled-banner" id="feedbackDisabledBanner" style="display:none;">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        این بخش توسط مدیر آموزش غیرفعال شده و در سایت اصلی برای کاربران نمایش داده نمی‌شود.
+        ثبت انتقادات و پیشنهادات توسط مدیر آموزش غیرفعال شده است؛ «بررسی و پاسخ» غیرفعال است، ولی «گزارش‌ها» و «نظرسنجی» همچنان فعال‌اند.
       </div>
 
       <div class="skeleton-grid" id="feedbackSkeletonGrid">
@@ -2687,7 +2687,7 @@
         </button>
       </div>
       <div class="page-title">مدیریت شعب</div>
-      <div class="page-sub">لیست شعبات ثبت‌شده در سایت (نمایشی — داده‌ها پس از بارگذاری مجدد صفحه بازنشانی می‌شوند)</div>
+      <div class="page-sub">لیست شعبات ثبت‌شده در سایت</div>
 
       <div class="hr-toolbar">
         <div class="search-box">
@@ -2725,7 +2725,7 @@
         </button>
       </div>
       <div class="page-title">مدیریت اطلاعیه‌ها</div>
-      <div class="page-sub">اطلاعیه‌های نمایش‌داده‌شده در ستون «اطلاعیه‌ها»ی سایت اصلی (نمایشی — داده‌ها پس از بارگذاری مجدد صفحه بازنشانی می‌شوند)</div>
+      <div class="page-sub">اطلاعیه‌های نمایش‌داده‌شده در ستون «اطلاعیه‌ها»ی سایت اصلی</div>
 
       <div class="hr-toolbar">
         <div class="search-box">
@@ -3343,7 +3343,7 @@
         <div class="form-grid">
           <div class="field full"><label>عنوان اطلاعیه</label><input type="text" id="f_announce_title" placeholder="عنوان اطلاعیه" required=""></div>
           <div class="field full"><label>متن اطلاعیه</label><textarea id="f_announce_text" rows="4" placeholder="متن اطلاعیه"></textarea></div>
-          <div class="field"><label>تاریخ</label><input type="text" id="f_announce_date" placeholder="مثلاً ۱۴۰۴/۰۵/۰۶"></div>
+          <div class="field full"><div class="page-sub" style="margin:0">این اطلاعیه برای شعبه‌ی شما ثبت می‌شود و تاریخ آن به‌صورت خودکار درج می‌شود.</div></div>
         </div>
       </form>
     </div>
@@ -5307,35 +5307,63 @@
   document.getElementById('branchSearch').addEventListener('input', renderBranches);
   renderBranches();
 
-  // ---- مدیریت اطلاعیه‌ها (نمایشی — بدون بک‌اند، داده‌ها با رفرش صفحه بازنشانی می‌شوند) ----
-  let ANNOUNCEMENTS = [
-    { id:1, title:"شروع ثبت‌نام دوره‌های جدید", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۵/۰۶" },
-    { id:2, title:"تمدید مهلت ثبت‌نام", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۴/۲۸" },
-    { id:3, title:"تعطیلی موقت برخی کلاس‌ها", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۴/۱۵" }
-  ];
-  let nextAnnounceId = 4;
+  // ---- مدیریت اطلاعیه‌ها — متصل به بک‌اند ----
+  let ANNOUNCEMENTS = [];
   let editingAnnounceId = null;
+  const ANN_ADMIN = false;
+
+  function annEsc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function annApi(path, method, body){
+    return fetch(`${API_BASE_URL}${path}`, {
+      method: method || 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(async function(res){
+      if(res.status === 204) return null;
+      const data = await res.json().catch(function(){ return null; });
+      if(!res.ok){
+        let msg = data && data.detail;
+        if(!msg && data && typeof data === 'object'){
+          const first = Object.values(data)[0];
+          msg = Array.isArray(first) ? first[0] : first;
+        }
+        throw new Error(msg || 'خطا در ارتباط با سرور');
+      }
+      return data;
+    });
+  }
+  function loadAnnouncements(){
+    return annApi('/classmgmt/announcements/').then(function(data){
+      ANNOUNCEMENTS = Array.isArray(data) ? data : (data && data.results) || [];
+      renderAnnouncements();
+    }).catch(function(err){
+      document.getElementById('announceTableBody').innerHTML =
+        `<tr class="empty-row"><td colspan="6">${annEsc(err.message)}</td></tr>`;
+    });
+  }
 
   function renderAnnouncements(){
     const q = document.getElementById('announceSearch').value.trim();
-    const filtered = ANNOUNCEMENTS.filter(a => !q || a.title.includes(q));
+    const filtered = ANNOUNCEMENTS.filter(a => !q || (a.title || '').includes(q));
     const body = document.getElementById('announceTableBody');
 
     if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="5">اطلاعیه‌ای یافت نشد</td></tr>`;
+      body.innerHTML = `<tr class="empty-row"><td colspan="6">اطلاعیه‌ای یافت نشد</td></tr>`;
       return;
     }
 
     body.innerHTML = filtered.map((a, i) => `
       <tr data-id="${a.id}">
         <td>${toPersianDigits(i + 1)}</td>
-        <td>${a.title}</td>
-        <td>${a.text}</td>
-        <td>${a.date || '—'}</td>
-        <td class="row-actions">
-          <div class="icon-btn announce-edit-btn" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-          <div class="icon-btn danger announce-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-        </td>
+        <td>${annEsc(a.title)}</td>
+        <td>${annEsc(a.text)}</td>
+        <td>${a.branch ? `<span class="dept-tag">${annEsc(a.branch)}</span>` : '<span class="dept-empty">همه‌ی شعب</span>'}</td>
+        <td>${annEsc(a.date) || '—'}</td>
+        <td class="row-actions">${a.branch ? `<div class="icon-btn announce-edit-btn" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+          <div class="icon-btn danger announce-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>` : '<span class="dept-empty">فقط مدیر</span>'}</td>
       </tr>
     `).join('');
 
@@ -5350,14 +5378,21 @@
   const announceOverlay = document.getElementById('announceModalOverlay');
   const announceTitleInput = document.getElementById('f_announce_title');
   const announceTextInput = document.getElementById('f_announce_text');
-  const announceDateInput = document.getElementById('f_announce_date');
+  const announceBranchInput = document.getElementById('f_announce_branch');
+
+  function fillAnnounceBranchSelect(){
+    if(!announceBranchInput) return;
+    announceBranchInput.innerHTML = '<option value="">همه‌ی شعب</option>' +
+      BRANCHES.map(b => `<option value="${annEsc(b.name)}">${annEsc(b.name)}</option>`).join('');
+  }
 
   function openAddAnnounce(){
     editingAnnounceId = null;
     document.getElementById('announceModalTitle').textContent = 'افزودن اطلاعیه جدید';
+    fillAnnounceBranchSelect();
     announceTitleInput.value = '';
     announceTextInput.value = '';
-    announceDateInput.value = '';
+    if(announceBranchInput) announceBranchInput.value = '';
     announceOverlay.classList.add('open');
   }
   function openEditAnnounce(id){
@@ -5365,9 +5400,10 @@
     if(!a) return;
     editingAnnounceId = id;
     document.getElementById('announceModalTitle').textContent = 'ویرایش اطلاعیه';
+    fillAnnounceBranchSelect();
     announceTitleInput.value = a.title;
     announceTextInput.value = a.text;
-    announceDateInput.value = a.date;
+    if(announceBranchInput) announceBranchInput.value = a.branch || '';
     announceOverlay.classList.add('open');
   }
   function closeAnnounceModal(){ announceOverlay.classList.remove('open'); }
@@ -5375,9 +5411,11 @@
     const a = ANNOUNCEMENTS.find(x => x.id === id);
     if(!a) return;
     if(!confirm(`آیا از حذف اطلاعیه‌ی «${a.title}» مطمئن هستید؟`)) return;
-    ANNOUNCEMENTS = ANNOUNCEMENTS.filter(x => x.id !== id);
-    renderAnnouncements();
-    showToast('اطلاعیه حذف شد');
+    annApi(`/classmgmt/announcements/${id}/`, 'DELETE').then(function(){
+      ANNOUNCEMENTS = ANNOUNCEMENTS.filter(x => x.id !== id);
+      renderAnnouncements();
+      showToast('اطلاعیه حذف شد');
+    }).catch(function(err){ showToast(err.message); });
   }
 
   document.getElementById('btnAddAnnounce').addEventListener('click', openAddAnnounce);
@@ -5387,27 +5425,31 @@
   document.getElementById('announceModalSave').addEventListener('click', () => {
     const title = announceTitleInput.value.trim();
     const text = announceTextInput.value.trim();
-    const date = announceDateInput.value.trim();
     if(!title){
       showToast('لطفاً عنوان اطلاعیه را وارد کنید');
       return;
     }
-    if(editingAnnounceId){
-      const a = ANNOUNCEMENTS.find(x => x.id === editingAnnounceId);
-      a.title = title;
-      a.text = text;
-      a.date = date;
-      showToast('اطلاعیه به‌روزرسانی شد');
-    } else {
-      ANNOUNCEMENTS.push({ id: nextAnnounceId++, title, text, date });
-      showToast('اطلاعیه‌ی جدید افزوده شد');
-    }
-    renderAnnouncements();
-    closeAnnounceModal();
+    const payload = { title: title, text: text };
+    if(announceBranchInput) payload.branch = announceBranchInput.value;
+    const editing = editingAnnounceId;
+    const req = editing
+      ? annApi(`/classmgmt/announcements/${editing}/`, 'PATCH', payload)
+      : annApi('/classmgmt/announcements/', 'POST', payload);
+    req.then(function(saved){
+      if(editing){
+        ANNOUNCEMENTS = ANNOUNCEMENTS.map(x => x.id === editing ? saved : x);
+        showToast('اطلاعیه به‌روزرسانی شد');
+      } else {
+        ANNOUNCEMENTS.unshift(saved);
+        showToast('اطلاعیه‌ی جدید افزوده شد');
+      }
+      renderAnnouncements();
+      closeAnnounceModal();
+    }).catch(function(err){ showToast(err.message); });
   });
 
   document.getElementById('announceSearch').addEventListener('input', renderAnnouncements);
-  renderAnnouncements();
+  loadAnnouncements();
 
   // ---- دپارتمان‌ها و دپارتمان‌های فعال هر شعبه - فقط برای خواندن (فیلتر
   // درس/کلاس بر اساس شعبه‌ی خودِ مسئول) لازم است؛ مسئول آموزش نمی‌تواند
@@ -9907,7 +9949,10 @@
       ? 'بخش انتقادات و پیشنهادات در سایت فعال است'
       : 'بخش انتقادات و پیشنهادات در سایت غیرفعال است';
     banner.style.display = feedbackSectionEnabled ? 'none' : 'flex';
-    grid.classList.toggle('is-disabled', !feedbackSectionEnabled);
+    // فقط کارت «بررسی و پاسخ» غیرفعال می‌شود؛ «گزارش‌ها» و «نظرسنجی» همیشه فعال می‌مانند
+    grid.classList.remove('is-disabled');
+    const reviewCard = grid.querySelector('[data-goto="review"]');
+    if(reviewCard) reviewCard.style.cssText = feedbackSectionEnabled ? '' : 'opacity:.45;pointer-events:none;';
   }
   renderFeedbackStatus();
 

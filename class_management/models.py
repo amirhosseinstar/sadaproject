@@ -244,6 +244,18 @@ class SiteSettings(models.Model):
     # دکمه‌ی این بخش در سایت اصلی اصلاً نمایش داده نمی‌شود و ثبت پیام هم در سرور رد می‌شود.
     feedback_enabled = models.BooleanField('بخش انتقادات و پیشنهادات در سایت فعال است', default=True)
 
+    # ---- تنظیمات سراسری اسلاید شوی صفحه‌ی اصلی (مدیریت اسلاید شو در پنل ادمین) ----
+    EFFECT_CHOICES = [('slide', 'لغزش'), ('fade', 'محو شدن')]
+    slide_autoplay = models.BooleanField('پخش خودکار اسلاید شو', default=True)
+    slide_interval = models.PositiveSmallIntegerField('مدت نمایش هر اسلاید (ثانیه)', default=5)
+    slide_effect = models.CharField('افکت انتقال', max_length=10, choices=EFFECT_CHOICES, default='slide')
+    slide_show_arrows = models.BooleanField('نمایش فلش‌ها', default=True)
+    slide_show_dots = models.BooleanField('نمایش نقطه‌های پایین', default=True)
+
+    # ---- متن «قوانین و مقررات» سایت (در پنل ادمین ویرایش می‌شود و در صفحه‌ی /rules نمایش داده می‌شود) ----
+    rules_text = models.TextField('قوانین و مقررات', blank=True, default='')
+    rules_updated_at = models.DateTimeField('آخرین ویرایش قوانین', null=True, blank=True)
+
     class Meta:
         verbose_name = 'تنظیمات سایت'
         verbose_name_plural = 'تنظیمات سایت'
@@ -441,3 +453,90 @@ class SeminarEnrollment(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['seminar', 'member'], name='unique_seminar_member'),
         ]
+
+
+def slide_image_path(instance, filename):
+    """مسیر ذخیره‌ی تصویر اسلاید - با نام تصادفی تا نام فایل کاربر (و کاراکترهای عجیبش) استفاده نشود."""
+    import os
+    import uuid
+    ext = os.path.splitext(filename)[1].lower()
+    return f'slides/{uuid.uuid4().hex}{ext}'
+
+
+class Slide(models.Model):
+    """
+    یک اسلاید از اسلاید شوی صفحه‌ی اصلی سایت.
+    اگر حداقل یک اسلاید «فعال و در بازه‌ی زمانی» وجود داشته باشد، صفحه‌ی اصلی همان‌ها را نشان می‌دهد؛
+    وگرنه اسلایدر پیش‌فرضِ دپارتمان‌ها نمایش داده می‌شود.
+    """
+    POSITION_CHOICES = [('right', 'راست'), ('center', 'وسط'), ('left', 'چپ')]
+    COLOR_CHOICES = [('light', 'روشن (سفید)'), ('dark', 'تیره')]
+
+    title = models.CharField('عنوان', max_length=120, blank=True, default='')
+    subtitle = models.CharField('زیرعنوان', max_length=300, blank=True, default='')
+    image = models.ImageField('تصویر (دسکتاپ)', upload_to=slide_image_path)
+    mobile_image = models.ImageField('تصویر موبایل (اختیاری)', upload_to=slide_image_path, null=True, blank=True)
+    alt_text = models.CharField('متن جایگزین تصویر', max_length=200, blank=True, default='')
+    button_text = models.CharField('متن دکمه', max_length=40, blank=True, default='')
+    link_url = models.CharField('لینک', max_length=500, blank=True, default='')
+    open_new_tab = models.BooleanField('باز شدن در تب جدید', default=False)
+    text_position = models.CharField('جایگاه متن', max_length=10, choices=POSITION_CHOICES, default='right')
+    text_color = models.CharField('رنگ متن', max_length=10, choices=COLOR_CHOICES, default='light')
+    overlay = models.PositiveSmallIntegerField('تیرگی روی تصویر (۰ تا ۸۰ درصد)', default=35)
+    order = models.PositiveIntegerField('ترتیب', default=0)
+    is_active = models.BooleanField('فعال', default=True)
+    start_at = models.DateTimeField('شروع نمایش', null=True, blank=True)
+    end_at = models.DateTimeField('پایان نمایش', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'اسلاید'
+        verbose_name_plural = 'اسلایدها'
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.title or f'اسلاید {self.pk}'
+
+    def status(self, now=None):
+        """وضعیت نمایش: inactive / scheduled (هنوز شروع نشده) / expired / live."""
+        from django.utils import timezone
+        now = now or timezone.now()
+        if not self.is_active:
+            return 'inactive'
+        if self.start_at and self.start_at > now:
+            return 'scheduled'
+        if self.end_at and self.end_at < now:
+            return 'expired'
+        return 'live'
+
+
+class Announcement(models.Model):
+    """
+    اطلاعیه‌ی نمایش‌داده‌شده در ستون «اطلاعیه‌ها»ی صفحه‌ی لیست کلاس‌ها (حضوری/مجازی).
+    branch خالی = «همه‌ی شعب» (در ستون اطلاعیه‌ی همه‌ی شعبه‌ها نمایش داده می‌شود)؛
+    وگرنه فقط در ستون همان شعبه نشان داده می‌شود.
+    """
+    title = models.CharField('عنوان', max_length=200)
+    text = models.TextField('متن اطلاعیه', blank=True, default='', max_length=3000)
+    branch = models.CharField('شعبه', max_length=150, blank=True, default='',
+                              help_text='خالی = همه‌ی شعب')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'اطلاعیه'
+        verbose_name_plural = 'اطلاعیه‌ها'
+        ordering = ['-created_at', '-id']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def jalali_date(self):
+        """تاریخ ثبت به شمسی، مثل 1405/07/16 (به وقت تهران)."""
+        from django.utils import timezone
+        from sada_project.utils import gregorian_to_jalali
+        d = timezone.localtime(self.created_at).date()
+        jy, jm, jd = gregorian_to_jalali(d.year, d.month, d.day)
+        return f'{jy:04d}/{jm:02d}/{jd:02d}'

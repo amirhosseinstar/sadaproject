@@ -242,6 +242,15 @@ class StaffSerializer(serializers.ModelSerializer):
             return bool(request and request.user.is_superuser)
         return True
 
+    def validate_name(self, value):
+        # نام و نام خانوادگی: فقط حروف (فارسی/انگلیسی) و فاصله؛ بدون عدد و نماد، حداکثر ۶۰ کاراکتر
+        value = re.sub(r'\s+', ' ', (value or '').strip())
+        if not 2 <= len(value) <= 60:
+            raise serializers.ValidationError('نام و نام خانوادگی باید بین ۲ تا ۶۰ کاراکتر باشد.')
+        if not re.fullmatch(r'[A-Za-z\u0600-\u06FF\u200c ]+', value) or re.search(r'[0-9\u06F0-\u06F9\u0660-\u0669]', value):
+            raise serializers.ValidationError('نام و نام خانوادگی فقط می‌تواند شامل حروف باشد (بدون عدد و نماد).')
+        return value
+
     def validate_role(self, value):
         if value not in STAFF_ROLES:
             raise serializers.ValidationError('سمت باید «مدیر آموزش» یا «مسئول آموزش» باشد.')

@@ -4,7 +4,7 @@ from rest_framework import serializers
 from core.models import Employee
 from .models import (
     BranchDepartment, Class, Department, Enrollment, Lesson, Question, Seminar, SeminarEnrollment, SeminarSession,
-    SiteSettings,
+    Announcement, SiteSettings, Slide,
 )
 
 
@@ -320,3 +320,129 @@ class SeminarEnrollmentSerializer(serializers.ModelSerializer):
         if not obj.member or not obj.member.user:
             return ''
         return f'{obj.member.user.first_name} {obj.member.user.last_name}'.strip()
+
+
+class SlideSerializer(serializers.ModelSerializer):
+    """اسلاید برای پنل ادمین (خواندن و نوشتن)."""
+    image_url = serializers.SerializerMethodField()
+    mobile_image_url = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
+    MAX_IMAGE_BYTES = 5 * 1024 * 1024
+    ALLOWED_FORMATS = ('JPEG', 'PNG', 'WEBP')
+
+    class Meta:
+        model = Slide
+        fields = [
+            'id', 'title', 'subtitle', 'image', 'mobile_image', 'image_url', 'mobile_image_url', 'alt_text',
+            'button_text', 'link_url', 'open_new_tab', 'text_position', 'text_color', 'overlay',
+            'order', 'is_active', 'start_at', 'end_at', 'status', 'created_at',
+        ]
+        read_only_fields = ['order']
+        extra_kwargs = {'image': {'write_only': True, 'required': False}, 'mobile_image': {'write_only': True, 'required': False}}
+
+    def _abs(self, f):
+        if not f:
+            return None
+        request = self.context.get('request')
+        return request.build_absolute_uri(f.url) if request else f.url
+
+    def get_image_url(self, obj):
+        return self._abs(obj.image)
+
+    def get_mobile_image_url(self, obj):
+        return self._abs(obj.mobile_image)
+
+    def get_status(self, obj):
+        return obj.status()
+
+    def _check_image(self, f):
+        # حجم و نوع واقعی تصویر (نه فقط پسوند) بررسی می‌شود
+        if f.size > self.MAX_IMAGE_BYTES:
+            raise serializers.ValidationError('حجم تصویر نباید بیشتر از ۵ مگابایت باشد.')
+        from PIL import Image
+        try:
+            img = Image.open(f)
+            fmt = img.format
+            w, h = img.size
+            f.seek(0)
+        except Exception:
+            raise serializers.ValidationError('فایل انتخاب‌شده تصویر معتبر نیست.')
+        if fmt not in self.ALLOWED_FORMATS:
+            raise serializers.ValidationError('فقط تصویر JPG، PNG یا WebP مجاز است.')
+        if w < 400 or h < 150:
+            raise serializers.ValidationError('ابعاد تصویر خیلی کوچک است (حداقل ۴۰۰×۱۵۰ پیکسل).')
+        return f
+
+    def validate_image(self, value):
+        return self._check_image(value)
+
+    def validate_mobile_image(self, value):
+        return self._check_image(value) if value else value
+
+    def validate_link_url(self, value):
+        value = (value or '').strip()
+        # فقط آدرس داخلی (/...) یا http(s) - جلوگیری از javascript: و مشابه
+        if value and not (value.startswith('/') and not value.startswith('//')) \
+                and not value.lower().startswith(('http://', 'https://')):
+            raise serializers.ValidationError('لینک باید با /، http:// یا https:// شروع شود.')
+        return value
+
+    def validate_overlay(self, value):
+        if value > 80:
+            raise serializers.ValidationError('تیرگی حداکثر ۸۰ درصد است.')
+        return value
+
+    def validate(self, attrs):
+        if self.instance is None and not attrs.get('image'):
+            raise serializers.ValidationError({'image': 'انتخاب تصویر الزامی است.'})
+        start = attrs.get('start_at', getattr(self.instance, 'start_at', None))
+        end = attrs.get('end_at', getattr(self.instance, 'end_at', None))
+        if start and end and end <= start:
+            raise serializers.ValidationError({'end_at': 'پایان نمایش باید بعد از شروع باشد.'})
+        if attrs.get('button_text') and not (attrs.get('link_url', getattr(self.instance, 'link_url', ''))):
+            raise serializers.ValidationError({'link_url': 'برای دکمه، لینک را هم وارد کنید.'})
+        return attrs
+
+
+class SlideSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = ['slide_autoplay', 'slide_interval', 'slide_effect', 'slide_show_arrows', 'slide_show_dots']
+
+    def validate_slide_interval(self, value):
+        if not (2 <= value <= 20):
+            raise serializers.ValidationError('مدت نمایش باید بین ۲ تا ۲۰ ثانیه باشد.')
+        return value
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    date = serializers.CharField(source='jalali_date', read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = ['id', 'title', 'text', 'branch', 'date', 'created_at']
+        read_only_fields = ['created_at']
+
+    def validate_title(self, value):
+        value = (value or '').strip()
+        if not value:
+            raise serializers.ValidationError('عنوان اطلاعیه را وارد کنید.')
+        return value
+
+    def validate_text(self, value):
+        value = (value or '').strip()
+        if len(value) > 3000:
+            raise serializers.ValidationError('متن اطلاعیه نباید بیشتر از ۳۰۰۰ نویسه باشد.')
+        return value
+
+    def validate_branch(self, value):
+        # خالی = همه‌ی شعب؛ در غیر این صورت باید دقیقاً نام یک شعبه‌ی ثبت‌شده باشد
+        value = (value or '').strip()
+        if not value:
+            return ''
+        from feedback.branches import canonical_branch_name
+        name = canonical_branch_name(value)
+        if not name:
+            raise serializers.ValidationError('شعبه‌ی انتخاب‌شده معتبر نیست.')
+        return name

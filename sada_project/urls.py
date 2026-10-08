@@ -18,6 +18,7 @@
 - /hozori-courses       -> دوره‌های حضوری (hozori-courses.html)
 - /majazi-courses       -> دوره‌های مجازی (majazi-courses.html)
 - /certificate          -> آزمون آنلاین و گواهینامه/مشاهده نمرات دانش‌پژوه (certificate.html)
+- /rules                -> قوانین و مقررات (rules.html)
 - /teacher-profile      -> پیشخوان مدرس: لیست کلاس‌ها و دانش‌پژوهان خودش (teacher-profile.html)
 """
 
@@ -87,6 +88,9 @@ FRONTEND_ROUTES = {
     'hozori-courses': 'hozori-courses.html',
     'majazi-courses': 'majazi-courses.html',
     'certificate': 'certificate.html',
+    'academic-calendar': 'academic-calendar.html',
+    'feedback': 'feedback.html',
+    'rules': 'rules.html',
     'teacher-profile': 'teacher-profile.html',
 }
 

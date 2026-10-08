@@ -209,6 +209,9 @@ def _ensure_username_format_or_400(username):
     """نام‌کاربری فقط حروف/رقم انگلیسی و . _ - (هم‌سان با MyProfileView)؛ فاصله و حروف فارسی رد می‌شود."""
     if not re.fullmatch(r'[A-Za-z0-9_.-]+', username):
         raise serializers.ValidationError({'detail': 'نام کاربری فقط می‌تواند شامل حروف/رقم انگلیسی و . _ - باشد.'})
+    # طول نام کاربری محدود است (قبلاً هر طولی پذیرفته می‌شد)
+    if not 3 <= len(username) <= 30:
+        raise serializers.ValidationError({'detail': 'نام کاربری باید بین ۳ تا ۳۰ کاراکتر باشد.'})
 
 
 def _ensure_username_or_400(username, exclude_user_pk=None):
@@ -223,6 +226,8 @@ def _ensure_password_strength_or_400(password):
     """حداقل طول رمز عبور (هم‌سان با ویرایش پروفایل خود کاربر: ۶ کاراکتر)."""
     if len(password) < 6:
         raise serializers.ValidationError({'detail': 'رمز عبور باید حداقل ۶ کاراکتر باشد.'})
+    if len(password) > 64:
+        raise serializers.ValidationError({'detail': 'رمز عبور نباید بیشتر از ۶۴ کاراکتر باشد.'})
 
 
 def _manager_count():

@@ -962,6 +962,89 @@
 .shamsi-dp-footer{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #eef2f2;}
 .shamsi-dp-link{background:none;border:none;color:var(--teal,#1f7a7a);font-size:12px;cursor:pointer;font-family:inherit;}
 .shamsi-dp-link:hover{text-decoration:underline;}
+
+  /* ===== مدیریت اسلاید شو ===== */
+  .sl-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start;margin-top:14px;}
+  @media (max-width:1000px){.sl-layout{grid-template-columns:1fr;}}
+  .sl-card{background:#fff;border:1px solid #e3e9e9;border-radius:16px;padding:18px;}
+  .sl-card h4{font-size:14px;color:var(--teal-dark);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .sl-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:10px;}
+  .sl-stats{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#5a6b6b;}
+  .sl-stats span{background:#eef4f4;border-radius:20px;padding:4px 12px;}
+  .sl-list{display:flex;flex-direction:column;gap:10px;}
+  .sl-item{
+    display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #e3e9e9;border-radius:14px;
+    padding:10px;transition:.15s;cursor:grab;
+  }
+  .sl-item:hover{border-color:var(--teal-light);box-shadow:0 4px 14px rgba(20,60,60,.08);}
+  .sl-item.dragging{opacity:.4;}
+  .sl-item.drag-over{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,169,77,.35);}
+  .sl-handle{color:#9ab;font-size:18px;cursor:grab;user-select:none;padding:0 2px;}
+  .sl-thumb{width:128px;height:56px;border-radius:9px;object-fit:cover;background:#e8eeee;flex-shrink:0;}
+  .sl-info{flex:1;min-width:0;}
+  .sl-name{font-size:13.5px;font-weight:700;color:#1f2a2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sl-meta{font-size:11.5px;color:#7a8a8a;margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .sl-badge{font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;}
+  .sl-badge.live{background:#e3f6ec;color:#0f7a4a;}
+  .sl-badge.inactive{background:#eceff0;color:#6b7a7a;}
+  .sl-badge.scheduled{background:#fff3d6;color:#9a6b00;}
+  .sl-badge.expired{background:#fdecec;color:#b42318;}
+  .sl-acts{display:flex;gap:4px;align-items:center;flex-shrink:0;}
+  .sl-ico{width:32px;height:32px;border-radius:9px;border:1px solid #e3e9e9;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#4a5a5a;}
+  .sl-ico:hover{background:#eef4f4;}
+  .sl-ico.danger:hover{background:#fdecec;color:#b42318;}
+  .sl-ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;}
+  @media (max-width:640px){
+    .sl-item{flex-wrap:wrap;} .sl-thumb{width:100%;height:110px;} .sl-acts{width:100%;justify-content:flex-end;}
+  }
+  .sl-empty{text-align:center;padding:36px 12px;color:#7a8a8a;font-size:13px;border:2px dashed #dfe6e6;border-radius:14px;}
+  /* پیش‌نمایش زنده */
+  .sl-prev{position:relative;border-radius:12px;overflow:hidden;background:#0b4b54;aspect-ratio:21/8;direction:rtl;}
+  .sl-prev.mobile{aspect-ratio:4/3;max-width:260px;margin:0 auto;}
+  .sl-prev img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .sl-prev .sl-shade{position:absolute;inset:0;}
+  .sl-prev .sl-ptext{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:4% 7%;color:#fff;}
+  .sl-prev.dark .sl-ptext{color:#12282a;}
+  .sl-prev.pos-right .sl-ptext{align-items:flex-start;text-align:right;}
+  .sl-prev.pos-center .sl-ptext{align-items:center;text-align:center;}
+  .sl-prev.pos-left .sl-ptext{align-items:flex-end;text-align:left;}
+  .sl-prev .pt{font-size:clamp(11px,2.4vw,20px);font-weight:800;line-height:1.5;max-width:60%;}
+  .sl-prev .ps{font-size:clamp(9px,1.5vw,12.5px);opacity:.95;max-width:60%;line-height:1.7;}
+  .sl-prev .pb{background:var(--gold);color:#222;font-weight:700;font-size:clamp(9px,1.4vw,12px);padding:4px 14px;border-radius:999px;}
+  .sl-prev.mobile .pt,.sl-prev.mobile .ps{max-width:100%;}
+  .sl-prev .sl-pdots{position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:5px;}
+  .sl-prev .sl-pdots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);}
+  .sl-prev .sl-pdots i.on{background:#fff;width:16px;border-radius:4px;}
+  .sl-seg{display:flex;gap:6px;}
+  .sl-seg button{flex:1;border:1px solid #dfe6e6;background:#fff;border-radius:9px;padding:8px 6px;font-size:12.5px;cursor:pointer;color:#33474a;}
+  .sl-seg button.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .sl-drop{
+    border:2px dashed #cfdada;border-radius:12px;padding:16px;text-align:center;cursor:pointer;color:#6b7a7a;font-size:12.5px;
+    background:#fafcfc;transition:.15s;position:relative;
+  }
+  .sl-drop.over{border-color:var(--teal);background:#eef7f7;}
+  .sl-drop img{max-width:100%;max-height:140px;border-radius:8px;display:block;margin:0 auto 8px;}
+  .sl-drop small{display:block;margin-top:4px;color:#93a3a3;}
+  .sl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;font-size:13px;color:#33474a;}
+  .sl-range{width:100%;accent-color:var(--teal);}
+  .sl-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media (max-width:760px){.sl-modal-grid{grid-template-columns:1fr;}}
+  #slideModal .modal-box{max-width:920px;}
+  .sl-err{color:#b42318;font-size:12.5px;margin-top:10px;min-height:16px;}
+  .sl-field{margin-bottom:12px;}
+  .sl-field label{display:block;font-size:12.5px;font-weight:600;color:#33474a;margin-bottom:6px;}
+  .sl-field input[type=text],.sl-field input[type=datetime-local],.sl-field select,.sl-field textarea{
+    width:100%;border:1px solid #dfe6e6;border-radius:10px;padding:9px 12px;font-size:13px;background:#fff;
+  }
+  .sl-field input:focus,.sl-field textarea:focus,.sl-field select:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .sl-hint{font-size:11.5px;color:#8a9a9a;margin-top:4px;}
+
+  .card-rules{background:linear-gradient(150deg,#3f8f6b,#1f5a42);}
+  .rules-admin-box{background:#fff;border:1px solid #e3e9e9;border-radius:16px;padding:22px 26px;font-size:14.5px;line-height:2.1;color:#26393b;white-space:pre-wrap;word-wrap:break-word;max-height:68vh;overflow:auto;margin-top:14px;}
+  .rules-admin-edit{width:100%;min-height:60vh;margin-top:14px;border:1px solid #cfdada;border-radius:14px;padding:18px 20px;font-family:inherit;font-size:14.5px;line-height:2;resize:vertical;}
+  .rules-admin-edit:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .rules-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;}
+  .rules-note{font-size:12px;color:#7a8a8a;margin-top:8px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -1309,10 +1392,13 @@
       گزارشات
       <span class="side-soon">به‌زودی</span>
     </div>
-    <div class="side-link is-soon" data-soon="1">
+    <div class="side-link" data-view="slideshow">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
       مدیریت اسلاید شو
-      <span class="side-soon">به‌زودی</span>
+    </div>
+    <div class="side-link" data-view="rules">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>
+      قوانین
     </div>
   </aside>
 
@@ -1395,15 +1481,90 @@
           </div>
         </div>
 
-        <div class="section-card card-slideshow" data-soon="1">
+        <div class="section-card card-slideshow" data-goto="slideshow">
           <div class="card-watermark"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
-          <span class="card-soon-badge">به‌زودی</span>
           <div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>
             <h3>مدیریت اسلاید شو</h3>
             <p>مدیریت اسلایدهای نمایش‌داده‌شده در صفحه‌ی اصلی سایت</p>
           </div>
         </div>
+        <div class="section-card card-rules" data-goto="rules">
+          <div class="card-watermark"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg></div>
+          <div>
+            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg></div>
+            <h3>قوانین</h3>
+            <p>مشاهده و ویرایش قوانین و مقررات نمایش‌داده‌شده در سایت</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============ SLIDESHOW: مدیریت اسلاید شو ============ -->
+    <section id="view-slideshow" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="dashboard">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به داشبورد
+        </button>
+      </div>
+      <div class="page-title">مدیریت اسلاید شو</div>
+      <div class="page-sub">اسلایدهای بالای صفحه‌ی اصلی سایت را بسازید، مرتب کنید و زمان‌بندی کنید. اگر هیچ اسلاید فعالی نباشد، اسلایدر پیش‌فرض (دپارتمان‌ها) نمایش داده می‌شود.</div>
+
+      <div class="sl-toolbar">
+        <div class="sl-stats" id="slStats"></div>
+        <button class="btn-primary" id="slAddBtn" type="button"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> افزودن اسلاید</button>
+      </div>
+
+      <div class="sl-layout">
+        <div class="sl-card">
+          <h4>اسلایدها <span style="font-weight:400;font-size:11.5px;color:#8a9a9a;">برای تغییر ترتیب، بکشید و رها کنید</span></h4>
+          <div class="sl-list" id="slList"></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div class="sl-card">
+            <h4>پیش‌نمایش زنده‌ی صفحه‌ی اصلی</h4>
+            <div class="sl-prev" id="slLivePrev"></div>
+            <div class="sl-hint" style="text-align:center;margin-top:8px;">فقط اسلایدهای «فعال» در همین لحظه نمایش داده می‌شوند.</div>
+          </div>
+          <div class="sl-card">
+            <h4>تنظیمات نمایش</h4>
+            <div class="sl-row"><span>پخش خودکار</span><button type="button" class="toggle-switch-sm" id="slsAutoplay"><span class="knob"></span></button></div>
+            <div class="sl-row"><span>نمایش فلش‌ها</span><button type="button" class="toggle-switch-sm" id="slsArrows"><span class="knob"></span></button></div>
+            <div class="sl-row"><span>نمایش نقطه‌های پایین</span><button type="button" class="toggle-switch-sm" id="slsDots"><span class="knob"></span></button></div>
+            <div class="sl-field" style="margin-top:8px;"><label>مدت نمایش هر اسلاید: <b id="slsIntervalLbl">۵</b> ثانیه</label>
+              <input type="range" class="sl-range" id="slsInterval" min="2" max="20" step="1" value="5"></div>
+            <div class="sl-field"><label>افکت انتقال</label>
+              <div class="sl-seg" id="slsEffect"><button type="button" data-v="slide">لغزش</button><button type="button" data-v="fade">محو شدن</button></div></div>
+            <div class="sl-err" id="slsMsg" style="color:#0f7a4a;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============ RULES: قوانین و مقررات ============ -->
+    <section id="view-rules" class="view">
+      <div class="back-row">
+        <button class="btn-back" data-goto="dashboard">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به داشبورد
+        </button>
+      </div>
+      <div class="page-title">قوانین و مقررات</div>
+      <div class="page-sub">متن زیر در صفحه‌ی «قوانین و مقررات» سایت به کاربران نمایش داده می‌شود.</div>
+      <div class="rules-admin-box" id="rulesView">در حال بارگذاری…</div>
+      <textarea class="rules-admin-edit hide" id="rulesEdit" maxlength="30000"></textarea>
+      <div class="rules-actions">
+        <button class="btn-edit-calendar" id="btnEditRules" type="button">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg>
+          ویرایش قوانین
+        </button>
+        <button class="btn-save-calendar hide" id="btnSaveRules" type="button">ذخیره تغییرات</button>
+        <button class="btn-cancel-calendar hide" id="btnCancelRules" type="button">انصراف</button>
+        <span class="rules-note" id="rulesNote"></span>
       </div>
     </section>
 
@@ -2653,7 +2814,7 @@
 
       <div class="section-disabled-banner" id="feedbackDisabledBanner" style="display:none;">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        این بخش توسط مدیر آموزش غیرفعال شده و در سایت اصلی برای کاربران نمایش داده نمی‌شود.
+        ثبت انتقادات و پیشنهادات توسط مدیر آموزش غیرفعال شده است؛ «بررسی و پاسخ» غیرفعال است، ولی «گزارش‌ها» و «نظرسنجی» همچنان فعال‌اند.
       </div>
 
       <div class="skeleton-grid" id="feedbackSkeletonGrid">
@@ -2681,22 +2842,14 @@
         </button>
       </div>
       <div class="page-title">نظرسنجی</div>
-      <div class="page-sub">ساختار کلی این بخش آماده است؛ مدیریت هر مورد به‌زودی تکمیل می‌شود.</div>
+      <div class="page-sub">دو نوع نظرسنجی: «کلاسی» (برای دریافت مدرک هر کلاس) و «کلی» (سراسری و دلخواه). نتایج در بخش «گزارش‌ها» دیده می‌شود.</div>
 
       <div class="dept-branch-picked-bar hide" id="surveyBranchPickedBar">
         <div>شعبه‌ی انتخاب‌شده: <b id="surveyPickedBranchName"></b></div>
         <button class="btn-ghost" id="btnChangeSurveyBranch" type="button">تغییر شعبه</button>
       </div>
 
-      <div class="member-empty-state" id="surveyNoBranchState">
-        <svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path><path d="M9 21v-6h6v6"></path></svg>
-        <div>برای مشاهده و مدیریت نظرسنجی‌ها، ابتدا یک شعبه را انتخاب کنید.</div>
-        <button class="btn-primary" id="btnPickSurveyBranch" type="button" style="margin-top:14px;">
-          انتخاب شعبه
-        </button>
-      </div>
-
-      <div class="hide" id="surveyContentWrap">
+      <div id="surveyContentWrap" class="hide">
       <div class="skeleton-grid">
         <div class="skeleton-card nav-card" data-goto="generalSurvey">
           <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
@@ -2719,7 +2872,7 @@
         </button>
       </div>
       <div class="page-title">نظرسنجی‌های کلی</div>
-      <div class="page-sub">مدیریت نظرسنجی‌های عمومی که به کلاس یا ترم خاصی وابسته نیستند</div>
+      <div class="page-sub">نظرسنجی‌های سراسری و دلخواه برای همه‌ی دانش‌پژوهان؛ هر دانش‌پژوه واردشده می‌تواند یک‌بار در هرکدام شرکت کند.</div>
 
       <div class="hr-toolbar">
         <div class="search-box">
@@ -2739,6 +2892,7 @@
               <th style="width:60px;">#</th>
               <th>عنوان نظرسنجی</th>
               <th>تعداد سؤال</th>
+              <th>شرکت‌کننده</th>
               <th>وضعیت</th>
               <th>تاریخ ایجاد</th>
               <th>عملیات</th>
@@ -2758,33 +2912,79 @@
         </button>
       </div>
       <div class="page-title">نظرسنجی‌های کلاسی</div>
-      <div class="page-sub">فقط یک نظرسنجی کلی برای همه‌ی دانش‌پژوهان وجود دارد (نه جدا برای هر کلاس یا ترم). عنوان آن را ویرایش کنید و سؤال تستی یا تشریحی اضافه کنید.</div>
+      <div class="page-sub">همه‌ی کلاس‌ها به‌طور پیش‌فرض از «قالب کلی» استفاده می‌کنند. دانش‌پژوه برای دریافت مدرک هر کلاس باید نظرسنجی همان کلاس را پر کند.</div>
+      <div class="dept-branch-picked-bar hide" id="csBranchBar">
+        <div>شعبه‌ی انتخاب‌شده: <b id="csBranchName"></b></div>
+        <button class="btn-ghost" id="btnChangeCsBranch" type="button">تغییر شعبه</button>
+      </div>
 
-      <div class="svq-header">
-        <div class="form-grid">
-          <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="surveyTitleInput" maxlength="200" placeholder="مثلاً نظرسنجی پایان دوره"></div>
-          <div class="field full"><label>توضیحات (متنی که بالای نظرسنجی به دانش‌پژوه نشان داده می‌شود)</label><textarea id="surveyDescInput" rows="2" maxlength="1000" placeholder="اختیاری"></textarea></div>
+      <div class="dept-branch-picked-bar hide" id="csTermBar">
+        <div>دوره‌ی انتخاب‌شده: <b id="csTermName"></b></div>
+        <button class="btn-ghost" id="btnChangeCsTerm" type="button">تغییر دوره</button>
+      </div>
+
+      <!-- تا شعبه و دوره انتخاب نشود، چیزی نمایش داده نمی‌شود -->
+      <div id="csContentWrap" class="hide">
+      <!-- صفحه‌ی ۱: دکمه‌ی قالب کلی + فهرست کلاس‌ها -->
+      <div id="csScreenList">
+        <div class="hr-toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="classSurveyClassFilter" placeholder="جستجوی نام کلاس…">
+          </div>
+          <button class="btn-primary" id="btnOpenTemplateEditor" type="button">ویرایش قالب کلی نظرسنجی</button>
         </div>
-        <button class="btn-primary" id="btnSaveSurveyHeader" type="button">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          ذخیره‌ی عنوان و توضیحات
-        </button>
+        <div class="table-wrap">
+          <table class="hr-table">
+            <thead><tr><th style="width:60px;">#</th><th>نام کلاس</th><th>دوره</th><th>نظرسنجی</th><th>عملیات</th></tr></thead>
+            <tbody id="classSurveyTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="hr-toolbar" style="margin-top:22px;">
-        <div class="svq-count" id="surveyQuestionsCount">—</div>
-        <button class="btn-primary" id="btnAddSurveyQuestion" type="button">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          افزودن سؤال
-        </button>
+      <!-- صفحه‌ی ۲: ویرایش قالب کلی -->
+      <div id="csScreenTemplate" class="hide">
+        <button class="btn-ghost cs-back" type="button">← بازگشت به فهرست کلاس‌ها</button>
+        <div class="survey-stats-heading">قالب کلی (برای همه‌ی کلاس‌ها)</div>
+        <div class="svq-header">
+          <div class="form-grid">
+            <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="surveyTitleInput" maxlength="200" placeholder="مثلاً نظرسنجی پایان دوره"></div>
+            <div class="field full"><label>توضیحات (متنی که بالای نظرسنجی به دانش‌پژوه نشان داده می‌شود)</label><textarea id="surveyDescInput" rows="2" maxlength="1000" placeholder="اختیاری"></textarea></div>
+          </div>
+          <button class="btn-primary" id="btnSaveSurveyHeader" type="button">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            ذخیره‌ی عنوان و توضیحات
+          </button>
+        </div>
+        <div class="hr-toolbar" style="margin-top:22px;">
+          <div class="svq-count" id="surveyQuestionsCount">—</div>
+          <button class="btn-primary" id="btnAddSurveyQuestion" type="button">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            افزودن سؤال
+          </button>
+        </div>
+        <div id="surveyQuestionsList" class="svq-list"></div>
+        <div class="qa-empty" id="surveyQuestionsEmpty" style="display:none;"></div>
       </div>
 
-      <div id="surveyQuestionsList" class="svq-list"></div>
-      <div class="qa-empty" id="surveyQuestionsEmpty" style="display:none;"></div>
-
-      <div class="survey-stats-heading" style="margin-top:30px;">نتایج نظرسنجی</div>
-      <div class="svq-count" id="surveyResultsSummary">—</div>
-      <div id="surveyResultsList" style="margin-top:12px;"></div>
+      <!-- صفحه‌ی ۳: ویرایش نظرسنجی یک کلاس روی قالب -->
+      <div id="csScreenClass" class="hide">
+        <button class="btn-ghost cs-back" type="button">← بازگشت به فهرست کلاس‌ها</button>
+        <div class="survey-stats-heading" id="classSurveyTitle">نظرسنجی کلاس</div>
+        <div id="classSurveyPanel">
+          <div class="hr-toolbar" style="margin-top:14px;">
+            <div id="classSurveyStatus"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-ghost" id="btnCustomizeClassSurvey" type="button">شخصی‌سازی (کپی قالب)</button>
+              <button class="btn-ghost" id="btnResetClassSurvey" type="button">بازگشت به قالب کلی</button>
+              <button class="btn-primary" id="btnAddClassSurveyQuestion" type="button">+ افزودن سؤال</button>
+            </div>
+          </div>
+          <div class="page-sub" id="classSurveyHint" style="margin-top:10px;"></div>
+          <div id="classSurveyQList" class="svq-list"></div>
+        </div>
+      </div>
+      </div>
     </section>
 
     <!-- ============ REPORTS (subsection of feedback) ============ -->
@@ -2796,7 +2996,13 @@
         </button>
       </div>
       <div class="page-title">گزارش‌ها</div>
-      <div class="page-sub">آمار کلی انتقادها و پیشنهادهای ثبت‌شده.</div>
+      <div class="page-sub">آمار انتقادها، پیشنهادها و نظرسنجی‌های شعبه‌ی انتخاب‌شده.</div>
+      <div class="dept-branch-picked-bar hide" id="reportBranchBar">
+        <div>شعبه‌ی انتخاب‌شده: <b id="reportBranchName"></b></div>
+        <button class="btn-ghost" id="btnChangeReportBranch" type="button">تغییر شعبه</button>
+      </div>
+
+      <div id="reportContentWrap" class="hide">
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -2822,7 +3028,11 @@
       </div>
 
       <div class="survey-stats-heading">آمار نظرسنجی‌ها</div>
-      <div class="page-sub">آمار شرکت‌کنندگان در نظرسنجی کلی؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.</div>
+      <div class="review-subtabs" id="reportScopeTabs" style="margin-bottom:12px;">
+        <div class="review-subtab" data-rscope="national">ملی (همه‌ی شعب و استان‌ها)</div>
+        <div class="review-subtab active" data-rscope="branch">شعبه‌ی انتخاب‌شده</div>
+      </div>
+      <div class="page-sub" id="reportScopeHint">آمار کلی همه‌ی نظرسنجی‌های شعبه‌ی انتخاب‌شده (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.</div>
 
       <div class="survey-hero-stat">
         <div class="survey-hero-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
@@ -2831,36 +3041,19 @@
       </div>
 
       <div class="survey-stats-grid">
-        <div class="survey-stat-card" data-tone="neutral">
-          <div class="survey-stat-number" id="statVotersCount">۰</div>
-          <div class="survey-stat-label">تعداد رأی‌دهندگان</div>
-        </div>
-        <div class="survey-stat-card" data-tone="excellent">
-          <div class="survey-stat-number" id="statVoteExcellentCount">۰</div>
-          <div class="survey-stat-label">رأی «خیلی خوب»</div>
-        </div>
-        <div class="survey-stat-card" data-tone="good">
-          <div class="survey-stat-number" id="statVoteGoodCount">۰</div>
-          <div class="survey-stat-label">رأی «خوب»</div>
-        </div>
-        <div class="survey-stat-card" data-tone="average">
-          <div class="survey-stat-number" id="statVoteAverageCount">۰</div>
-          <div class="survey-stat-label">رأی «متوسط»</div>
-        </div>
-        <div class="survey-stat-card" data-tone="bad">
-          <div class="survey-stat-number" id="statVoteBadCount">۰</div>
-          <div class="survey-stat-label">رأی «بد»</div>
-        </div>
-        <div class="survey-stat-card" data-tone="verybad">
-          <div class="survey-stat-number" id="statVoteVeryBadCount">۰</div>
-          <div class="survey-stat-label">رأی «خیلی بد»</div>
-        </div>
+        <div class="survey-stat-card" data-tone="neutral"><div class="survey-stat-number" id="statVotersCount">۰</div><div class="survey-stat-label">تعداد رأی‌دهندگان</div></div>
+        <div class="survey-stat-card" data-tone="excellent"><div class="survey-stat-number" id="statVoteExcellentCount">۰</div><div class="survey-stat-label">رأی «خیلی خوب»</div></div>
+        <div class="survey-stat-card" data-tone="good"><div class="survey-stat-number" id="statVoteGoodCount">۰</div><div class="survey-stat-label">رأی «خوب»</div></div>
+        <div class="survey-stat-card" data-tone="average"><div class="survey-stat-number" id="statVoteAverageCount">۰</div><div class="survey-stat-label">رأی «متوسط»</div></div>
+        <div class="survey-stat-card" data-tone="bad"><div class="survey-stat-number" id="statVoteBadCount">۰</div><div class="survey-stat-label">رأی «بد»</div></div>
+        <div class="survey-stat-card" data-tone="verybad"><div class="survey-stat-number" id="statVoteVeryBadCount">۰</div><div class="survey-stat-label">رأی «خیلی بد»</div></div>
       </div>
 
-      <button class="btn-primary" id="btnExportSurveyStats" type="button">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        خروجی اکسل
-      </button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-primary" id="btnSurveyDetails" type="button">جزئیات</button>
+        <button class="btn-ghost" id="btnExportSurveyStats" type="button">خروجی اکسل</button>
+      </div>
+      </div>
     </section>
 
     <!-- ============ REVIEW & RESPOND (subsection of feedback) ============ -->
@@ -2872,7 +3065,13 @@
         </button>
       </div>
       <div class="page-title">بررسی و پاسخ</div>
-      <div class="page-sub">موارد دریافتی را بر اساس نوع انتخاب کن.</div>
+      <div class="page-sub">انتقادها و پیشنهادهای شعبه‌ی انتخاب‌شده را ببینید و پاسخ دهید.</div>
+      <div class="dept-branch-picked-bar hide" id="reviewBranchBar">
+        <div>شعبه‌ی انتخاب‌شده: <b id="reviewBranchName"></b></div>
+        <button class="btn-ghost" id="btnChangeReviewBranch" type="button">تغییر شعبه</button>
+      </div>
+
+      <div id="reviewContentWrap" class="hide">
 
       <div class="review-subtabs">
         <div class="review-subtab active" data-reviewtab="complaints">انتقاد<span class="review-badge" id="complaintsPendingBadge"></span></div>
@@ -2915,6 +3114,7 @@
           <tbody id="suggestionsTbody"></tbody>
         </table>
         <div class="qa-empty" id="suggestionsEmpty" style="display:none;"></div>
+      </div>
       </div>
     </section>
 
@@ -2966,7 +3166,7 @@
         </button>
       </div>
       <div class="page-title">مدیریت اطلاعیه‌ها</div>
-      <div class="page-sub">اطلاعیه‌های نمایش‌داده‌شده در ستون «اطلاعیه‌ها»ی سایت اصلی (نمایشی — داده‌ها پس از بارگذاری مجدد صفحه بازنشانی می‌شوند)</div>
+      <div class="page-sub">اطلاعیه‌های نمایش‌داده‌شده در ستون «اطلاعیه‌ها»ی سایت اصلی</div>
 
       <div class="hr-toolbar">
         <div class="search-box">
@@ -3167,8 +3367,8 @@
     <div class="modal-body">
       <form id="empForm">
         <div class="form-grid">
-          <div class="field"><label>نام</label><input type="text" id="f_fname" required=""></div>
-          <div class="field"><label>نام خانوادگی</label><input type="text" id="f_lname" required=""></div>
+          <div class="field"><label>نام</label><input type="text" id="f_fname" maxlength="30" autocomplete="off" required=""></div>
+          <div class="field"><label>نام خانوادگی</label><input type="text" id="f_lname" maxlength="30" autocomplete="off" required=""></div>
           <div class="field"><label>سمت</label>
             <select id="f_role">
               <option value="مدیر آموزش">مدیر آموزش</option>
@@ -3181,9 +3381,9 @@
           <div class="field" id="f_branch_wrap"><label>شعبه</label>
             <select id="f_branch"></select>
           </div>
-          <div class="field"><label>شماره تماس</label><input type="text" id="f_phone" placeholder="09xxxxxxxxx" required=""></div>
-          <div class="field"><label>نام کاربری</label><input type="text" id="f_username" placeholder="نام کاربری برای ورود به سایت" required=""></div>
-          <div class="field"><label>رمز عبور</label><input type="password" id="f_password" placeholder="رمز عبور" required=""></div>
+          <div class="field"><label>شماره تماس</label><input type="text" id="f_phone" placeholder="09xxxxxxxxx" inputmode="numeric" maxlength="11" required=""></div>
+          <div class="field"><label>نام کاربری</label><input type="text" id="f_username" placeholder="نام کاربری برای ورود به سایت" maxlength="30" autocomplete="off" required=""></div>
+          <div class="field"><label>رمز عبور</label><input type="password" id="f_password" placeholder="رمز عبور (۶ تا ۶۴ کاراکتر)" maxlength="64" autocomplete="new-password" required=""></div>
         </div>
       </form>
     </div>
@@ -3576,7 +3776,7 @@
               <option value="">همه‌ی شعب</option>
             </select>
           </div>
-          <div class="field"><label>تاریخ</label><input type="text" id="f_announce_date" placeholder="مثلاً ۱۴۰۴/۰۵/۰۶"></div>
+          
         </div>
       </form>
     </div>
@@ -3955,6 +4155,48 @@
   </div>
 </div>
 
+<!-- Class Survey Term Selection Modal -->
+<div class="modal-overlay" id="csTermModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>انتخاب دوره</h3>
+      <button class="modal-close" id="csTermModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:#6b7d7e;line-height:1.9;margin-bottom:14px;">
+        برای مدیریت نظرسنجی‌های کلاسی، ابتدا دوره را از تقویم آموزشی انتخاب کنید.
+      </p>
+      <div class="dept-branch-checklist" id="csTermChecklist"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="csTermModalCancel" type="button">انصراف</button>
+      <button class="btn-primary" id="csTermModalConfirm" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        تایید و ادامه
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Survey Report Details Modal: دوره ← کلاس/سمینار ← نتایج -->
+<div class="modal-overlay" id="reportDetailOverlay">
+  <div class="modal-box" style="max-width:760px;">
+    <div class="modal-head">
+      <h3 id="reportDetailTitle">جزئیات نظرسنجی‌ها</h3>
+      <button class="modal-close" id="reportDetailClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="reportDetailBody" style="max-height:68vh;overflow-y:auto;"></div>
+    <div class="modal-foot">
+      <button class="btn-ghost" id="reportDetailBack" type="button">بازگشت</button>
+      <button class="btn-primary" id="reportDetailExport" type="button" style="display:none;">خروجی اکسل</button>
+    </div>
+  </div>
+</div>
+
 <!-- Teacher Info Modal (اطلاعات کامل مدرس) -->
 <div class="modal-overlay" id="teacherInfoModalOverlay">
   <div class="modal-box">
@@ -4079,39 +4321,26 @@
 <!-- Class Survey Term Selection Modal -->
 <!-- Add/Edit Class Survey Modal -->
 <div class="modal-overlay" id="generalSurveyModalOverlay">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:640px;">
     <div class="modal-head">
-      <h3 id="generalSurveyModalTitle">افزودن نظرسنجی</h3>
+      <h3 id="generalSurveyModalTitle">افزودن نظرسنجی کلی</h3>
       <button class="modal-close" id="generalSurveyModalClose" type="button">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
     <div class="modal-body">
-      <form id="generalSurveyForm">
-        <div class="form-grid">
-          <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="gs_title" placeholder="مثلاً نظرسنجی رضایت عمومی" required=""></div>
-          <div class="field"><label>وضعیت</label>
-            <select id="gs_status">
-              <option value="فعال">فعال</option>
-              <option value="غیرفعال">غیرفعال</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label>سوالات نظرسنجی</label>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <button class="btn-ghost" type="button" id="btnManageGsQuestions">سوالات</button>
-              <span id="gsQuestionsCountLabel" style="font-size:12.5px;color:#6b7d7e;">هیچ سؤالی ثبت نشده</span>
-            </div>
-          </div>
-          <div class="field full">
-            <label>نوع پاسخ</label>
-            <div style="display:flex;align-items:center;gap:12px;">
-              <button class="btn-ghost" type="button" id="btnManageGsAnswer">پاسخ</button>
-              <span id="gsAnswerSummaryLabel" style="font-size:12.5px;color:#6b7d7e;">تعیین نشده</span>
-            </div>
-          </div>
+      <div class="form-grid">
+        <div class="field full"><label>عنوان نظرسنجی</label><input type="text" id="gs_title" maxlength="200" placeholder="مثلاً نظرسنجی رضایت عمومی"></div>
+        <div class="field full"><label>توضیحات (اختیاری)</label><textarea id="gs_desc" rows="2" maxlength="1000"></textarea></div>
+        <div class="field"><label>وضعیت</label>
+          <select id="gs_status"><option value="true">فعال</option><option value="false">غیرفعال</option></select>
         </div>
-      </form>
+        <div class="field full">
+          <label>سؤال‌ها <span id="gsQuestionsCountLabel" style="font-size:12px;color:#6b7d7e;"></span></label>
+          <div id="gsQuestionsList" class="svq-list"></div>
+          <button class="btn-ghost" type="button" id="btnAddGsQuestion" style="margin-top:10px;">+ افزودن سؤال</button>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn-ghost" id="generalSurveyModalCancel" type="button">انصراف</button>
@@ -4155,90 +4384,6 @@
     <div class="modal-foot">
       <button class="btn-ghost" id="surveyQuestionModalCancel" type="button">انصراف</button>
       <button class="btn-primary" id="surveyQuestionModalSave" type="button">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        ذخیره
-      </button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="csQuestionsModalOverlay">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>سوالات نظرسنجی</h3>
-      <button class="modal-close" id="csQuestionsModalClose" type="button">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="hr-toolbar" style="margin-bottom:14px;">
-        <div class="search-box" style="max-width:none;">
-          <input type="text" id="csQuestionInput" placeholder="متن سؤال را وارد کنید…">
-        </div>
-        <button class="btn-primary" id="btnAddCsQuestion" type="button">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          افزودن سؤال
-        </button>
-      </div>
-      <div id="csQuestionsList" style="display:flex;flex-direction:column;gap:8px;"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-ghost" id="csQuestionsModalCancel" type="button">انصراف</button>
-      <button class="btn-primary" id="csQuestionsModalConfirm" type="button">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        تأیید سوالات
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Answer Type Modal (تعیین نوع پاسخ نظرسنجی: تستی / تشریحی) -->
-<div class="modal-overlay" id="answerTypeModalOverlay">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>نوع پاسخ نظرسنجی</h3>
-      <button class="modal-close" id="answerTypeModalClose" type="button">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:12.5px;color:#6b7d7e;line-height:1.9;margin-bottom:16px;">
-        می‌توانید یک یا هر دو نوع پاسخ (تستی و تشریحی) را برای این نظرسنجی فعال کنید.
-      </p>
-
-      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#33474a;margin-bottom:10px;cursor:pointer;">
-        <input type="checkbox" id="at_mc_check" style="width:16px;height:16px;">
-        <span>تستی</span>
-      </label>
-      <div id="atMcOptionsWrap" class="hide" style="margin:0 0 20px 0;padding:14px;background:#f6f9f9;border-radius:10px;">
-        <label style="font-size:12px;color:#6b7d7e;margin-bottom:8px;display:block;">گزینه‌ها (ثابت)</label>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="field"><input type="text" id="at_mc_opt_0" disabled=""></div>
-          <div class="field"><input type="text" id="at_mc_opt_1" disabled=""></div>
-          <div class="field"><input type="text" id="at_mc_opt_2" disabled=""></div>
-          <div class="field"><input type="text" id="at_mc_opt_3" disabled=""></div>
-          <div class="field"><input type="text" id="at_mc_opt_4" disabled=""></div>
-        </div>
-      </div>
-
-      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#33474a;margin-bottom:10px;cursor:pointer;">
-        <input type="checkbox" id="at_desc_check" style="width:16px;height:16px;">
-        <span>تشریحی</span>
-      </label>
-      <div id="atDescModeWrap" class="hide" style="padding:14px;background:#f6f9f9;border-radius:10px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#33474a;margin-bottom:8px;cursor:pointer;">
-          <input type="radio" name="atDescMode" value="note">
-          <span>به‌صورت شرح (توضیح آزاد، بدون سؤال مشخص)</span>
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#33474a;cursor:pointer;">
-          <input type="radio" name="atDescMode" value="qa">
-          <span>پرسیدن سؤال و دریافت پاسخ به‌صورت تشریحی</span>
-        </label>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-ghost" id="answerTypeModalCancel" type="button">انصراف</button>
-      <button class="btn-primary" id="answerTypeModalSave" type="button">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
         ذخیره
       </button>
@@ -4360,6 +4505,66 @@
   // یک‌بار موقع بار شدن صفحه، کوکی csrftoken را می‌گیریم تا درخواست‌های نویسنده کار کنند
   fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(function(){});
 </script>
+
+
+<div class="modal-overlay" id="slideModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="slModalTitle">افزودن اسلاید</h3>
+      <button class="modal-close" id="slModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="sl-modal-grid">
+        <div>
+          <div class="sl-field"><label>تصویر اسلاید <span style="color:#c0392b">*</span></label>
+            <div class="sl-drop" id="slDrop"><div id="slDropInner">تصویر را بکشید و اینجا رها کنید یا کلیک کنید<small>JPG / PNG / WebP — حداکثر ۵ مگابایت — پیشنهاد: ۲۱۰۰×۸۰۰ پیکسل</small></div></div>
+            <input type="file" id="slFile" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <div class="sl-field"><label>تصویر موبایل (اختیاری)</label>
+            <div class="sl-drop" id="slDropM"><div id="slDropMInner">برای نمایش بهتر در موبایل (مثلاً ۱۲۰۰×۹۰۰)<small>اگر انتخاب نشود، همان تصویر اصلی استفاده می‌شود</small></div></div>
+            <input type="file" id="slFileM" accept="image/jpeg,image/png,image/webp" hidden>
+            <button type="button" class="btn-ghost" id="slRemoveM" style="display:none;margin-top:6px;padding:5px 12px;font-size:12px;">حذف تصویر موبایل</button>
+          </div>
+          <div class="sl-field"><label>عنوان</label><input type="text" id="slTitle" maxlength="120"></div>
+          <div class="sl-field"><label>زیرعنوان</label><input type="text" id="slSubtitle" maxlength="300"></div>
+          <div class="form-grid" style="gap:10px;">
+            <div class="sl-field"><label>متن دکمه</label><input type="text" id="slBtnText" maxlength="40" placeholder="مثلاً ثبت‌نام"></div>
+            <div class="sl-field"><label>لینک</label><input type="text" id="slLink" maxlength="500" placeholder="/hozori-courses یا https://..." dir="ltr" style="text-align:left;"></div>
+          </div>
+          <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:#33474a;margin-bottom:12px;"><input type="checkbox" id="slNewTab"> باز شدن لینک در تب جدید</label>
+          <div class="sl-field"><label>متن جایگزین تصویر (برای دسترسی‌پذیری و سئو)</label><input type="text" id="slAlt" maxlength="200"></div>
+        </div>
+
+        <div>
+          <div class="sl-field"><label>پیش‌نمایش</label>
+            <div class="sl-seg" style="margin-bottom:8px;" id="slPrevMode"><button type="button" data-v="desktop" class="on">دسکتاپ</button><button type="button" data-v="mobile">موبایل</button></div>
+            <div class="sl-prev" id="slPrev"></div>
+          </div>
+          <div class="sl-field"><label>جایگاه متن</label>
+            <div class="sl-seg" id="slPos"><button type="button" data-v="right">راست</button><button type="button" data-v="center">وسط</button><button type="button" data-v="left">چپ</button></div></div>
+          <div class="sl-field"><label>رنگ متن</label>
+            <div class="sl-seg" id="slColor"><button type="button" data-v="light">روشن</button><button type="button" data-v="dark">تیره</button></div></div>
+          <div class="sl-field"><label>تیرگی روی تصویر: <b id="slOverlayLbl">۳۵</b>٪</label>
+            <input type="range" class="sl-range" id="slOverlay" min="0" max="80" step="5" value="35"></div>
+          <div class="sl-field"><label>زمان‌بندی نمایش (اختیاری)</label>
+            <div class="form-grid" style="gap:10px;">
+              <div><input type="datetime-local" id="slStart" style="width:100%;border:1px solid #dfe6e6;border-radius:10px;padding:8px;font-size:12.5px;"><div class="sl-hint">شروع</div></div>
+              <div><input type="datetime-local" id="slEnd" style="width:100%;border:1px solid #dfe6e6;border-radius:10px;padding:8px;font-size:12.5px;"><div class="sl-hint">پایان</div></div>
+            </div>
+          </div>
+          <div class="sl-row"><span>فعال (نمایش در سایت)</span><button type="button" class="toggle-switch-sm is-on" id="slActive"><span class="knob"></span></button></div>
+        </div>
+      </div>
+      <div class="sl-err" id="slErr"></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn-ghost" id="slCancel">انصراف</button>
+      <button type="button" class="btn-primary" id="slSave"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> ذخیره</button>
+    </div>
+  </div>
+</div>
 
 <script>
   // ---- اسپینر ساعت (مثل ساعت گوشی؛ به‌جای تایپ دستی) ----
@@ -5336,6 +5541,9 @@
   // ---- انتقادات و پیشنهادات: متصل به بک‌اند واقعی (/api/feedback/) ----
   // پیام‌هایی که از فرم «انتقادات و پیشنهادات» سایت اصلی ثبت می‌شوند، اینجا
   // (بخش «بررسی و پاسخ») نمایش داده می‌شوند تا مدیر/مسئول آموزش پاسخ دهد.
+  // شعبه‌ی انتخاب‌شده در هر بخش (بررسی و پاسخ / گزارش‌ها)؛ بدون انتخاب شعبه چیزی نمایش داده نمی‌شود
+  let pickedReviewBranch = null;
+  let pickedReportBranch = null;
   let FEEDBACK_ITEMS = [];          // همه‌ی موارد دریافتی (انتقاد + پیشنهاد) از سرور
   let feedbackLoadFailed = false;   // اگر دریافت از سرور شکست بخورد، «خالی» نشان داده نشود
   let feedbackReplyTarget = null;   // موردی که الان مودال پاسخ برایش باز است
@@ -5367,12 +5575,13 @@
     });
   }
 
-  function feedbackItemsOf(kind){
-    return FEEDBACK_ITEMS.filter(function(it){ return it.kind === kind; });
+  // فقط موارد «همان شعبه»؛ اگر شعبه‌ای انتخاب نشده باشد لیست خالی است
+  function feedbackItemsOf(kind, branch){
+    return FEEDBACK_ITEMS.filter(function(it){ return it.kind === kind && !!branch && (it.branch || '').trim() === branch; });
   }
 
   function renderFeedbackRows(kind, tbodyId, emptyId){
-    const items = feedbackItemsOf(kind);
+    const items = feedbackItemsOf(kind, pickedReviewBranch);
     const tbody = document.getElementById(tbodyId);
     const emptyEl = document.getElementById(emptyId);
     tbody.innerHTML = items.map(function(it, i){
@@ -5569,7 +5778,7 @@
 
   // ---- پاپ‌آپ آمار: پاسخگویی مسئولان (از موارد واقعیِ پاسخ‌داده‌شده ساخته می‌شود) ----
   function feedbackAnsweredCards(kind){
-    return feedbackItemsOf(kind)
+    return feedbackItemsOf(kind, pickedReportBranch)
       .filter(function(it){ return it.status === 'answered'; })
       .map(function(it){
         return {
@@ -5868,18 +6077,47 @@
   document.getElementById('branchSearch').addEventListener('input', renderBranches);
   renderBranches();
 
-  // ---- مدیریت اطلاعیه‌ها (نمایشی — بدون بک‌اند، داده‌ها با رفرش صفحه بازنشانی می‌شوند) ----
-  let ANNOUNCEMENTS = [
-    { id:1, title:"شروع ثبت‌نام دوره‌های جدید", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۵/۰۶" },
-    { id:2, title:"تمدید مهلت ثبت‌نام", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۴/۲۸" },
-    { id:3, title:"تعطیلی موقت برخی کلاس‌ها", text:"اطلاعیه‌ها به‌زودی تکمیل می‌شود.", date:"۱۴۰۴/۰۴/۱۵" }
-  ];
-  let nextAnnounceId = 4;
+  // ---- مدیریت اطلاعیه‌ها — متصل به بک‌اند ----
+  let ANNOUNCEMENTS = [];
   let editingAnnounceId = null;
+  const ANN_ADMIN = true;
+
+  function annEsc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function annApi(path, method, body){
+    return fetch(`${API_BASE_URL}${path}`, {
+      method: method || 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(async function(res){
+      if(res.status === 204) return null;
+      const data = await res.json().catch(function(){ return null; });
+      if(!res.ok){
+        let msg = data && data.detail;
+        if(!msg && data && typeof data === 'object'){
+          const first = Object.values(data)[0];
+          msg = Array.isArray(first) ? first[0] : first;
+        }
+        throw new Error(msg || 'خطا در ارتباط با سرور');
+      }
+      return data;
+    });
+  }
+  function loadAnnouncements(){
+    return annApi('/classmgmt/announcements/').then(function(data){
+      ANNOUNCEMENTS = Array.isArray(data) ? data : (data && data.results) || [];
+      renderAnnouncements();
+    }).catch(function(err){
+      document.getElementById('announceTableBody').innerHTML =
+        `<tr class="empty-row"><td colspan="6">${annEsc(err.message)}</td></tr>`;
+    });
+  }
 
   function renderAnnouncements(){
     const q = document.getElementById('announceSearch').value.trim();
-    const filtered = ANNOUNCEMENTS.filter(a => !q || a.title.includes(q));
+    const filtered = ANNOUNCEMENTS.filter(a => !q || (a.title || '').includes(q));
     const body = document.getElementById('announceTableBody');
 
     if(filtered.length === 0){
@@ -5890,14 +6128,12 @@
     body.innerHTML = filtered.map((a, i) => `
       <tr data-id="${a.id}">
         <td>${toPersianDigits(i + 1)}</td>
-        <td>${a.title}</td>
-        <td>${a.text}</td>
-        <td>${a.branch ? `<span class="dept-tag">${a.branch}</span>` : '<span class="dept-empty">همه‌ی شعب</span>'}</td>
-        <td>${a.date || '—'}</td>
-        <td class="row-actions">
-          <div class="icon-btn announce-edit-btn" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-          <div class="icon-btn danger announce-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div>
-        </td>
+        <td>${annEsc(a.title)}</td>
+        <td>${annEsc(a.text)}</td>
+        <td>${a.branch ? `<span class="dept-tag">${annEsc(a.branch)}</span>` : '<span class="dept-empty">همه‌ی شعب</span>'}</td>
+        <td>${annEsc(a.date) || '—'}</td>
+        <td class="row-actions"><div class="icon-btn announce-edit-btn" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
+          <div class="icon-btn danger announce-delete-btn" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></div></td>
       </tr>
     `).join('');
 
@@ -5913,11 +6149,11 @@
   const announceTitleInput = document.getElementById('f_announce_title');
   const announceTextInput = document.getElementById('f_announce_text');
   const announceBranchInput = document.getElementById('f_announce_branch');
-  const announceDateInput = document.getElementById('f_announce_date');
 
   function fillAnnounceBranchSelect(){
+    if(!announceBranchInput) return;
     announceBranchInput.innerHTML = '<option value="">همه‌ی شعب</option>' +
-      BRANCHES.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      BRANCHES.map(b => `<option value="${annEsc(b.name)}">${annEsc(b.name)}</option>`).join('');
   }
 
   function openAddAnnounce(){
@@ -5926,8 +6162,7 @@
     fillAnnounceBranchSelect();
     announceTitleInput.value = '';
     announceTextInput.value = '';
-    announceBranchInput.value = '';
-    announceDateInput.value = '';
+    if(announceBranchInput) announceBranchInput.value = '';
     announceOverlay.classList.add('open');
   }
   function openEditAnnounce(id){
@@ -5938,8 +6173,7 @@
     fillAnnounceBranchSelect();
     announceTitleInput.value = a.title;
     announceTextInput.value = a.text;
-    announceBranchInput.value = a.branch || '';
-    announceDateInput.value = a.date;
+    if(announceBranchInput) announceBranchInput.value = a.branch || '';
     announceOverlay.classList.add('open');
   }
   function closeAnnounceModal(){ announceOverlay.classList.remove('open'); }
@@ -5947,9 +6181,11 @@
     const a = ANNOUNCEMENTS.find(x => x.id === id);
     if(!a) return;
     if(!confirm(`آیا از حذف اطلاعیه‌ی «${a.title}» مطمئن هستید؟`)) return;
-    ANNOUNCEMENTS = ANNOUNCEMENTS.filter(x => x.id !== id);
-    renderAnnouncements();
-    showToast('اطلاعیه حذف شد');
+    annApi(`/classmgmt/announcements/${id}/`, 'DELETE').then(function(){
+      ANNOUNCEMENTS = ANNOUNCEMENTS.filter(x => x.id !== id);
+      renderAnnouncements();
+      showToast('اطلاعیه حذف شد');
+    }).catch(function(err){ showToast(err.message); });
   }
 
   document.getElementById('btnAddAnnounce').addEventListener('click', openAddAnnounce);
@@ -5959,29 +6195,31 @@
   document.getElementById('announceModalSave').addEventListener('click', () => {
     const title = announceTitleInput.value.trim();
     const text = announceTextInput.value.trim();
-    const branch = announceBranchInput.value;
-    const date = announceDateInput.value.trim();
     if(!title){
       showToast('لطفاً عنوان اطلاعیه را وارد کنید');
       return;
     }
-    if(editingAnnounceId){
-      const a = ANNOUNCEMENTS.find(x => x.id === editingAnnounceId);
-      a.title = title;
-      a.text = text;
-      a.branch = branch;
-      a.date = date;
-      showToast('اطلاعیه به‌روزرسانی شد');
-    } else {
-      ANNOUNCEMENTS.push({ id: nextAnnounceId++, title, text, branch, date });
-      showToast('اطلاعیه‌ی جدید افزوده شد');
-    }
-    renderAnnouncements();
-    closeAnnounceModal();
+    const payload = { title: title, text: text };
+    if(announceBranchInput) payload.branch = announceBranchInput.value;
+    const editing = editingAnnounceId;
+    const req = editing
+      ? annApi(`/classmgmt/announcements/${editing}/`, 'PATCH', payload)
+      : annApi('/classmgmt/announcements/', 'POST', payload);
+    req.then(function(saved){
+      if(editing){
+        ANNOUNCEMENTS = ANNOUNCEMENTS.map(x => x.id === editing ? saved : x);
+        showToast('اطلاعیه به‌روزرسانی شد');
+      } else {
+        ANNOUNCEMENTS.unshift(saved);
+        showToast('اطلاعیه‌ی جدید افزوده شد');
+      }
+      renderAnnouncements();
+      closeAnnounceModal();
+    }).catch(function(err){ showToast(err.message); });
   });
 
   document.getElementById('announceSearch').addEventListener('input', renderAnnouncements);
-  renderAnnouncements();
+  loadAnnouncements();
 
   // ---- دپارتمان‌ها (تعیین شعبات هر دپارتمان) ----
   // ---- دپارتمان‌ها و دپارتمان‌های فعال هر شعبه - حالا واقعاً از بک‌اند ----
@@ -6193,6 +6431,23 @@
   document.getElementById('btnPickLessonBranch').addEventListener('click', () => openDeptBranchModal('classManagement'));
   document.getElementById('btnChangeLessonBranch').addEventListener('click', () => openDeptBranchModal('classManagement'));
 
+  // نوار «شعبه‌ی انتخاب‌شده» و نمایش محتوا برای بخش‌های بررسی و پاسخ / گزارش‌ها / نظرسنجی کلاسی
+  function renderBranchBars(){
+    [['review', pickedReviewBranch, 'reviewBranchBar', 'reviewBranchName', 'reviewContentWrap'],
+     ['reports', pickedReportBranch, 'reportBranchBar', 'reportBranchName', 'reportContentWrap'],
+     ['cs', pickedSurveyBranch, 'csBranchBar', 'csBranchName', null]].forEach(function(r){
+      const bar = document.getElementById(r[2]);
+      if(!bar) return;
+      bar.classList.toggle('hide', !r[1]);
+      document.getElementById(r[3]).textContent = r[1] || '';
+      if(r[4]) document.getElementById(r[4]).classList.toggle('hide', !r[1]);
+    });
+    // نظرسنجی کلاسی: محتوا فقط وقتی هم شعبه و هم دوره انتخاب شده باشد
+    document.getElementById('csTermBar').classList.toggle('hide', !(pickedSurveyBranch && pickedCsTerm));
+    document.getElementById('csTermName').textContent = pickedCsTerm ? 'دوره ' + pickedCsTerm : '';
+    document.getElementById('csContentWrap').classList.toggle('hide', !(pickedSurveyBranch && pickedCsTerm));
+  }
+
   function renderSurveyBranchBar(){
     const bar = document.getElementById('surveyBranchPickedBar');
     if(!bar) return;
@@ -6231,6 +6486,8 @@
     branchModalMode = mode || 'departments';
     pendingPickedBranch = branchModalMode === 'classManagement' ? pickedClassBranch
       : branchModalMode === 'survey' ? pickedSurveyBranch
+      : branchModalMode === 'review' ? pickedReviewBranch
+      : branchModalMode === 'reports' ? pickedReportBranch
       : branchModalMode === 'classExam' ? pickedExamBranch
       : branchModalMode === 'teachers' ? pickedTeachersBranch
       : branchModalMode === 'finance' ? pickedFinanceBranch
@@ -6246,9 +6503,9 @@
   deptBranchChecklist.addEventListener('change', (e) => {
     if(e.target.name === 'deptBranchPick') pendingPickedBranch = e.target.value;
   });
-  document.getElementById('deptBranchModalClose').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
-  document.getElementById('deptBranchModalCancel').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
-  deptBranchOverlay.addEventListener('click', (e) => { if(e.target === deptBranchOverlay){ closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); } });
+  document.getElementById('deptBranchModalClose').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
+  document.getElementById('deptBranchModalCancel').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
+  deptBranchOverlay.addEventListener('click', (e) => { if(e.target === deptBranchOverlay){ closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); } });
   document.getElementById('deptBranchModalSave').addEventListener('click', () => {
     if(!pendingPickedBranch){
       showToast('لطفاً یک شعبه را انتخاب کنید');
@@ -6265,11 +6522,26 @@
       if(typeof loadSeminars === 'function') loadSeminars();
       if(typeof renderLessons === 'function') renderLessons();
       if(typeof renderClassPrereqTable === 'function') renderClassPrereqTable();
+    } else if(branchModalMode === 'review'){
+      pickedReviewBranch = pendingPickedBranch;
+      closeDeptBranchModal();
+      showToast(`شعبه‌ی «${pickedReviewBranch}» تأیید شد`);
+      renderBranchBars();
+      renderFeedback();
+    } else if(branchModalMode === 'reports'){
+      pickedReportBranch = pendingPickedBranch;
+      closeDeptBranchModal();
+      showToast(`شعبه‌ی «${pickedReportBranch}» تأیید شد`);
+      renderBranchBars();
+      updateReportsStats();
+      loadReportSurveyOptions();
     } else if(branchModalMode === 'survey'){
       pickedSurveyBranch = pendingPickedBranch;
       closeDeptBranchModal();
       showToast(`شعبه‌ی «${pickedSurveyBranch}» تأیید شد`);
       renderSurveyBranchBar();
+      renderBranchBars();
+      if(document.getElementById('view-classSurvey').classList.contains('active')){ if(!pickedCsTerm) window.openCsTermModal(); else openClassSurveyScreen(); }
     } else if(branchModalMode === 'classExam'){
       pickedExamBranch = pendingPickedBranch;
       closeDeptBranchModal();
@@ -6307,6 +6579,9 @@
   if(btnChangeClassBranch) btnChangeClassBranch.addEventListener('click', () => openDeptBranchModal('classManagement'));
   const btnPickClassBranch = document.getElementById('btnPickClassBranch');
   if(btnPickClassBranch) btnPickClassBranch.addEventListener('click', () => openDeptBranchModal('classManagement'));
+  document.getElementById('btnChangeReviewBranch').addEventListener('click', () => openDeptBranchModal('review'));
+  document.getElementById('btnChangeReportBranch').addEventListener('click', () => openDeptBranchModal('reports'));
+  document.getElementById('btnChangeCsBranch').addEventListener('click', () => openDeptBranchModal('survey'));
   const btnChangeSurveyBranch = document.getElementById('btnChangeSurveyBranch');
   if(btnChangeSurveyBranch) btnChangeSurveyBranch.addEventListener('click', () => openDeptBranchModal('survey'));
   const btnPickSurveyBranch = document.getElementById('btnPickSurveyBranch');
@@ -6417,14 +6692,13 @@
   });
   document.getElementById('btnChangeTerm').addEventListener('click', openTermModal);
 
-  // ---- نظرسنجی کلاسی: «یک» نظرسنجی کلی برای همه‌ی دانش‌پژوهان (متصل به بک‌اند) ----
-  // نظرسنجی به‌ازای هر کلاس/ترم تعریف نمی‌شود؛ فقط یکی وجود دارد و قرار است
-  // دانش‌پژوه موقع دریافت مدرک در آن شرکت کند. اینجا عنوان/توضیحات ویرایش می‌شود
-  // و سؤال تستی (با گزینه‌های قابل‌ویرایش) یا تشریحی اضافه/ویرایش/حذف/جابه‌جا می‌شود.
-  let CLASS_SURVEY = { title: '', description: '', questions: [] };
-  let surveyLoadFailed = false;
-  let editingSurveyQuestionId = null;    // null یعنی «افزودن سؤال جدید»
-  let svqOptionsDraft = [];              // گزینه‌های سؤالِ در حال ویرایش (داخل مدال)
+  // ======================================================================
+  // نظرسنجی‌ها (کاملاً متصل به بک‌اند)
+  //   ۱) نظرسنجی کلاسی: قالب مشترک + شخصی‌سازی هر کلاس (دانش‌پژوه موقع دریافت مدرکِ
+  //      همان کلاس باید آن را پر کند)
+  //   ۲) نظرسنجی کلی: سراسری و دلخواه، برای همه‌ی دانش‌پژوهان
+  // نتایج هر دو فقط در بخش «گزارش‌ها» نمایش داده می‌شود.
+  // ======================================================================
   const STANDARD_CHOICE_OPTIONS = ['خیلی خوب', 'خوب', 'متوسط', 'بد', 'خیلی بد'];
   const SVQ_MAX_OPTIONS = 10;
 
@@ -6437,7 +6711,8 @@
       body: body ? JSON.stringify(body) : undefined
     }).then(async function(res){
       if(res.status === 401 || res.status === 403){
-        throw new Error('دسترسی مجاز نیست؛ دوباره با حساب خود وارد شوید.');
+        const d = await res.json().catch(function(){ return null; });
+        throw new Error((d && d.detail) || 'دسترسی مجاز نیست؛ دوباره با حساب خود وارد شوید.');
       }
       const data = await res.json().catch(function(){ return null; });
       if(!res.ok){
@@ -6452,123 +6727,41 @@
     });
   }
 
-  function fillSurveyHeader(){
-    document.getElementById('surveyTitleInput').value = CLASS_SURVEY.title || '';
-    document.getElementById('surveyDescInput').value = CLASS_SURVEY.description || '';
-  }
+  const ICON_UP = '<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+  const ICON_DOWN = '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+  const ICON_EDIT = '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+  const ICON_DEL = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>';
 
-  function renderSurveyQuestions(){
-    const qs = CLASS_SURVEY.questions || [];
-    const list = document.getElementById('surveyQuestionsList');
-    const emptyEl = document.getElementById('surveyQuestionsEmpty');
-    const choiceCount = qs.filter(q => q.kind === 'choice').length;
-    document.getElementById('surveyQuestionsCount').textContent = surveyLoadFailed
-      ? '—'
-      : `تعداد سؤال‌ها: ${toPersianDigits(qs.length)} (${toPersianDigits(choiceCount)} تستی، ${toPersianDigits(qs.length - choiceCount)} تشریحی)`;
-
-    list.innerHTML = qs.map(function(q, i){
+  // کارت‌های سؤال (مشترک بین قالب، کلاس و نظرسنجی کلی). عملیات با «اندیس» سؤال در لیست انجام می‌شود.
+  function questionCardsHtml(qs, editable){
+    return qs.map(function(q, i){
       const opts = q.kind === 'choice'
-        ? `<div class="svq-opts">${q.options.map(o => `<span class="svq-opt">${escFb(o)}</span>`).join('')}</div>`
+        ? `<div class="svq-opts">${(q.options || []).map(o => `<span class="svq-opt">${escFb(o)}</span>`).join('')}</div>`
         : '<div class="svq-hint">دانش‌پژوه پاسخ را به‌صورت متن آزاد می‌نویسد.</div>';
+      const actions = editable ? `
+          <div class="svq-actions">
+            <div class="icon-btn" data-svq-action="up" data-idx="${i}" title="انتقال به بالا" ${i === 0 ? 'disabled' : ''}>${ICON_UP}</div>
+            <div class="icon-btn" data-svq-action="down" data-idx="${i}" title="انتقال به پایین" ${i === qs.length - 1 ? 'disabled' : ''}>${ICON_DOWN}</div>
+            <div class="icon-btn" data-svq-action="edit" data-idx="${i}" title="ویرایش">${ICON_EDIT}</div>
+            <div class="icon-btn danger" data-svq-action="delete" data-idx="${i}" title="حذف">${ICON_DEL}</div>
+          </div>` : '';
       return `
-        <div class="svq-card" data-id="${q.id}">
+        <div class="svq-card">
           <div class="svq-num">${toPersianDigits(i + 1)}</div>
           <div class="svq-body">
             <div class="svq-text">${escFb(q.text)}</div>
             <span class="svq-kind ${q.kind}">${q.kind === 'choice' ? 'تستی' : 'تشریحی'}</span>
             ${opts}
-          </div>
-          <div class="svq-actions">
-            <div class="icon-btn" data-svq-action="up" data-id="${q.id}" title="انتقال به بالا" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></div>
-            <div class="icon-btn" data-svq-action="down" data-id="${q.id}" title="انتقال به پایین" ${i === qs.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
-            <div class="icon-btn" data-svq-action="edit" data-id="${q.id}" title="ویرایش"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div>
-            <div class="icon-btn danger" data-svq-action="delete" data-id="${q.id}" title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg></div>
-          </div>
+          </div>${actions}
         </div>`;
     }).join('');
-
-    emptyEl.style.display = qs.length ? 'none' : 'block';
-    emptyEl.textContent = surveyLoadFailed
-      ? 'دریافت نظرسنجی از سرور ممکن نشد؛ صفحه را دوباره باز کنید.'
-      : 'هنوز سؤالی ثبت نشده است؛ با «افزودن سؤال» شروع کنید.';
   }
 
-  // نظرسنجی را از سرور می‌خواند؛ withHeader=true یعنی عنوان/توضیحات هم دوباره در
-  // فیلدها پر شود (فقط موقع باز شدن صفحه - نه بعد از هر تغییر سؤال، تا متنی که
-  // مدیر هنوز ذخیره نکرده پاک نشود)
-  function loadClassSurvey(withHeader){
-    return fetch(`${API_BASE_URL}/feedback/class-survey/`, { credentials: 'include' })
-      .then(res => res.ok ? res.json() : Promise.reject(res.status))
-      .then(data => {
-        CLASS_SURVEY = data;
-        surveyLoadFailed = false;
-        if(withHeader) fillSurveyHeader();
-      })
-      .catch(() => { surveyLoadFailed = true; CLASS_SURVEY = { title: '', description: '', questions: [] }; })
-      .then(renderSurveyQuestions)
-      .then(loadSurveyResults);
-  }
-
-  // ---- نتایج نظرسنجی کلی: شمارش گزینه‌ها و پاسخ‌های تشریحی (از پاسخ‌های واقعی دانش‌پژوهان) ----
-  let SURVEY_RESULTS = null;                       // null یعنی دریافت از سرور شکست خورده
-  const SURVEY_RESULTS_SCOPE = '';        // پیشوند توضیح (مسئول آموزش فقط شعبه‌ی خودش را می‌بیند)
-
-  function renderSurveyResults(){
-    const summary = document.getElementById('surveyResultsSummary');
-    const list = document.getElementById('surveyResultsList');
-    if(!SURVEY_RESULTS){
-      summary.textContent = 'دریافت نتایج از سرور ممکن نشد.';
-      list.innerHTML = '';
-      return;
-    }
-    summary.textContent = `${SURVEY_RESULTS_SCOPE}تعداد شرکت‌کنندگان: ${toPersianDigits(SURVEY_RESULTS.participants)}`;
-    if(!SURVEY_RESULTS.participants){
-      list.innerHTML = '<div class="qa-empty">هنوز کسی در نظرسنجی شرکت نکرده است.</div>';
-      return;
-    }
-    list.innerHTML = SURVEY_RESULTS.questions.map(function(q, i){
-      const head = `<div class="svr-qtitle">${toPersianDigits(i + 1)}. ${escFb(q.text)}</div>
-        <div class="svr-meta">${q.kind === 'choice' ? 'تستی' : 'تشریحی'} — ${toPersianDigits(q.answered)} پاسخ</div>`;
-      if(q.kind === 'choice'){
-        const rows = q.options.map(function(o){
-          const pct = q.answered ? Math.round(o.count * 100 / q.answered) : 0;
-          return `<div class="svr-row"><div class="svr-label">${escFb(o.label)}</div>
-            <div class="svr-track"><div class="svr-fill" style="width:${pct}%"></div></div>
-            <div class="svr-count">${toPersianDigits(o.count)} (${toPersianDigits(pct)}٪)</div></div>`;
-        }).join('');
-        return `<div class="svr-card">${head}${rows}</div>`;
-      }
-      const answers = q.answers.length ? q.answers.map(function(a){
-        return `<div class="svr-answer">${escFb(a.text)}<small>${escFb(a.class_name) || '—'}${a.branch ? ' — ' + escFb(a.branch) : ''} — ${formatApplicantDate(a.submitted_at)}</small></div>`;
-      }).join('') : '<div class="svq-hint">هنوز پاسخی نوشته نشده است.</div>';
-      return `<div class="svr-card">${head}${answers}</div>`;
-    }).join('');
-  }
-
-  function loadSurveyResults(){
-    return fetch(`${API_BASE_URL}/feedback/class-survey/results/`, { credentials: 'include' })
-      .then(res => res.ok ? res.json() : Promise.reject(res.status))
-      .then(data => { SURVEY_RESULTS = data; })
-      .catch(() => { SURVEY_RESULTS = null; })
-      .then(renderSurveyResults);
-  }
-
-
-  document.getElementById('btnSaveSurveyHeader').addEventListener('click', () => {
-    const title = document.getElementById('surveyTitleInput').value.trim();
-    if(!title){
-      showToast('لطفاً عنوان نظرسنجی را وارد کنید');
-      return;
-    }
-    const btn = document.getElementById('btnSaveSurveyHeader');
-    btn.disabled = true;
-    surveyApi('/feedback/class-survey/', 'PATCH', { title: title, description: document.getElementById('surveyDescInput').value.trim() })
-      .then(data => { CLASS_SURVEY.title = data.title; CLASS_SURVEY.description = data.description; showToast('عنوان و توضیحات ذخیره شد'); })
-      .catch(err => showToast(err.message))
-      .then(() => { btn.disabled = false; });
-  });
-
-  // ---- مدال افزودن/ویرایش سؤال ----
+  // ---------------- مدال افزودن/ویرایش یک سؤال (مشترک) ----------------
+  // svqCtx: {type:'template'} | {type:'class', classId} | {type:'general'}
+  let svqCtx = null;
+  let svqEditing = null;        // { idx, q } یا null برای سؤال جدید
+  let svqOptionsDraft = [];
   const svqOverlay = document.getElementById('surveyQuestionModalOverlay');
   const svqOptionsList = document.getElementById('svqOptionsList');
 
@@ -6611,20 +6804,19 @@
     renderSvqOptions(false);
   });
 
-  function openSurveyQuestionModal(q){
-    editingSurveyQuestionId = q ? q.id : null;
+  function openSurveyQuestionModal(ctx, idx, q){
+    svqCtx = ctx;
+    svqEditing = q ? { idx: idx, q: q } : null;
     document.getElementById('surveyQuestionModalTitle').textContent = q ? 'ویرایش سؤال' : 'افزودن سؤال';
     document.getElementById('svq_text').value = q ? q.text : '';
     const kind = q ? q.kind : 'choice';
     document.querySelector(`input[name="svqKind"][value="${kind}"]`).checked = true;
-    // سؤال جدید (یا سؤال تشریحی که به تستی تبدیل می‌شود) با گزینه‌های استاندارد شروع می‌شود
     svqOptionsDraft = (q && q.options && q.options.length) ? [...q.options] : [...STANDARD_CHOICE_OPTIONS];
     renderSvqOptions(false);
     toggleSvqOptionsBlock();
     svqOverlay.classList.add('open');
   }
   function closeSurveyQuestionModal(){ svqOverlay.classList.remove('open'); }
-  document.getElementById('btnAddSurveyQuestion').addEventListener('click', () => openSurveyQuestionModal(null));
   document.getElementById('surveyQuestionModalClose').addEventListener('click', closeSurveyQuestionModal);
   document.getElementById('surveyQuestionModalCancel').addEventListener('click', closeSurveyQuestionModal);
   svqOverlay.addEventListener('click', (e) => { if(e.target === svqOverlay) closeSurveyQuestionModal(); });
@@ -6632,315 +6824,362 @@
   document.getElementById('surveyQuestionModalSave').addEventListener('click', () => {
     const text = document.getElementById('svq_text').value.trim();
     const kind = currentSvqKind();
-    if(!text){
-      showToast('لطفاً متن سؤال را وارد کنید');
-      return;
-    }
+    if(!text){ showToast('لطفاً متن سؤال را وارد کنید'); return; }
     const body = { text: text, kind: kind };
     if(kind === 'choice'){
       const options = svqOptionsDraft.map(o => o.trim());
-      if(options.some(o => !o)){
-        showToast('گزینه‌ی خالی مجاز نیست؛ آن را پر یا حذف کنید');
-        return;
-      }
-      if(options.length < 2){
-        showToast('سؤال تستی حداقل ۲ گزینه لازم دارد');
-        return;
-      }
-      if(new Set(options).size !== options.length){
-        showToast('گزینه‌ها نباید تکراری باشند');
-        return;
-      }
+      if(options.some(o => !o)){ showToast('گزینه‌ی خالی مجاز نیست؛ آن را پر یا حذف کنید'); return; }
+      if(options.length < 2){ showToast('سؤال تستی حداقل ۲ گزینه لازم دارد'); return; }
+      if(new Set(options).size !== options.length){ showToast('گزینه‌ها نباید تکراری باشند'); return; }
       body.options = options;
+    }
+    // نظرسنجی کلی: فقط در پیش‌نویس محلی تغییر می‌کند و با «ثبت» نظرسنجی ذخیره می‌شود
+    if(svqCtx.type === 'general'){
+      if(svqEditing){
+        const old = GS_DRAFT.questions[svqEditing.idx];
+        GS_DRAFT.questions[svqEditing.idx] = Object.assign({}, body, old && old.id ? { id: old.id } : {});
+      } else {
+        if(GS_DRAFT.questions.length >= 50){ showToast('حداکثر ۵۰ سؤال مجاز است'); return; }
+        GS_DRAFT.questions.push(body);
+      }
+      closeSurveyQuestionModal();
+      renderGsDraftQuestions();
+      return;
+    }
+    const editingId = svqEditing ? svqEditing.q.id : null;
+    let request;
+    if(svqCtx.type === 'template'){
+      request = editingId
+        ? surveyApi(`/feedback/class-survey/questions/${editingId}/`, 'PATCH', body)
+        : surveyApi('/feedback/class-survey/questions/', 'POST', body);
+    } else {
+      request = editingId
+        ? surveyApi(`/feedback/class-survey/class-questions/${editingId}/`, 'PATCH', body)
+        : surveyApi('/feedback/class-survey/class-questions/', 'POST', Object.assign({ class_id: svqCtx.classId }, body));
     }
     const btn = document.getElementById('surveyQuestionModalSave');
     btn.disabled = true;
-    const request = editingSurveyQuestionId
-      ? surveyApi(`/feedback/class-survey/questions/${editingSurveyQuestionId}/`, 'PATCH', body)
-      : surveyApi('/feedback/class-survey/questions/', 'POST', body);
     request
       .then(() => {
-        const wasEditing = !!editingSurveyQuestionId;
         closeSurveyQuestionModal();
-        showToast(wasEditing ? 'سؤال به‌روزرسانی شد' : 'سؤال جدید افزوده شد');
-        return loadClassSurvey(false);
+        showToast(editingId ? 'سؤال به‌روزرسانی شد' : 'سؤال جدید افزوده شد');
+        return svqCtx.type === 'template' ? loadTemplateSurvey(false) : loadClassPanel();
       })
       .catch(err => showToast(err.message))
       .then(() => { btn.disabled = false; });
   });
 
-  // ---- دکمه‌های هر سؤال (بالا/پایین/ویرایش/حذف) ----
-  document.getElementById('surveyQuestionsList').addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-svq-action]');
+  // ---------------- ۱) نظرسنجی کلاسی: قالب مشترک ----------------
+  let TEMPLATE_SURVEY = { title: '', description: '', questions: [] };
+  let templateLoadFailed = false;
+
+  function renderTemplateQuestions(){
+    const qs = TEMPLATE_SURVEY.questions || [];
+    const choiceCount = qs.filter(q => q.kind === 'choice').length;
+    document.getElementById('surveyQuestionsCount').textContent = templateLoadFailed
+      ? '—'
+      : `تعداد سؤال‌ها: ${toPersianDigits(qs.length)} (${toPersianDigits(choiceCount)} تستی، ${toPersianDigits(qs.length - choiceCount)} تشریحی)`;
+    document.getElementById('surveyQuestionsList').innerHTML = questionCardsHtml(qs, true);
+    const emptyEl = document.getElementById('surveyQuestionsEmpty');
+    emptyEl.style.display = qs.length ? 'none' : 'block';
+    emptyEl.textContent = templateLoadFailed
+      ? 'دریافت نظرسنجی از سرور ممکن نشد؛ صفحه را دوباره باز کنید.'
+      : 'هنوز سؤالی ثبت نشده است؛ با «افزودن سؤال» شروع کنید.';
+  }
+
+  // withHeader=true: عنوان/توضیحات هم در فیلدها پر شود (فقط موقع باز شدن صفحه)
+  function loadTemplateSurvey(withHeader){
+    return fetch(`${API_BASE_URL}/feedback/class-survey/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => {
+        TEMPLATE_SURVEY = data;
+        templateLoadFailed = false;
+        if(withHeader){
+          document.getElementById('surveyTitleInput').value = data.title || '';
+          document.getElementById('surveyDescInput').value = data.description || '';
+        }
+      })
+      .catch(() => { templateLoadFailed = true; TEMPLATE_SURVEY = { title: '', description: '', questions: [] }; })
+      .then(renderTemplateQuestions);
+  }
+
+  document.getElementById('btnSaveSurveyHeader').addEventListener('click', () => {
+    const title = document.getElementById('surveyTitleInput').value.trim();
+    if(!title){ showToast('لطفاً عنوان نظرسنجی را وارد کنید'); return; }
+    const btn = document.getElementById('btnSaveSurveyHeader');
+    btn.disabled = true;
+    surveyApi('/feedback/class-survey/', 'PATCH', { title: title, description: document.getElementById('surveyDescInput').value.trim() })
+      .then(data => { TEMPLATE_SURVEY.title = data.title; TEMPLATE_SURVEY.description = data.description; showToast('عنوان و توضیحات ذخیره شد'); })
+      .catch(err => showToast(err.message))
+      .then(() => { btn.disabled = false; });
+  });
+  document.getElementById('btnAddSurveyQuestion').addEventListener('click', () => openSurveyQuestionModal({ type: 'template' }, -1, null));
+
+  // اقدام روی یک سؤال (بالا/پایین/ویرایش/حذف) برای قالب و کلاس
+  function questionAction(btn, list, ctx, reload, delUrl, reorderUrl, reorderExtra){
     if(!btn || btn.hasAttribute('disabled')) return;
-    const id = Number(btn.dataset.id);
-    const qs = CLASS_SURVEY.questions;
-    const idx = qs.findIndex(q => q.id === id);
-    if(idx < 0) return;
-    const action = btn.dataset.svqAction;
-
-    if(action === 'edit'){
-      openSurveyQuestionModal(qs[idx]);
-    } else if(action === 'delete'){
+    const idx = Number(btn.dataset.idx);
+    const q = list[idx];
+    if(!q) return;
+    const act = btn.dataset.svqAction;
+    if(act === 'edit'){
+      openSurveyQuestionModal(ctx, idx, q);
+    } else if(act === 'delete'){
       if(!confirm('آیا از حذف این سؤال مطمئن هستید؟')) return;
-      surveyApi(`/feedback/class-survey/questions/${id}/`, 'DELETE')
-        .then(() => { showToast('سؤال حذف شد'); return loadClassSurvey(false); })
+      surveyApi(delUrl(q.id), 'DELETE')
+        .then(() => { showToast('سؤال حذف شد'); return reload(); })
         .catch(err => showToast(err.message));
-    } else if(action === 'up' || action === 'down'){
-      const swapWith = action === 'up' ? idx - 1 : idx + 1;
-      if(swapWith < 0 || swapWith >= qs.length) return;
-      const ids = qs.map(q => q.id);
-      [ids[idx], ids[swapWith]] = [ids[swapWith], ids[idx]];
-      surveyApi('/feedback/class-survey/questions/reorder/', 'POST', { ids: ids })
-        .then(() => loadClassSurvey(false))
+    } else if(act === 'up' || act === 'down'){
+      const other = act === 'up' ? idx - 1 : idx + 1;
+      if(other < 0 || other >= list.length) return;
+      const ids = list.map(x => x.id);
+      [ids[idx], ids[other]] = [ids[other], ids[idx]];
+      surveyApi(reorderUrl, 'POST', Object.assign({ ids: ids }, reorderExtra || {}))
+        .then(() => reload())
         .catch(err => showToast(err.message));
     }
+  }
+  document.getElementById('surveyQuestionsList').addEventListener('click', (e) => {
+    questionAction(e.target.closest('[data-svq-action]'), TEMPLATE_SURVEY.questions, { type: 'template' },
+      () => loadTemplateSurvey(false),
+      id => `/feedback/class-survey/questions/${id}/`, '/feedback/class-survey/questions/reorder/');
   });
 
-  // ---- مودال سوالات نظرسنجی (مشترک بین نظرسنجی کلی و کلاسی؛ ثبت سوالات قبل از ذخیره‌ی نهایی) ----
-  let csDraftQuestions = [];
-  let csQuestionsContext = 'class'; // 'class' یا 'general'
-  const csQuestionsOverlay = document.getElementById('csQuestionsModalOverlay');
-  const csQuestionInput = document.getElementById('csQuestionInput');
+  // ---------------- فهرست کلاس‌ها + ویرایش نظرسنجی هر کلاس روی قالب کلی ----------------
+  let CLASS_PANEL = null;          // پاسخ GET class-survey/classes/<id>/
+  let classPanelId = null;
+  let CUSTOM_CLASS_IDS = new Set(); // کلاس‌هایی که نظرسنجی اختصاصی دارند
 
-  function renderCsDraftQuestions(){
-    const list = document.getElementById('csQuestionsList');
-    if(csDraftQuestions.length === 0){
-      list.innerHTML = `<div class="no-match">هنوز سؤالی ثبت نشده است</div>`;
-    } else {
-      list.innerHTML = csDraftQuestions.map((q, i) => `
-        <div style="display:flex;align-items:center;gap:10px;background:#f6f9f9;border-radius:10px;padding:10px 12px;">
-          <span style="flex:1;font-size:13px;color:#33474a;">${toPersianDigits(i + 1)}. ${q}</span>
-          <button class="icon-btn danger" title="حذف سؤال" onclick="removeCsDraftQuestion(${i})">
-            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-      `).join('');
-    }
-    updateCsQuestionsCountLabel();
+  // سه «صفحه» داخل بخش: فهرست / قالب کلی / یک کلاس
+  function showCsScreen(name){
+    document.getElementById('csScreenList').classList.toggle('hide', name !== 'list');
+    document.getElementById('csScreenTemplate').classList.toggle('hide', name !== 'template');
+    document.getElementById('csScreenClass').classList.toggle('hide', name !== 'class');
   }
-  function updateCsQuestionsCountLabel(){
-    const labelId = csQuestionsContext === 'general' ? 'gsQuestionsCountLabel' : 'csQuestionsCountLabel';
-    const label = document.getElementById(labelId);
-    label.textContent = csDraftQuestions.length === 0
-      ? 'هیچ سؤالی ثبت نشده'
-      : `${toPersianDigits(csDraftQuestions.length)} از ۶ سؤال ثبت شده`;
-  }
-  window.removeCsDraftQuestion = function(index){
-    csDraftQuestions.splice(index, 1);
-    renderCsDraftQuestions();
-  };
+  document.querySelectorAll('.cs-back').forEach(b => b.addEventListener('click', () => { showCsScreen('list'); loadClassSurveyList(); }));
+  document.getElementById('btnOpenTemplateEditor').addEventListener('click', () => { showCsScreen('template'); loadTemplateSurvey(true); });
 
-  function openCsQuestionsModal(context){
-    csQuestionsContext = context || 'class';
-    csQuestionInput.value = '';
-    renderCsDraftQuestions();
-    csQuestionsOverlay.classList.add('open');
+  function renderClassSurveyTable(){
+    const body = document.getElementById('classSurveyTableBody');
+    if(!pickedSurveyBranch || !pickedCsTerm){ body.innerHTML = '<tr class="empty-row"><td colspan="5">ابتدا شعبه را انتخاب کنید</td></tr>'; return; }
+    const q = (document.getElementById('classSurveyClassFilter').value || '').trim();
+    const termNo = pickedCsTerm ? parseInt(toEnglishDigits(pickedCsTerm), 10) : null;
+    const list = (CLASSES || []).filter(c => c.branch === pickedSurveyBranch && Number(c.termOrder) === termNo && (!q || (c.name || '').includes(q)));
+    if(!list.length){ body.innerHTML = '<tr class="empty-row"><td colspan="5">کلاسی در این شعبه و دوره یافت نشد</td></tr>'; return; }
+    body.innerHTML = list.map((c, i) => `
+      <tr>
+        <td>${toPersianDigits(i + 1)}</td>
+        <td>${escFb(c.name)}</td>
+        <td>${c.termOrder ? 'دوره ' + toPersianDigits(c.termOrder) : '—'}</td>
+        <td>${CUSTOM_CLASS_IDS.has(c.id) ? '<span class="status-pass">اختصاصی</span>' : '<span class="dept-empty">قالب کلی</span>'}</td>
+        <td><button class="btn-ghost" type="button" data-edit-class="${c.id}">ویرایش نظرسنجی</button></td>
+      </tr>`).join('');
   }
-  function closeCsQuestionsModal(){ csQuestionsOverlay.classList.remove('open'); }
+  function loadClassSurveyList(){
+    return Promise.all([
+      typeof loadClasses === 'function' ? loadClasses() : Promise.resolve(),
+      fetch(`${API_BASE_URL}/feedback/class-survey/customized-classes/`, { credentials: 'include' })
+        .then(r => r.ok ? r.json() : { class_ids: [] }).catch(() => ({ class_ids: [] }))
+    ]).then(([, d]) => { CUSTOM_CLASS_IDS = new Set(d.class_ids || []); renderClassSurveyTable(); });
+  }
+  document.getElementById('classSurveyClassFilter').addEventListener('input', renderClassSurveyTable);
+  function openClassSurveyScreen(){
+    showCsScreen('list');
+    loadClassSurveyList();
+  }
 
-  // (دکمه‌ی «سوالات» نظرسنجی کلاسیِ قدیمی حذف شده؛ نظرسنجی کلاسی حالا یک نظرسنجی کلی با
-  // ویرایشگر سؤال جداگانه است. فقط دکمه‌ی «نظرسنجی‌های کلی» از این مودال استفاده می‌کند.)
-  document.getElementById('btnManageGsQuestions').addEventListener('click', () => openCsQuestionsModal('general'));
-  document.getElementById('btnAddCsQuestion').addEventListener('click', () => {
-    const text = csQuestionInput.value.trim();
-    if(!text){
-      showToast('لطفاً متن سؤال را وارد کنید');
+  document.getElementById('classSurveyTableBody').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-edit-class]');
+    if(!btn) return;
+    const id = Number(btn.dataset.editClass);
+    const c = (CLASSES || []).find(x => x.id === id);
+    classPanelId = id;
+    document.getElementById('classSurveyTitle').textContent = 'نظرسنجی کلاس: ' + (c ? c.name : '');
+    showCsScreen('class');
+    loadClassPanel();
+  });
+
+  function renderClassPanel(){
+    if(!CLASS_PANEL){
+      document.getElementById('classSurveyStatus').innerHTML = '<span class="dept-empty">دریافت اطلاعات از سرور ممکن نشد.</span>';
+      document.getElementById('classSurveyQList').innerHTML = '';
       return;
     }
-    if(csDraftQuestions.length >= 6){
-      showToast('حداکثر ۶ سؤال می‌توانید ثبت کنید');
-      return;
-    }
-    csDraftQuestions.push(text);
-    csQuestionInput.value = '';
-    renderCsDraftQuestions();
-    csQuestionInput.focus();
+    const custom = CLASS_PANEL.custom;
+    document.getElementById('classSurveyStatus').innerHTML = custom
+      ? '<span class="status-pass">نظرسنجی اختصاصی این کلاس</span>'
+      : '<span class="dept-empty">این کلاس از قالب کلی استفاده می‌کند</span>';
+    document.getElementById('btnCustomizeClassSurvey').style.display = custom ? 'none' : '';
+    document.getElementById('btnResetClassSurvey').style.display = custom ? '' : 'none';
+    document.getElementById('btnAddClassSurveyQuestion').style.display = custom ? '' : 'none';
+    document.getElementById('classSurveyHint').textContent = custom
+      ? 'سؤال‌های این کلاس را ویرایش کنید؛ تغییر قالب کلی روی این کلاس اثری ندارد.'
+      : 'سؤال‌های زیر از قالب کلی است. برای ویرایش فقط در همین کلاس، «شخصی‌سازی» را بزنید (قالب برای این کلاس کپی می‌شود).';
+    document.getElementById('classSurveyQList').innerHTML = questionCardsHtml(CLASS_PANEL.questions || [], custom)
+      || '<div class="qa-empty">سؤالی وجود ندارد.</div>';
+  }
+  function loadClassPanel(){
+    if(!classPanelId){ CLASS_PANEL = null; renderClassPanel(); return Promise.resolve(); }
+    return fetch(`${API_BASE_URL}/feedback/class-survey/classes/${classPanelId}/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => { CLASS_PANEL = data; })
+      .catch(() => { CLASS_PANEL = null; })
+      .then(renderClassPanel);
+  }
+  document.getElementById('btnCustomizeClassSurvey').addEventListener('click', () => {
+    if(!classPanelId) return;
+    surveyApi(`/feedback/class-survey/classes/${classPanelId}/customize/`, 'POST')
+      .then(() => { showToast('نظرسنجی این کلاس از قالب کپی شد'); return loadClassPanel(); })
+      .catch(err => showToast(err.message));
   });
-  csQuestionInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('btnAddCsQuestion').click(); }
+  document.getElementById('btnResetClassSurvey').addEventListener('click', () => {
+    if(!classPanelId) return;
+    if(!confirm('سؤال‌های اختصاصی این کلاس حذف می‌شود و دوباره از قالب کلی استفاده می‌کند. ادامه می‌دهید؟')) return;
+    surveyApi(`/feedback/class-survey/classes/${classPanelId}/customize/`, 'DELETE')
+      .then(() => { showToast('کلاس به قالب کلی برگشت'); return loadClassPanel(); })
+      .catch(err => showToast(err.message));
   });
-  document.getElementById('csQuestionsModalClose').addEventListener('click', closeCsQuestionsModal);
-  document.getElementById('csQuestionsModalCancel').addEventListener('click', closeCsQuestionsModal);
-  csQuestionsOverlay.addEventListener('click', (e) => { if(e.target === csQuestionsOverlay) closeCsQuestionsModal(); });
-  document.getElementById('csQuestionsModalConfirm').addEventListener('click', () => {
-    updateCsQuestionsCountLabel();
-    closeCsQuestionsModal();
+  document.getElementById('btnAddClassSurveyQuestion').addEventListener('click', () => {
+    if(classPanelId) openSurveyQuestionModal({ type: 'class', classId: classPanelId }, -1, null);
   });
-
-  // ---- مودال نوع پاسخ (مشترک بین نظرسنجی کلی و کلاسی) ----
-  function defaultAnswerConfig(){
-    return { mc: true, mcOptions: ["خیلی خوب","خوب","متوسط","بد","خیلی بد"], desc: false, descMode: 'qa' };
-  }
-  let csAnswerConfig = defaultAnswerConfig();
-  const answerTypeOverlay = document.getElementById('answerTypeModalOverlay');
-  const atMcCheck = document.getElementById('at_mc_check');
-  const atDescCheck = document.getElementById('at_desc_check');
-  const atMcOptionsWrap = document.getElementById('atMcOptionsWrap');
-  const atDescModeWrap = document.getElementById('atDescModeWrap');
-
-  function updateAnswerSummaryLabel(){
-    const labelId = csQuestionsContext === 'general' ? 'gsAnswerSummaryLabel' : 'csAnswerSummaryLabel';
-    const label = document.getElementById(labelId);
-    const parts = [];
-    if(csAnswerConfig.mc) parts.push('تستی');
-    if(csAnswerConfig.desc) parts.push(csAnswerConfig.descMode === 'note' ? 'تشریحی (شرح)' : 'تشریحی (سؤال و پاسخ)');
-    label.textContent = parts.length ? parts.join(' + ') : 'تعیین نشده';
-  }
-
-  function toggleAnswerTypeBlocks(){
-    atMcOptionsWrap.classList.toggle('hide', !atMcCheck.checked);
-    atDescModeWrap.classList.toggle('hide', !atDescCheck.checked);
-  }
-  atMcCheck.addEventListener('change', toggleAnswerTypeBlocks);
-  atDescCheck.addEventListener('change', toggleAnswerTypeBlocks);
-
-  function openAnswerTypeModal(context){
-    csQuestionsContext = context || 'class';
-    atMcCheck.checked = csAnswerConfig.mc;
-    atDescCheck.checked = csAnswerConfig.desc;
-    for(let i = 0; i < 5; i++){
-      document.getElementById('at_mc_opt_' + i).value = csAnswerConfig.mcOptions[i] || '';
-    }
-    document.querySelectorAll('input[name="atDescMode"]').forEach(r => {
-      r.checked = (r.value === csAnswerConfig.descMode);
-    });
-    toggleAnswerTypeBlocks();
-    answerTypeOverlay.classList.add('open');
-  }
-  function closeAnswerTypeModal(){ answerTypeOverlay.classList.remove('open'); }
-
-  // (دکمه‌ی «نوع پاسخ» نظرسنجی کلاسیِ قدیمی هم حذف شده؛ فقط نظرسنجی‌های کلی از این مودال استفاده می‌کنند.)
-  document.getElementById('btnManageGsAnswer').addEventListener('click', () => openAnswerTypeModal('general'));
-  document.getElementById('answerTypeModalClose').addEventListener('click', closeAnswerTypeModal);
-  document.getElementById('answerTypeModalCancel').addEventListener('click', closeAnswerTypeModal);
-  answerTypeOverlay.addEventListener('click', (e) => { if(e.target === answerTypeOverlay) closeAnswerTypeModal(); });
-  document.getElementById('answerTypeModalSave').addEventListener('click', () => {
-    const mc = atMcCheck.checked;
-    const desc = atDescCheck.checked;
-    if(!mc && !desc){
-      showToast('لطفاً حداقل یک نوع پاسخ (تستی یا تشریحی) را انتخاب کنید');
-      return;
-    }
-    const mcOptions = [];
-    for(let i = 0; i < 5; i++){
-      mcOptions.push(document.getElementById('at_mc_opt_' + i).value.trim() || defaultAnswerConfig().mcOptions[i]);
-    }
-    const descModeInput = document.querySelector('input[name="atDescMode"]:checked');
-    csAnswerConfig = { mc, mcOptions, desc, descMode: descModeInput ? descModeInput.value : 'qa' };
-    updateAnswerSummaryLabel();
-    closeAnswerTypeModal();
-    showToast('نوع پاسخ ذخیره شد');
+  document.getElementById('classSurveyQList').addEventListener('click', (e) => {
+    if(!CLASS_PANEL || !CLASS_PANEL.custom) return;
+    questionAction(e.target.closest('[data-svq-action]'), CLASS_PANEL.questions, { type: 'class', classId: classPanelId },
+      loadClassPanel, id => `/feedback/class-survey/class-questions/${id}/`,
+      '/feedback/class-survey/class-questions/reorder/', { class_id: classPanelId });
   });
 
-  // ---- نظرسنجی‌های کلی: لیست و مدیریت نظرسنجی‌ها ----
-  let GENERAL_SURVEYS = [
-    { id:1, title:"نظرسنجی رضایت عمومی از خدمات خانه کارگر", status:"فعال", date:"۱۴۰۴/۰۵/۰۱",
-      questions:[
-        "میزان رضایت شما از خدمات آموزشی خانه کارگر چقدر است؟",
-        "برخورد کارکنان و مسئولین را چگونه ارزیابی می‌کنید؟",
-        "کدام بخش‌ها نیاز به بهبود دارند؟",
-        "آیا خانه کارگر را به دیگران معرفی می‌کنید؟"
-      ],
-      answerConfig: { mc: true, mcOptions: ["خیلی خوب","خوب","متوسط","بد","خیلی بد"], desc: true, descMode: 'note' } }
-  ];
-  let nextGeneralSurveyId = 2;
-  let editingGeneralSurveyId = null;
+  // ---------------- ۲) نظرسنجی‌های کلی ----------------
+  let GENERAL_SURVEYS = [];
+  let generalLoadFailed = false;
+  let GS_DRAFT = { id: null, questions: [] };
+
+  function formatSurveyDate(iso){
+    try { return new Date(iso).toLocaleDateString('fa-IR'); } catch(e){ return '—'; }
+  }
 
   function renderGeneralSurveys(){
     const q = (document.getElementById('generalSurveySearch').value || '').trim();
     const filtered = GENERAL_SURVEYS.filter(s => !q || s.title.includes(q));
     const body = document.getElementById('generalSurveyTableBody');
-
     if(filtered.length === 0){
-      body.innerHTML = `<tr class="empty-row"><td colspan="6">نظرسنجی‌ای یافت نشد</td></tr>`;
+      body.innerHTML = `<tr class="empty-row"><td colspan="7">${generalLoadFailed ? 'دریافت نظرسنجی‌ها از سرور ممکن نشد' : 'نظرسنجی‌ای یافت نشد'}</td></tr>`;
       return;
     }
-
     body.innerHTML = filtered.map((s, i) => `
       <tr data-id="${s.id}">
         <td>${toPersianDigits(i + 1)}</td>
-        <td>${s.title}</td>
-        <td>${toPersianDigits((s.questions || []).length)}</td>
-        <td>${s.status === 'فعال' ? '<span class="status-pass">فعال</span>' : '<span class="dept-empty">غیرفعال</span>'}</td>
-        <td>${s.date || '—'}</td>
+        <td>${escFb(s.title)}</td>
+        <td>${toPersianDigits(s.question_count)}</td>
+        <td>${toPersianDigits(s.response_count == null ? 0 : s.response_count)}</td>
+        <td>${s.is_active ? '<span class="status-pass">فعال</span>' : '<span class="dept-empty">غیرفعال</span>'}</td>
+        <td>${formatSurveyDate(s.created_at)}</td>
         <td>
           <div class="row-actions">
-            <button class="icon-btn" title="ویرایش" onclick="openEditGeneralSurvey(${s.id})">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="icon-btn danger" title="حذف" onclick="deleteGeneralSurvey(${s.id})">
-              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+            <button class="icon-btn" title="ویرایش" onclick="openEditGeneralSurvey(${s.id})">${ICON_EDIT}</button>
+            <button class="icon-btn danger" title="حذف" onclick="deleteGeneralSurvey(${s.id})">${ICON_DEL}</button>
           </div>
         </td>
-      </tr>
-    `).join('');
+      </tr>`).join('');
   }
   document.getElementById('generalSurveySearch').addEventListener('input', renderGeneralSurveys);
 
+  function loadGeneralSurveys(){
+    return fetch(`${API_BASE_URL}/feedback/general-surveys/`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(data => { GENERAL_SURVEYS = Array.isArray(data) ? data : (data.results || []); generalLoadFailed = false; })
+      .catch(() => { GENERAL_SURVEYS = []; generalLoadFailed = true; })
+      .then(renderGeneralSurveys);
+  }
+
   const generalSurveyOverlay = document.getElementById('generalSurveyModalOverlay');
+  function renderGsDraftQuestions(){
+    const qs = GS_DRAFT.questions;
+    document.getElementById('gsQuestionsList').innerHTML = qs.length
+      ? questionCardsHtml(qs, true)
+      : '<div class="qa-empty">هنوز سؤالی ثبت نشده است.</div>';
+    document.getElementById('gsQuestionsCountLabel').textContent = qs.length
+      ? `${toPersianDigits(qs.length)} سؤال`
+      : 'هیچ سؤالی ثبت نشده';
+  }
+  document.getElementById('gsQuestionsList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-svq-action]');
+    if(!btn || btn.hasAttribute('disabled')) return;
+    const idx = Number(btn.dataset.idx);
+    const qs = GS_DRAFT.questions;
+    const act = btn.dataset.svqAction;
+    if(act === 'edit') openSurveyQuestionModal({ type: 'general' }, idx, qs[idx]);
+    else if(act === 'delete'){ qs.splice(idx, 1); renderGsDraftQuestions(); }
+    else {
+      const other = act === 'up' ? idx - 1 : idx + 1;
+      if(other < 0 || other >= qs.length) return;
+      [qs[idx], qs[other]] = [qs[other], qs[idx]];
+      renderGsDraftQuestions();
+    }
+  });
+  document.getElementById('btnAddGsQuestion').addEventListener('click', () => openSurveyQuestionModal({ type: 'general' }, -1, null));
+
   function openAddGeneralSurvey(){
-    editingGeneralSurveyId = null;
-    document.getElementById('generalSurveyModalTitle').textContent = 'افزودن نظرسنجی';
+    GS_DRAFT = { id: null, questions: [] };
+    document.getElementById('generalSurveyModalTitle').textContent = 'افزودن نظرسنجی کلی';
     document.getElementById('gs_title').value = '';
-    document.getElementById('gs_status').value = 'فعال';
-    csDraftQuestions = [];
-    csQuestionsContext = 'general';
-    updateCsQuestionsCountLabel();
-    csAnswerConfig = defaultAnswerConfig();
-    updateAnswerSummaryLabel();
+    document.getElementById('gs_desc').value = '';
+    document.getElementById('gs_status').value = 'true';
+    renderGsDraftQuestions();
     generalSurveyOverlay.classList.add('open');
   }
   window.openEditGeneralSurvey = function(id){
     const s = GENERAL_SURVEYS.find(x => x.id === id);
     if(!s) return;
-    editingGeneralSurveyId = id;
-    document.getElementById('generalSurveyModalTitle').textContent = 'ویرایش نظرسنجی';
+    GS_DRAFT = { id: id, questions: (s.question_list || []).map(q => ({ id: q.id, text: q.text, kind: q.kind, options: q.options || [] })) };
+    document.getElementById('generalSurveyModalTitle').textContent = 'ویرایش نظرسنجی کلی';
     document.getElementById('gs_title').value = s.title;
-    document.getElementById('gs_status').value = s.status || 'فعال';
-    csDraftQuestions = [...(s.questions || [])];
-    csQuestionsContext = 'general';
-    updateCsQuestionsCountLabel();
-    csAnswerConfig = s.answerConfig ? { ...s.answerConfig, mcOptions: [...s.answerConfig.mcOptions] } : defaultAnswerConfig();
-    updateAnswerSummaryLabel();
+    document.getElementById('gs_desc').value = s.description || '';
+    document.getElementById('gs_status').value = s.is_active ? 'true' : 'false';
+    renderGsDraftQuestions();
     generalSurveyOverlay.classList.add('open');
   };
   window.deleteGeneralSurvey = function(id){
     const s = GENERAL_SURVEYS.find(x => x.id === id);
     if(!s) return;
-    if(!confirm(`آیا از حذف «${s.title}» مطمئن هستید؟`)) return;
-    GENERAL_SURVEYS = GENERAL_SURVEYS.filter(x => x.id !== id);
-    renderGeneralSurveys();
-    showToast('نظرسنجی حذف شد');
+    if(!confirm(`آیا از حذف «${s.title}» و همه‌ی پاسخ‌هایش مطمئن هستید؟`)) return;
+    surveyApi(`/feedback/general-surveys/${id}/`, 'DELETE')
+      .then(() => { showToast('نظرسنجی حذف شد'); return loadGeneralSurveys(); })
+      .catch(err => showToast(err.message));
   };
   function closeGeneralSurveyModal(){ generalSurveyOverlay.classList.remove('open'); }
-
   document.getElementById('btnAddGeneralSurvey').addEventListener('click', openAddGeneralSurvey);
   document.getElementById('generalSurveyModalClose').addEventListener('click', closeGeneralSurveyModal);
   document.getElementById('generalSurveyModalCancel').addEventListener('click', closeGeneralSurveyModal);
   generalSurveyOverlay.addEventListener('click', (e) => { if(e.target === generalSurveyOverlay) closeGeneralSurveyModal(); });
   document.getElementById('generalSurveyModalSave').addEventListener('click', () => {
     const title = document.getElementById('gs_title').value.trim();
-    const status = document.getElementById('gs_status').value;
-    if(!title){
-      showToast('لطفاً عنوان نظرسنجی را وارد کنید');
-      return;
-    }
-    if(editingGeneralSurveyId){
-      const s = GENERAL_SURVEYS.find(x => x.id === editingGeneralSurveyId);
-      s.title = title; s.status = status;
-      s.questions = [...csDraftQuestions];
-      s.answerConfig = { ...csAnswerConfig, mcOptions: [...csAnswerConfig.mcOptions] };
-      showToast('نظرسنجی به‌روزرسانی شد');
-    } else {
-      GENERAL_SURVEYS.push({ id: nextGeneralSurveyId++, title, status, questions: [...csDraftQuestions], answerConfig: { ...csAnswerConfig, mcOptions: [...csAnswerConfig.mcOptions] }, date: new Date().toLocaleDateString('fa-IR') });
-      showToast('نظرسنجی جدید افزوده شد');
-    }
-    renderGeneralSurveys();
-    closeGeneralSurveyModal();
+    if(!title){ showToast('لطفاً عنوان نظرسنجی را وارد کنید'); return; }
+    if(!GS_DRAFT.questions.length){ showToast('حداقل یک سؤال اضافه کنید'); return; }
+    const payload = {
+      title: title,
+      description: document.getElementById('gs_desc').value.trim(),
+      is_active: document.getElementById('gs_status').value === 'true',
+      questions: GS_DRAFT.questions.map(q => {
+        const o = { text: q.text, kind: q.kind };
+        if(q.id) o.id = q.id;
+        if(q.kind === 'choice') o.options = q.options;
+        return o;
+      })
+    };
+    const btn = document.getElementById('generalSurveyModalSave');
+    btn.disabled = true;
+    const req = GS_DRAFT.id
+      ? surveyApi(`/feedback/general-surveys/${GS_DRAFT.id}/`, 'PATCH', payload)
+      : surveyApi('/feedback/general-surveys/', 'POST', payload);
+    req.then(() => {
+        showToast(GS_DRAFT.id ? 'نظرسنجی به‌روزرسانی شد' : 'نظرسنجی جدید افزوده شد');
+        closeGeneralSurveyModal();
+        return loadGeneralSurveys();
+      })
+      .catch(err => showToast(err.message))
+      .then(() => { btn.disabled = false; });
   });
-  renderGeneralSurveys();
 
   // ---- کنترل «رده سنی کلاس» (مشترک بین فرم «درج کلاس» و مودال «ویرایش کلاس») ----
   // یک کلید فعال/غیرفعال + دو فیلد حداقل/حداکثر سن. تا وقتی کلید خاموش است فیلدها
@@ -8385,6 +8624,39 @@
     closeExamTermModal();
     showToast(`دوره‌ی «دوره ${pickedExamTerm}» انتخاب شد`);
   });
+  // ---- انتخاب دوره برای «نظرسنجی‌های کلاسی»: بدون انتخاب دوره وارد این بخش نمی‌شود ----
+  let pickedCsTerm = null;
+  let pendingCsTerm = null;
+  const csTermOverlay = document.getElementById('csTermModalOverlay');
+  const csTermChecklist = document.getElementById('csTermChecklist');
+  function renderCsTermChecklist(){
+    const terms = getTermsFromCalendar();
+    csTermChecklist.innerHTML = terms.length ? terms.map(t => `
+      <label>
+        <input type="radio" name="csTermPick" value="${t.code}" ${pendingCsTerm === t.code ? 'checked' : ''}>
+        <span>دوره ${t.code} (ثبت‌نام ${t.regStart} تا ${t.regEnd})</span>
+      </label>`).join('') : '<div class="no-match">داده‌ای در تقویم آموزشی یافت نشد</div>';
+  }
+  window.openCsTermModal = function(){
+    pendingCsTerm = pickedCsTerm;
+    renderCsTermChecklist();
+    csTermOverlay.classList.add('open');
+  };
+  function closeCsTermModal(){ csTermOverlay.classList.remove('open'); }
+  function cancelCsTerm(){ closeCsTermModal(); if(!pickedCsTerm) goToView('survey'); }
+  csTermChecklist.addEventListener('change', (e) => { if(e.target.name === 'csTermPick') pendingCsTerm = e.target.value; });
+  document.getElementById('csTermModalClose').addEventListener('click', cancelCsTerm);
+  document.getElementById('csTermModalCancel').addEventListener('click', cancelCsTerm);
+  csTermOverlay.addEventListener('click', (e) => { if(e.target === csTermOverlay) cancelCsTerm(); });
+  document.getElementById('csTermModalConfirm').addEventListener('click', () => {
+    if(!pendingCsTerm){ showToast('لطفاً یک دوره را انتخاب کنید'); return; }
+    pickedCsTerm = pendingCsTerm;
+    closeCsTermModal();
+    showToast(`«دوره ${pickedCsTerm}» انتخاب شد`);
+    renderBranchBars();
+    openClassSurveyScreen();
+  });
+  document.getElementById('btnChangeCsTerm').addEventListener('click', () => window.openCsTermModal());
   document.getElementById('btnChangeExamTerm').addEventListener('click', openExamTermModal);
   document.getElementById('btnPickExamTerm').addEventListener('click', openExamTermModal);
 
@@ -10803,24 +11075,30 @@
 
   // ---- view switching ----
   function goToView(name){
+    if(name === 'rules'){ rulesLoad(); rulesSetEditing(false); }
+    if(name === 'slideshow') loadSlideshow();
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
     document.querySelectorAll('.side-link').forEach(l => l.classList.toggle('active', l.dataset.view === name));
+    if(name === 'reports' && !pickedReportBranch) openDeptBranchModal('reports');
+    if(name === 'review' && !pickedReviewBranch) openDeptBranchModal('review');
+    if((name === 'survey' || name === 'classSurvey') && !pickedSurveyBranch) openDeptBranchModal('survey');
+    renderBranchBars();
     if(name === 'reports') updateReportsStats();
-    if(name === 'reports') loadSurveyStatsFromServer();
+    if(name === 'reports') loadReportSurveyOptions();
     if(name === 'review' || name === 'reports') loadFeedback();
     if(name === 'departments' && !pickedDeptBranch) openDeptBranchModal('departments');
     if(name === 'classManagement' && !pickedClassBranch) openDeptBranchModal('classManagement');
     if(name === 'lessons' && !pickedClassBranch) openDeptBranchModal('classManagement');
     if(name === 'lessons') renderLessonBranchBar();
-    if(name === 'survey' && !pickedSurveyBranch) openDeptBranchModal('survey');
     if((name === 'classExam' || name === 'examScores' || name === 'examQuestionBank') && !pickedExamBranch) openDeptBranchModal('classExam');
     if(name === 'examQuestionBank' && pickedExamBranch) renderQbBranchBar();
     if(name === 'hrTeachers' && !pickedTeachersBranch) openDeptBranchModal('teachers');
     if(name === 'hrTeachers' && pickedTeachersBranch && typeof renderTeachersBranchBar === 'function') renderTeachersBranchBar();
     if(name === 'examScores' && pickedExamBranch && !pickedExamTerm) openExamTermModal();
     if(name === 'courseDept' && !pickedTerm) openTermModal();
-    if(name === 'classSurvey') loadClassSurvey(true);
+    if(name === 'classSurvey'){ renderBranchBars(); if(pickedSurveyBranch && !pickedCsTerm) window.openCsTermModal(); else if(pickedSurveyBranch) openClassSurveyScreen(); }
+    if(name === 'generalSurvey') loadGeneralSurveys();
     if(name === 'finance' && !pickedFinanceBranch) openDeptBranchModal('finance');
     if(name === 'finance') loadFinance();
     if(name === 'logs') loadLogs(1);
@@ -10831,97 +11109,221 @@
   }
   function updateReportsStats(){
     // شمارش‌ها از همان داده‌ی واقعیِ دریافت‌شده از سرور (FEEDBACK_ITEMS) محاسبه می‌شود
-    const complaints = feedbackItemsOf('complaint');
-    const suggestions = feedbackItemsOf('suggestion');
+    const complaints = feedbackItemsOf('complaint', pickedReportBranch);
+    const suggestions = feedbackItemsOf('suggestion', pickedReportBranch);
     const answered = function(list){ return list.filter(function(it){ return it.status === 'answered'; }).length; };
     document.getElementById('statComplaintsCount').textContent = toPersianDigits(complaints.length);
     document.getElementById('statSuggestionsCount').textContent = toPersianDigits(suggestions.length);
     document.getElementById('statRespondedCount').textContent = toPersianDigits(answered(complaints));
     document.getElementById('statSuggestionsRespondedCount').textContent = toPersianDigits(answered(suggestions));
-    renderSurveyStats();
   }
 
-  // ---- آمار نظرسنجی (صفحه‌ی گزارش‌ها): از پاسخ‌های واقعی نظرسنجی کلی محاسبه می‌شود ----
-  // فقط «یک» نظرسنجی کلی وجود دارد؛ رأی‌ها از گزینه‌های استاندارد (خیلی خوب … خیلی بد)
-  // سؤال‌های تستی شمرده می‌شود (گزینه‌های سفارشیِ دیگر در این شمارش نمی‌آیند).
-  let SURVEY_STATS = {
-    surveysHeld: 0,
-    voters: 0,
-    veryGood: 0,
-    good: 0,
-    average: 0,
-    bad: 0,
-    veryBad: 0
-  };
-
-  function loadSurveyStatsFromServer(){
-    return fetch(`${API_BASE_URL}/feedback/class-survey/results/`, { credentials: 'include' })
-      .then(res => res.ok ? res.json() : Promise.reject(res.status))
-      .then(function(data){
-        const votes = {};
-        data.questions.filter(q => q.kind === 'choice').forEach(function(q){
-          q.options.forEach(function(o){ votes[o.label] = (votes[o.label] || 0) + o.count; });
-        });
-        SURVEY_STATS = {
-          surveysHeld: data.questions.length ? 1 : 0,
-          voters: data.participants,
-          veryGood: votes['خیلی خوب'] || 0,
-          good: votes['خوب'] || 0,
-          average: votes['متوسط'] || 0,
-          bad: votes['بد'] || 0,
-          veryBad: votes['خیلی بد'] || 0
-        };
-        renderSurveyStats();
-      })
-      .catch(function(){});
-  }
+  // ---- گزارش نظرسنجی‌ها (صفحه‌ی گزارش‌ها) ----
+  // بالا: آمار کلیِ شعبه‌ی انتخاب‌شده. دکمه‌ی «جزئیات»: انتخاب دوره ← فهرست همه‌ی کلاس‌ها (حضوری،
+  // مجازی و سمینار/کارگاه، بدون تفکیک) ← نتایج نظرسنجی هر کدام.
+  let SURVEY_STATS = { surveysHeld: 0, voters: 0, veryGood: 0, good: 0, average: 0, bad: 0, veryBad: 0 };
+  let REPORT_LAST = null;        // { title, data } برای خروجی اکسل جزئیات
+  // دامنه‌ی گزارش نظرسنجی: 'branch' = شعبه‌ی انتخاب‌شده، 'national' = همه‌ی شعب و استان‌ها
+  let reportScope = 'branch';
+  const scopeBranchParam = () => reportScope === 'national' ? '' : (pickedReportBranch || '');
+  const scopeLabel = () => reportScope === 'national' ? 'ملی (همه‌ی شعب)' : 'شعبه‌ی ' + pickedReportBranch;
 
   function renderSurveyStats(){
-    document.getElementById('statSurveysHeldCount').textContent = toPersianDigits(SURVEY_STATS.surveysHeld);
-    document.getElementById('statVotersCount').textContent = toPersianDigits(SURVEY_STATS.voters);
-    document.getElementById('statVoteExcellentCount').textContent = toPersianDigits(SURVEY_STATS.veryGood);
-    document.getElementById('statVoteGoodCount').textContent = toPersianDigits(SURVEY_STATS.good);
-    document.getElementById('statVoteAverageCount').textContent = toPersianDigits(SURVEY_STATS.average);
-    document.getElementById('statVoteBadCount').textContent = toPersianDigits(SURVEY_STATS.bad);
-    document.getElementById('statVoteVeryBadCount').textContent = toPersianDigits(SURVEY_STATS.veryBad);
+    const S = SURVEY_STATS;
+    document.getElementById('statSurveysHeldCount').textContent = toPersianDigits(S.surveysHeld);
+    document.getElementById('statVotersCount').textContent = toPersianDigits(S.voters);
+    document.getElementById('statVoteExcellentCount').textContent = toPersianDigits(S.veryGood);
+    document.getElementById('statVoteGoodCount').textContent = toPersianDigits(S.good);
+    document.getElementById('statVoteAverageCount').textContent = toPersianDigits(S.average);
+    document.getElementById('statVoteBadCount').textContent = toPersianDigits(S.bad);
+    document.getElementById('statVoteVeryBadCount').textContent = toPersianDigits(S.veryBad);
   }
 
-  document.getElementById('btnExportSurveyStats').addEventListener('click', () => {
-    const rows = [
-      ['شاخص', 'مقدار'],
-      ['تعداد نظرسنجی‌های برگزار شده', SURVEY_STATS.surveysHeld],
-      ['تعداد رأی‌دهندگان', SURVEY_STATS.voters],
-      ['رأی خیلی خوب', SURVEY_STATS.veryGood],
-      ['رأی خوب', SURVEY_STATS.good],
-      ['رأی متوسط', SURVEY_STATS.average],
-      ['رأی بد', SURVEY_STATS.bad],
-      ['رأی خیلی بد', SURVEY_STATS.veryBad]
-    ];
+  // (نام قدیمی حفظ شده تا فراخوانی‌های دیگر نشکند) آمار کلیِ شعبه را از سرور می‌گیرد
+  function loadReportSurveyOptions(){
+    if(!pickedReportBranch && reportScope !== 'national') return Promise.resolve();
+    return fetch(`${API_BASE_URL}/feedback/class-survey/summary/?branch=${encodeURIComponent(scopeBranchParam())}`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(d => {
+        SURVEY_STATS = { surveysHeld: d.surveys_held, voters: d.voters, veryGood: d.veryGood, good: d.good, average: d.average, bad: d.bad, veryBad: d.veryBad };
+        renderSurveyStats();
+      })
+      .catch(() => { showToast('دریافت آمار نظرسنجی‌ها از سرور ممکن نشد'); });
+  }
 
-    const tableRows = rows.map((r, i) => {
-      const tag = i === 0 ? 'th' : 'td';
-      return `<tr>${r.map(cell => `<${tag} style="border:1px solid #ccc;padding:8px 14px;text-align:right;font-family:Tahoma,Arial;${i === 0 ? 'background:#0b4b54;color:#fff;font-weight:bold;' : ''}">${cell}</${tag}>`).join('')}</tr>`;
-    }).join('');
-
-    const html = `
-      <html dir="rtl">
-        <head><meta charset="UTF-8"></head>
-        <body>
-          <table style="border-collapse:collapse;">${tableRows}</table>
-        </body>
-      </html>
-    `;
-
+  // خروجی اکسل (HTML جدول) با نام فایل دلخواه
+  function downloadXls(rows, filename){
+    const esc = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const tableRows = rows.map((r, i) => `<tr>${r.map(cell => `<td style="border:1px solid #ccc;padding:8px 14px;text-align:right;font-family:Tahoma,Arial;${i === 0 ? 'background:#0b4b54;color:#fff;font-weight:bold;' : ''}">${esc(cell)}</td>`).join('')}</tr>`).join('');
+    const html = `<html dir="rtl"><head><meta charset="UTF-8"></head><body><table style="border-collapse:collapse;">${tableRows}</table></body></html>`;
     const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url;
-    link.download = 'آمار-نظرسنجی-ها.xls';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    link.href = url; link.download = filename;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('btnExportSurveyStats').addEventListener('click', () => {
+    const S = SURVEY_STATS;
+    downloadXls([
+      ['شاخص', 'مقدار'],
+      ['دامنه', reportScope === 'national' ? 'ملی (همه‌ی شعب)' : (pickedReportBranch || '')],
+      ['تعداد نظرسنجی‌های برگزار شده', S.surveysHeld],
+      ['تعداد رأی‌دهندگان', S.voters],
+      ['رأی خیلی خوب', S.veryGood], ['رأی خوب', S.good], ['رأی متوسط', S.average],
+      ['رأی بد', S.bad], ['رأی خیلی بد', S.veryBad]
+    ], 'آمار-نظرسنجی-ها.xls');
     showToast('فایل اکسل آمار نظرسنجی‌ها دانلود شد');
+  });
+
+  // نمایش نتایج یک نظرسنجی (آمار گزینه‌ها و پاسخ‌های تشریحی) داخل یک عنصر
+  function renderSurveyResultsInto(el, data, title){
+    REPORT_LAST = data ? { title: title, data: data } : null;
+    document.getElementById('reportDetailExport').style.display = data ? '' : 'none';
+    if(!data){ el.innerHTML = '<div class="qa-empty">دریافت نتایج از سرور ممکن نشد.</div>'; return; }
+    let html = `<div class="svq-count">${escFb(title)} — تعداد شرکت‌کنندگان: ${toPersianDigits(data.participants)}</div>`;
+    if(!data.participants){
+      el.innerHTML = html + '<div class="qa-empty">هنوز کسی در این نظرسنجی شرکت نکرده است.</div>';
+      return;
+    }
+    html += data.questions.map(function(q, i){
+      const head = `<div class="svr-qtitle">${toPersianDigits(i + 1)}. ${escFb(q.text)}</div>
+        <div class="svr-meta">${q.kind === 'choice' ? 'تستی' : 'تشریحی'} — ${toPersianDigits(q.answered)} پاسخ</div>`;
+      if(q.kind === 'choice'){
+        const rows = q.options.map(function(o){
+          const pct = q.answered ? Math.round(o.count * 100 / q.answered) : 0;
+          return `<div class="svr-row"><div class="svr-label">${escFb(o.label)}</div>
+            <div class="svr-track"><div class="svr-fill" style="width:${pct}%"></div></div>
+            <div class="svr-count">${toPersianDigits(o.count)} (${toPersianDigits(pct)}٪)</div></div>`;
+        }).join('');
+        return `<div class="svr-card">${head}${rows}</div>`;
+      }
+      const answers = q.answers.length ? q.answers.map(function(a){
+        const who = [a.class_name, a.branch].filter(Boolean).map(escFb).join(' — ');
+        return `<div class="svr-answer">${escFb(a.text)}<small>${who ? who + ' — ' : ''}${formatApplicantDate(a.submitted_at)}</small></div>`;
+      }).join('') : '<div class="svq-hint">هنوز پاسخی نوشته نشده است.</div>';
+      return `<div class="svr-card">${head}${answers}</div>`;
+    }).join('');
+    el.innerHTML = html;
+  }
+
+  // ---- پنجره‌ی «جزئیات»: مرحله‌ها = terms (دوره) ← items (کلاس/سمینار) ← result ----
+  const rdOverlay = document.getElementById('reportDetailOverlay');
+  const rdBody = document.getElementById('reportDetailBody');
+  let rdStep = 'terms';
+  let rdTerm = null;          // کد دوره (مثل «۰۶»)
+  let rdItems = [];           // کلاس‌ها و سمینارهای دوره
+
+  function rdSetStep(step, title){
+    rdStep = step;
+    document.getElementById('reportDetailTitle').textContent = title;
+    document.getElementById('reportDetailBack').textContent = step === 'terms' ? 'بستن' : 'بازگشت';
+    if(step !== 'result') document.getElementById('reportDetailExport').style.display = 'none';
+  }
+
+  function rdShowTerms(){
+    rdSetStep('terms', `جزئیات نظرسنجی‌ها — شعبه‌ی ${pickedReportBranch}`);
+    const terms = getTermsFromCalendar();
+    rdBody.innerHTML = `<div class="survey-stats-heading" style="margin-top:0;">انتخاب دوره</div>
+      <div class="dept-branch-checklist" id="rdTermList">${terms.length ? terms.map(t => `
+        <label><input type="radio" name="rdTermPick" value="${t.code}"><span>دوره ${t.code} (ثبت‌نام ${t.regStart} تا ${t.regEnd})</span></label>`).join('') : '<div class="no-match">داده‌ای در تقویم آموزشی یافت نشد</div>'}</div>
+      <div class="survey-stats-heading">نظرسنجی‌های کلی</div>
+      <div id="rdGeneralList"><div class="svq-hint">در حال دریافت…</div></div>`;
+    fetch(`${API_BASE_URL}/feedback/general-surveys/`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(list => {
+        list = Array.isArray(list) ? list : (list.results || []);
+        document.getElementById('rdGeneralList').innerHTML = list.length
+          ? list.map(g => `<div class="svq-card" style="cursor:pointer;" data-rd-general="${g.id}"><div class="svq-body"><div class="svq-text">${escFb(g.title)}</div></div></div>`).join('')
+          : '<div class="svq-hint">نظرسنجی کلی‌ای ثبت نشده است.</div>';
+      }).catch(() => { document.getElementById('rdGeneralList').innerHTML = '<div class="svq-hint">دریافت ممکن نشد.</div>'; });
+  }
+
+  // همه‌ی کلاس‌های دوره (حضوری + مجازی) و سمینارها/کارگاه‌ها، بدون تفکیک
+  function rdShowItems(){
+    rdSetStep('items', `دوره ${rdTerm} — کلاس‌ها و سمینارها`);
+    rdBody.innerHTML = '<div class="svq-hint">در حال دریافت…</div>';
+    const termNo = parseInt(toEnglishDigits(rdTerm), 10);
+    Promise.all([
+      typeof loadClasses === 'function' ? loadClasses() : Promise.resolve(),
+      surveyApi(`/classmgmt/seminars/?branch=${encodeURIComponent(pickedReportBranch)}`, 'GET').catch(() => [])
+    ]).then(([, seminars]) => {
+      rdItems = (CLASSES || []).filter(c => c.branch === pickedReportBranch && Number(c.termOrder) === termNo)
+        .map(c => ({ kind: 'class', id: c.id, name: c.name, type: c.classType || 'حضوری', branch: c.branch }))
+        .concat((seminars || []).filter(m => Number(m.term_order) === termNo && m.branch === pickedReportBranch)
+          .map(m => ({ kind: 'seminar', id: m.id, name: m.name, type: 'سمینار/کارگاه', branch: m.branch })));
+      rdBody.innerHTML = rdItems.length ? `<div class="table-wrap"><table class="hr-table">
+        <thead><tr><th style="width:50px;">#</th><th>نام</th><th>نوع</th><th>نتایج</th></tr></thead>
+        <tbody>${rdItems.map((it, i) => `<tr><td>${toPersianDigits(i + 1)}</td><td>${escFb(it.name)}</td><td>${escFb(it.type)}</td>
+          <td><button class="btn-ghost" type="button" data-rd-item="${i}">مشاهده‌ی نظرسنجی</button></td></tr>`).join('')}</tbody></table></div>`
+        : '<div class="qa-empty">در این دوره و شعبه کلاس یا سمیناری وجود ندارد.</div>';
+    });
+  }
+
+  function rdShowResult(url, title){
+    rdSetStep('result', title);
+    rdBody.innerHTML = '<div class="svq-hint">در حال دریافت…</div>';
+    fetch(url, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(d => renderSurveyResultsInto(rdBody, d, title))
+      .catch(() => renderSurveyResultsInto(rdBody, null, title));
+  }
+
+  document.querySelectorAll('[data-rscope]').forEach(t => t.addEventListener('click', () => {
+    reportScope = t.dataset.rscope;
+    document.querySelectorAll('[data-rscope]').forEach(x => x.classList.toggle('active', x === t));
+    document.getElementById('reportScopeHint').textContent = reportScope === 'national'
+      ? 'آمار کلی همه‌ی نظرسنجی‌ها در تمام شعب و استان‌ها (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.'
+      : 'آمار کلی همه‌ی نظرسنجی‌های شعبه‌ی انتخاب‌شده (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.';
+    loadReportSurveyOptions();
+  }));
+
+  document.getElementById('btnSurveyDetails').addEventListener('click', () => {
+    if(!pickedReportBranch){ openDeptBranchModal('reports'); return; }
+    rdTerm = null;
+    rdShowTerms();
+    rdOverlay.classList.add('open');
+  });
+  function closeRd(){ rdOverlay.classList.remove('open'); }
+  document.getElementById('reportDetailClose').addEventListener('click', closeRd);
+  rdOverlay.addEventListener('click', (e) => { if(e.target === rdOverlay) closeRd(); });
+  document.getElementById('reportDetailBack').addEventListener('click', () => {
+    if(rdStep === 'terms') closeRd();
+    else if(rdStep === 'items') rdShowTerms();
+    else if(rdTerm) rdShowItems(); else rdShowTerms();   // از نتیجه‌ی نظرسنجی کلی برمی‌گردد به مرحله‌ی دوره
+  });
+  rdBody.addEventListener('change', (e) => {
+    if(e.target.name === 'rdTermPick'){ rdTerm = e.target.value; rdShowItems(); }
+  });
+  rdBody.addEventListener('click', (e) => {
+    // جزئیات همیشه مخصوص «شعبه‌ی انتخاب‌شده» است (مستقل از گزینه‌ی ملی/شعبه‌ی آمار کلی)
+    const b = encodeURIComponent(pickedReportBranch || '');
+    const gen = e.target.closest('[data-rd-general]');
+    if(gen){
+      rdTerm = null;
+      rdShowResult(`${API_BASE_URL}/feedback/general-surveys/${gen.dataset.rdGeneral}/results/?branch=${b}`,
+        gen.querySelector('.svq-text').textContent + ' — شعبه‌ی ' + pickedReportBranch);
+      return;
+    }
+    const it = e.target.closest('[data-rd-item]');
+    if(!it) return;
+    const item = rdItems[Number(it.dataset.rdItem)];
+    const q = item.kind === 'seminar' ? `seminar_id=${item.id}` : `class_id=${item.id}`;
+    rdShowResult(`${API_BASE_URL}/feedback/class-survey/results/?${q}&branch=${b}`, `${item.name} — شعبه‌ی ${pickedReportBranch}`);
+  });
+  document.getElementById('reportDetailExport').addEventListener('click', () => {
+    if(!REPORT_LAST || !REPORT_LAST.data) return;
+    const d = REPORT_LAST.data;
+    const rows = [['نظرسنجی', REPORT_LAST.title], ['تعداد شرکت‌کنندگان', d.participants], ['', '']];
+    d.questions.forEach(function(q, i){
+      rows.push([`${i + 1}. ${q.text}`, q.kind === 'choice' ? 'تستی' : 'تشریحی']);
+      if(q.kind === 'choice') q.options.forEach(o => rows.push([o.label, o.count]));
+      else q.answers.forEach(a => rows.push([a.text, [a.class_name, a.branch].filter(Boolean).join(' — ')]));
+      rows.push(['', '']);
+    });
+    downloadXls(rows, 'نتایج-نظرسنجی.xls');
+    showToast('فایل اکسل نتایج دانلود شد');
   });
 
   document.querySelectorAll('[data-view]').forEach(el => {
@@ -11021,6 +11423,23 @@
   empOverlay.addEventListener('click', e => { if(e.target === empOverlay) closeEmpModal(); });
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeEmpModal(); });
 
+  // ---- محدودیت ورودی فرم متصدی: نام فقط حروف، تلفن فقط ۱۱ رقم، نام کاربری فقط حروف/رقم انگلیسی ----
+  ['f_fname', 'f_lname'].forEach(id => {
+    document.getElementById(id).addEventListener('input', e => {
+      e.target.value = e.target.value.replace(/[^A-Za-z\u0600-\u06FF\u200c ]|[\u06F0-\u06F9\u0660-\u0669]/g, '');
+    });
+  });
+  document.getElementById('f_phone').addEventListener('input', e => {
+    // ارقام فارسی/عربی به انگلیسی تبدیل می‌شود و هر چیزِ غیرعدد حذف می‌شود
+    e.target.value = e.target.value
+      .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+      .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+      .replace(/\D/g, '').slice(0, 11);
+  });
+  document.getElementById('f_username').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 30);
+  });
+
   document.getElementById('empModalSave').addEventListener('click', () => {
     const fname = document.getElementById('f_fname').value.trim();
     const lname = document.getElementById('f_lname').value.trim();
@@ -11034,6 +11453,22 @@
 
     if(!fname || !lname || !role || !phone){
       showToast('لطفاً همه فیلدهای الزامی را تکمیل کنید');
+      return;
+    }
+    if(fname.length < 2 || lname.length < 2){
+      showToast('نام و نام خانوادگی باید حداقل ۲ حرف باشد');
+      return;
+    }
+    if(!/^09\d{9}$/.test(phone)){
+      showToast('شماره تماس باید یک موبایل ۱۱ رقمی باشد (مثل 09123456789)');
+      return;
+    }
+    if(username && (username.length < 3 || username.length > 30)){
+      showToast('نام کاربری باید بین ۳ تا ۳۰ کاراکتر باشد');
+      return;
+    }
+    if(password && (password.length < 6 || password.length > 64)){
+      showToast('رمز عبور باید بین ۶ تا ۶۴ کاراکتر باشد');
       return;
     }
     if(role === 'مسئول آموزش' && !branch){
@@ -11096,7 +11531,10 @@
       ? 'بخش انتقادات و پیشنهادات در سایت فعال است'
       : 'بخش انتقادات و پیشنهادات در سایت غیرفعال است';
     banner.style.display = feedbackSectionEnabled ? 'none' : 'flex';
-    grid.classList.toggle('is-disabled', !feedbackSectionEnabled);
+    // فقط کارت «بررسی و پاسخ» غیرفعال می‌شود؛ «گزارش‌ها» و «نظرسنجی» همیشه فعال می‌مانند
+    grid.classList.remove('is-disabled');
+    const reviewCard = grid.querySelector('[data-goto="review"]');
+    if(reviewCard) reviewCard.style.cssText = feedbackSectionEnabled ? '' : 'opacity:.45;pointer-events:none;';
   }
   renderFeedbackStatus();
 
@@ -11420,6 +11858,325 @@
       }
     });
   })();
+
+  // ================= مدیریت اسلاید شو =================
+  // وضعیت صفحه: فهرست اسلایدها از سرور، اسلایدِ در حال ویرایش، و فایل‌های انتخاب‌شده
+  let SL_LIST = [], SL_EDIT = null, SL_FILE = null, SL_FILE_M = null, SL_REMOVE_M = false, SL_SETTINGS = null;
+  let slPrevTimer = null;
+  const slEsc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const SL_STATUS = { live: 'در حال نمایش', inactive: 'غیرفعال', scheduled: 'زمان‌بندی‌شده', expired: 'منقضی‌شده' };
+
+  // درخواست به API (برای آپلود فایل از FormData استفاده می‌شود و Content-Type را مرورگر می‌گذارد)
+  function slApi(path, method, body, isForm){
+    const headers = { 'X-CSRFToken': getCookie('csrftoken') || '' };
+    if(body && !isForm) headers['Content-Type'] = 'application/json';
+    return fetch(`${API_BASE_URL}/classmgmt${path}`, {
+      method: method || 'GET', credentials: 'include', headers,
+      body: body ? (isForm ? body : JSON.stringify(body)) : undefined
+    }).then(async res => {
+      const data = res.status === 204 ? null : await res.json().catch(() => null);
+      if(!res.ok){
+        let msg = data && data.detail;
+        if(!msg && data && typeof data === 'object'){ const f = Object.values(data)[0]; msg = Array.isArray(f) ? f[0] : f; }
+        throw new Error(msg || 'خطا در ارتباط با سرور');
+      }
+      return data;
+    });
+  }
+
+  function slToLocalInput(iso){
+    if(!iso) return '';
+    const d = new Date(iso); const p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+
+  // ساخت HTML پیش‌نمایش یک اسلاید (هم برای لیست زنده و هم برای مودال)
+  function slPreviewHtml(o){
+    const shade = `<div class="sl-shade" style="background:rgba(0,0,0,${(o.overlay / 100).toFixed(2)});"></div>`;
+    const img = o.image ? `<img src="${slEsc(o.image)}" alt="">` : '';
+    const has = o.title || o.subtitle || o.button_text;
+    return img + shade + (has ? `<div class="sl-ptext">
+      ${o.title ? `<div class="pt">${slEsc(o.title)}</div>` : ''}
+      ${o.subtitle ? `<div class="ps">${slEsc(o.subtitle)}</div>` : ''}
+      ${o.button_text ? `<span class="pb">${slEsc(o.button_text)}</span>` : ''}
+    </div>` : '');
+  }
+  function slApplyPrev(el, o, mobile){
+    el.className = `sl-prev pos-${o.text_position} ${o.text_color === 'dark' ? 'dark' : ''} ${mobile ? 'mobile' : ''}`;
+    el.innerHTML = slPreviewHtml(o);
+  }
+
+  function loadSlideshow(){
+    slApi('/slides/').then(list => { SL_LIST = list || []; slRender(); })
+      .catch(e => { document.getElementById('slList').innerHTML = `<div class="sl-empty">${slEsc(e.message)}</div>`; });
+    slApi('/slideshow/settings/').then(st => { SL_SETTINGS = st; slRenderSettings(); }).catch(() => {});
+  }
+
+  function slRender(){
+    const box = document.getElementById('slList');
+    const live = SL_LIST.filter(s => s.status === 'live').length;
+    document.getElementById('slStats').innerHTML =
+      `<span>کل: ${toPersianDigits(SL_LIST.length)}</span><span>در حال نمایش: ${toPersianDigits(live)}</span>`;
+    if(!SL_LIST.length){
+      box.innerHTML = '<div class="sl-empty">هنوز اسلایدی ساخته نشده است.<br>با «افزودن اسلاید» اولین اسلاید را بسازید.</div>';
+    } else {
+      const IC_EDIT = '<svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>';
+      const IC_COPY = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+      const IC_DEL = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>';
+      const IC_UP = '<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+      const IC_DN = '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+      box.innerHTML = SL_LIST.map((s, i) => `
+        <div class="sl-item" draggable="true" data-id="${s.id}">
+          <span class="sl-handle" title="بکشید">⋮⋮</span>
+          <img class="sl-thumb" src="${slEsc(s.image_url)}" alt="">
+          <div class="sl-info">
+            <div class="sl-name">${slEsc(s.title || 'بدون عنوان')}</div>
+            <div class="sl-meta">
+              <span class="sl-badge ${s.status}">${SL_STATUS[s.status]}</span>
+              <span>#${toPersianDigits(i + 1)}</span>
+              ${s.start_at || s.end_at ? '<span>⏱ زمان‌بندی</span>' : ''}
+              ${s.link_url ? '<span>🔗 لینک</span>' : ''}
+            </div>
+          </div>
+          <div class="sl-acts">
+            <button type="button" class="toggle-switch-sm ${s.is_active ? 'is-on' : ''}" data-sl="toggle" data-id="${s.id}" title="فعال/غیرفعال"><span class="knob"></span></button>
+            <button type="button" class="sl-ico" data-sl="up" data-id="${s.id}" title="بالا" ${i === 0 ? 'disabled style="opacity:.35"' : ''}>${IC_UP}</button>
+            <button type="button" class="sl-ico" data-sl="down" data-id="${s.id}" title="پایین" ${i === SL_LIST.length - 1 ? 'disabled style="opacity:.35"' : ''}>${IC_DN}</button>
+            <button type="button" class="sl-ico" data-sl="edit" data-id="${s.id}" title="ویرایش">${IC_EDIT}</button>
+            <button type="button" class="sl-ico" data-sl="copy" data-id="${s.id}" title="کپی">${IC_COPY}</button>
+            <button type="button" class="sl-ico danger" data-sl="del" data-id="${s.id}" title="حذف">${IC_DEL}</button>
+          </div>
+        </div>`).join('');
+    }
+    slStartLivePreview();
+  }
+
+  // پیش‌نمایش زنده: اسلایدهای فعالِ همین لحظه را مثل سایت اصلی پشت‌سرهم نشان می‌دهد
+  function slStartLivePreview(){
+    clearInterval(slPrevTimer);
+    const el = document.getElementById('slLivePrev');
+    const live = SL_LIST.filter(s => s.status === 'live');
+    if(!live.length){
+      el.className = 'sl-prev';
+      el.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe4e6;font-size:12.5px;padding:12px;text-align:center;">اسلاید فعالی نیست؛ اسلایدر پیش‌فرض سایت نمایش داده می‌شود.</div>';
+      return;
+    }
+    let i = 0;
+    const show = () => {
+      const s = live[i % live.length];
+      slApplyPrev(el, { ...s, image: s.image_url }, false);
+      if(live.length > 1) el.insertAdjacentHTML('beforeend', `<div class="sl-pdots">${live.map((_, k) => `<i class="${k === i % live.length ? 'on' : ''}"></i>`).join('')}</div>`);
+      i++;
+    };
+    show();
+    const sec = Math.max(2, (SL_SETTINGS && SL_SETTINGS.slide_interval) || 5);
+    if(live.length > 1) slPrevTimer = setInterval(() => {
+      if(!document.getElementById('view-slideshow').classList.contains('active')) { clearInterval(slPrevTimer); return; }
+      show();
+    }, sec * 1000);
+  }
+
+  function slRenderSettings(){
+    const st = SL_SETTINGS; if(!st) return;
+    document.getElementById('slsAutoplay').classList.toggle('is-on', !!st.slide_autoplay);
+    document.getElementById('slsArrows').classList.toggle('is-on', !!st.slide_show_arrows);
+    document.getElementById('slsDots').classList.toggle('is-on', !!st.slide_show_dots);
+    document.getElementById('slsInterval').value = st.slide_interval;
+    document.getElementById('slsIntervalLbl').textContent = toPersianDigits(st.slide_interval);
+    document.querySelectorAll('#slsEffect button').forEach(b => b.classList.toggle('on', b.dataset.v === st.slide_effect));
+    slStartLivePreview();
+  }
+  let slsTimer = null;
+  function slSaveSettings(patch){
+    Object.assign(SL_SETTINGS, patch); slRenderSettings();
+    clearTimeout(slsTimer);
+    slsTimer = setTimeout(() => {
+      slApi('/slideshow/settings/', 'PATCH', patch).then(st => {
+        SL_SETTINGS = st; const m = document.getElementById('slsMsg'); m.textContent = '✔ ذخیره شد';
+        setTimeout(() => { m.textContent = ''; }, 1800);
+      }).catch(e => showToast(e.message));
+    }, 400);
+  }
+  document.getElementById('slsAutoplay').addEventListener('click', () => slSaveSettings({ slide_autoplay: !SL_SETTINGS.slide_autoplay }));
+  document.getElementById('slsArrows').addEventListener('click', () => slSaveSettings({ slide_show_arrows: !SL_SETTINGS.slide_show_arrows }));
+  document.getElementById('slsDots').addEventListener('click', () => slSaveSettings({ slide_show_dots: !SL_SETTINGS.slide_show_dots }));
+  document.getElementById('slsInterval').addEventListener('input', e => slSaveSettings({ slide_interval: Number(e.target.value) }));
+  document.getElementById('slsEffect').addEventListener('click', e => { const b = e.target.closest('button'); if(b) slSaveSettings({ slide_effect: b.dataset.v }); });
+
+  // ---- عملیات روی لیست ----
+  function slPersistOrder(){
+    return slApi('/slides/reorder/', 'POST', { ids: SL_LIST.map(s => s.id) }).catch(e => { showToast(e.message); loadSlideshow(); });
+  }
+  document.getElementById('slList').addEventListener('click', e => {
+    const b = e.target.closest('[data-sl]'); if(!b || b.disabled) return;
+    const id = Number(b.dataset.id), idx = SL_LIST.findIndex(s => s.id === id), act = b.dataset.sl;
+    if(act === 'edit') slOpen(SL_LIST[idx]);
+    else if(act === 'toggle'){
+      slApi(`/slides/${id}/`, 'PATCH', { is_active: !SL_LIST[idx].is_active }).then(u => { SL_LIST[idx] = u; slRender(); }).catch(er => showToast(er.message));
+    } else if(act === 'up' || act === 'down'){
+      const j = act === 'up' ? idx - 1 : idx + 1;
+      [SL_LIST[idx], SL_LIST[j]] = [SL_LIST[j], SL_LIST[idx]]; slRender(); slPersistOrder();
+    } else if(act === 'copy'){
+      slApi(`/slides/${id}/duplicate/`, 'POST').then(() => { showToast('کپی ساخته شد (غیرفعال)'); loadSlideshow(); }).catch(er => showToast(er.message));
+    } else if(act === 'del'){
+      if(!confirm('این اسلاید برای همیشه حذف شود؟')) return;
+      slApi(`/slides/${id}/`, 'DELETE').then(() => { SL_LIST.splice(idx, 1); slRender(); showToast('اسلاید حذف شد'); }).catch(er => showToast(er.message));
+    }
+  });
+  // کشیدن و رها کردن برای ترتیب
+  let slDragId = null;
+  const slListEl = document.getElementById('slList');
+  slListEl.addEventListener('dragstart', e => { const it = e.target.closest('.sl-item'); if(!it) return; slDragId = Number(it.dataset.id); it.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+  slListEl.addEventListener('dragend', () => { slListEl.querySelectorAll('.sl-item').forEach(x => x.classList.remove('dragging', 'drag-over')); slDragId = null; });
+  slListEl.addEventListener('dragover', e => {
+    const it = e.target.closest('.sl-item'); if(!it || slDragId === null) return; e.preventDefault();
+    slListEl.querySelectorAll('.sl-item').forEach(x => x.classList.remove('drag-over')); it.classList.add('drag-over');
+  });
+  slListEl.addEventListener('drop', e => {
+    const it = e.target.closest('.sl-item'); if(!it || slDragId === null) return; e.preventDefault();
+    const from = SL_LIST.findIndex(s => s.id === slDragId), to = SL_LIST.findIndex(s => s.id === Number(it.dataset.id));
+    if(from < 0 || to < 0 || from === to) return;
+    const [m] = SL_LIST.splice(from, 1); SL_LIST.splice(to, 0, m); slRender(); slPersistOrder();
+  });
+
+  // ---- مودال افزودن/ویرایش ----
+  const slState = { position: 'right', color: 'light', mode: 'desktop', fileUrl: '', fileUrlM: '', existingUrl: '', existingUrlM: '' };
+  function slSetSeg(id, val){ document.querySelectorAll(`#${id} button`).forEach(b => b.classList.toggle('on', b.dataset.v === val)); }
+
+  function slCollect(){
+    return {
+      title: document.getElementById('slTitle').value.trim(), subtitle: document.getElementById('slSubtitle').value.trim(),
+      button_text: document.getElementById('slBtnText').value.trim(), link_url: document.getElementById('slLink').value.trim(),
+      open_new_tab: document.getElementById('slNewTab').checked, alt_text: document.getElementById('slAlt').value.trim(),
+      text_position: slState.position, text_color: slState.color, overlay: Number(document.getElementById('slOverlay').value),
+      is_active: document.getElementById('slActive').classList.contains('is-on'),
+      start_at: document.getElementById('slStart').value, end_at: document.getElementById('slEnd').value
+    };
+  }
+  function slRefreshPrev(){
+    const o = slCollect(); const mobile = slState.mode === 'mobile';
+    const image = mobile ? (slState.fileUrlM || slState.existingUrlM || slState.fileUrl || slState.existingUrl) : (slState.fileUrl || slState.existingUrl);
+    slApplyPrev(document.getElementById('slPrev'), { ...o, image }, mobile);
+    document.getElementById('slOverlayLbl').textContent = toPersianDigits(o.overlay);
+    const show = (id, url, empty) => { document.getElementById(id).innerHTML = url ? `<img src="${slEsc(url)}" alt="">تغییر تصویر (کلیک یا رها کردن)` : empty; };
+    show('slDropInner', slState.fileUrl || slState.existingUrl, 'تصویر را بکشید و اینجا رها کنید یا کلیک کنید<small>JPG / PNG / WebP — حداکثر ۵ مگابایت — پیشنهاد: ۲۱۰۰×۸۰۰ پیکسل</small>');
+    show('slDropMInner', slState.fileUrlM || slState.existingUrlM, 'برای نمایش بهتر در موبایل (مثلاً ۱۲۰۰×۹۰۰)<small>اگر انتخاب نشود، همان تصویر اصلی استفاده می‌شود</small>');
+    document.getElementById('slRemoveM').style.display = (slState.fileUrlM || slState.existingUrlM) ? '' : 'none';
+  }
+
+  function slOpen(s){
+    SL_EDIT = s || null; SL_FILE = SL_FILE_M = null; SL_REMOVE_M = false;
+    slState.fileUrl = slState.fileUrlM = '';
+    slState.existingUrl = s ? s.image_url : ''; slState.existingUrlM = s ? (s.mobile_image_url || '') : '';
+    document.getElementById('slModalTitle').textContent = s ? 'ویرایش اسلاید' : 'افزودن اسلاید';
+    document.getElementById('slTitle').value = s ? s.title : '';
+    document.getElementById('slSubtitle').value = s ? s.subtitle : '';
+    document.getElementById('slBtnText').value = s ? s.button_text : '';
+    document.getElementById('slLink').value = s ? s.link_url : '';
+    document.getElementById('slNewTab').checked = s ? s.open_new_tab : false;
+    document.getElementById('slAlt').value = s ? s.alt_text : '';
+    slState.position = s ? s.text_position : 'right'; slState.color = s ? s.text_color : 'light'; slState.mode = 'desktop';
+    slSetSeg('slPos', slState.position); slSetSeg('slColor', slState.color); slSetSeg('slPrevMode', 'desktop');
+    document.getElementById('slOverlay').value = s ? s.overlay : 35;
+    document.getElementById('slStart').value = s ? slToLocalInput(s.start_at) : '';
+    document.getElementById('slEnd').value = s ? slToLocalInput(s.end_at) : '';
+    document.getElementById('slActive').classList.toggle('is-on', s ? s.is_active : true);
+    document.getElementById('slErr').textContent = '';
+    slRefreshPrev();
+    document.getElementById('slideModal').classList.add('open');
+  }
+  function slClose(){ document.getElementById('slideModal').classList.remove('open'); }
+
+  // انتخاب فایل (کلیک یا کشیدن و رها کردن) با بررسی اولیه‌ی نوع و حجم؛ بررسی نهایی در سرور است
+  function slPickFile(file, isMobile){
+    const err = document.getElementById('slErr');
+    if(!file) return;
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type)){ err.textContent = 'فقط تصویر JPG، PNG یا WebP مجاز است.'; return; }
+    if(file.size > 5 * 1024 * 1024){ err.textContent = 'حجم تصویر نباید بیشتر از ۵ مگابایت باشد.'; return; }
+    err.textContent = '';
+    const url = URL.createObjectURL(file);
+    if(isMobile){ SL_FILE_M = file; SL_REMOVE_M = false; slState.fileUrlM = url; } else { SL_FILE = file; slState.fileUrl = url; }
+    slRefreshPrev();
+  }
+  [['slDrop', 'slFile', false], ['slDropM', 'slFileM', true]].forEach(([dropId, fileId, isM]) => {
+    const drop = document.getElementById(dropId), input = document.getElementById(fileId);
+    drop.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => { slPickFile(input.files[0], isM); input.value = ''; });
+    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); slPickFile(e.dataTransfer.files[0], isM); });
+  });
+  document.getElementById('slRemoveM').addEventListener('click', () => {
+    SL_FILE_M = null; SL_REMOVE_M = true; slState.fileUrlM = ''; slState.existingUrlM = ''; slRefreshPrev();
+  });
+
+  ['slTitle','slSubtitle','slBtnText','slOverlay'].forEach(id => document.getElementById(id).addEventListener('input', slRefreshPrev));
+  document.getElementById('slPos').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; slState.position = b.dataset.v; slSetSeg('slPos', b.dataset.v); slRefreshPrev(); });
+  document.getElementById('slColor').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; slState.color = b.dataset.v; slSetSeg('slColor', b.dataset.v); slRefreshPrev(); });
+  document.getElementById('slPrevMode').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; slState.mode = b.dataset.v; slSetSeg('slPrevMode', b.dataset.v); slRefreshPrev(); });
+  document.getElementById('slActive').addEventListener('click', e => e.currentTarget.classList.toggle('is-on'));
+  document.getElementById('slAddBtn').addEventListener('click', () => slOpen(null));
+  document.getElementById('slModalClose').addEventListener('click', slClose);
+  document.getElementById('slCancel').addEventListener('click', slClose);
+
+  document.getElementById('slSave').addEventListener('click', () => {
+    const err = document.getElementById('slErr'); const o = slCollect();
+    if(!SL_EDIT && !SL_FILE){ err.textContent = 'تصویر اسلاید را انتخاب کنید.'; return; }
+    if(o.button_text && !o.link_url){ err.textContent = 'برای دکمه، لینک را هم وارد کنید.'; return; }
+    if(o.start_at && o.end_at && new Date(o.end_at) <= new Date(o.start_at)){ err.textContent = 'پایان نمایش باید بعد از شروع باشد.'; return; }
+    const fd = new FormData();
+    ['title','subtitle','button_text','link_url','alt_text','text_position','text_color'].forEach(k => fd.append(k, o[k]));
+    fd.append('overlay', o.overlay); fd.append('open_new_tab', o.open_new_tab); fd.append('is_active', o.is_active);
+    // datetime-local به وقت محلی کاربر است؛ به ISO تبدیل می‌شود (خالی = بدون محدودیت)
+    fd.append('start_at', o.start_at ? new Date(o.start_at).toISOString() : '');
+    fd.append('end_at', o.end_at ? new Date(o.end_at).toISOString() : '');
+    if(SL_FILE) fd.append('image', SL_FILE);
+    if(SL_FILE_M) fd.append('mobile_image', SL_FILE_M);
+    else if(SL_REMOVE_M) fd.append('mobile_image', '');
+    const btn = document.getElementById('slSave'); btn.disabled = true; err.textContent = '';
+    slApi(SL_EDIT ? `/slides/${SL_EDIT.id}/` : '/slides/', SL_EDIT ? 'PATCH' : 'POST', fd, true)
+      .then(() => { slClose(); showToast(SL_EDIT ? 'اسلاید ذخیره شد' : 'اسلاید افزوده شد'); loadSlideshow(); })
+      .catch(e => { err.textContent = e.message; })
+      .finally(() => { btn.disabled = false; });
+  });
+
+  // ================= قوانین و مقررات =================
+  let RULES_TEXT = '';
+  function rulesLoad(){
+    fetch(`${API_BASE_URL}/classmgmt/rules/`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        RULES_TEXT = d.text || '';
+        document.getElementById('rulesView').textContent = RULES_TEXT || 'هنوز قوانینی ثبت نشده است.';
+        document.getElementById('rulesNote').textContent = d.is_default ? 'متن پیش‌فرض نمایش داده می‌شود؛ بعد از اولین ویرایش، متن شما جایگزین می‌شود.' : '';
+      })
+      .catch(() => { document.getElementById('rulesView').textContent = 'دریافت قوانین ممکن نشد.'; });
+  }
+  function rulesSetEditing(on){
+    document.getElementById('rulesView').classList.toggle('hide', on);
+    document.getElementById('rulesEdit').classList.toggle('hide', !on);
+    document.getElementById('btnEditRules').classList.toggle('hide', on);
+    document.getElementById('btnSaveRules').classList.toggle('hide', !on);
+    document.getElementById('btnCancelRules').classList.toggle('hide', !on);
+    if(on){ const t = document.getElementById('rulesEdit'); t.value = RULES_TEXT; t.focus(); }
+  }
+  document.getElementById('btnEditRules').addEventListener('click', () => rulesSetEditing(true));
+  document.getElementById('btnCancelRules').addEventListener('click', () => rulesSetEditing(false));
+  document.getElementById('btnSaveRules').addEventListener('click', () => {
+    const btn = document.getElementById('btnSaveRules'); btn.disabled = true;
+    fetch(`${API_BASE_URL}/classmgmt/rules/`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+      body: JSON.stringify({ text: document.getElementById('rulesEdit').value })
+    }).then(async r => {
+      const d = await r.json().catch(() => ({}));
+      if(!r.ok) throw new Error(d.detail || 'ذخیره انجام نشد');
+      RULES_TEXT = d.text || '';
+      document.getElementById('rulesView').textContent = RULES_TEXT || 'هنوز قوانینی ثبت نشده است.';
+      document.getElementById('rulesNote').textContent = '';
+      rulesSetEditing(false); showToast('قوانین ذخیره شد');
+    }).catch(e => showToast(e.message)).finally(() => { btn.disabled = false; });
+  });
 </script>
 
 

@@ -160,6 +160,27 @@
   }
 
   [hidden]{display:none !important;}
+
+  .qb-section{margin-top:36px;}
+  .qb-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .qb-bar select{flex:1;min-width:200px;border:1px solid #dfe6e6;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;background:#fff;}
+  .qb-btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+  .qb-btn.light{background:#f0f4f4;color:#3a4c4c;}
+  .qb-btn.danger{background:#fdecec;color:#b42318;}
+  .qb-btn:disabled{opacity:.5;cursor:default;}
+  .qb-item{background:#fff;border:1px solid #e3e9e9;border-radius:14px;padding:16px 18px;margin-bottom:10px;}
+  .qb-q{font-size:14px;font-weight:700;color:#1f2a2a;margin-bottom:8px;line-height:1.8;}
+  .qb-opt{font-size:13px;color:#4a5a5a;padding:3px 0;}
+  .qb-opt.ok{color:#0f7a4a;font-weight:700;}
+  .qb-actions{display:flex;gap:8px;margin-top:10px;}
+  .qb-actions .qb-btn{padding:6px 12px;font-size:12px;}
+  .qb-box{max-width:520px!important;}
+  .qb-box textarea,.qb-box input[type=text]{width:100%;border:1px solid #dfe6e6;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;text-align:right;}
+  .qb-box textarea{min-height:80px;resize:vertical;}
+  .qb-optrow{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .qb-optrow input[type=text]{flex:1;}
+  .qb-err{color:#b42318;font-size:12.5px;margin-top:10px;min-height:16px;}
+  .qb-hint{font-size:12px;color:#7a8a8a;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -208,10 +229,43 @@
     <div class="hub-title" style="font-size:16px;margin-bottom:16px;">کلاس‌های من</div>
     <div class="class-list" id="classList">
       <div class="state-box"><div class="spinner"></div><div>در حال بارگذاری کلاس‌ها...</div></div>
+
+    </div>
+
+    <div class="qb-section" id="qbSection" hidden>
+      <div class="hub-title" style="font-size:16px;margin-bottom:16px;">بانک سوالات</div>
+      <div class="qb-bar">
+        <select id="qbLesson"><option value="">انتخاب درس...</option></select>
+        <button type="button" class="qb-btn" id="qbAddBtn" disabled>+ افزودن سؤال</button>
+      </div>
+      <div id="qbList"><div class="empty-classes">یک درس را انتخاب کنید.</div></div>
     </div>
   </div>
 
 </main>
+
+<div class="modal-overlay" id="qbModalOverlay">
+  <div class="modal-box qb-box">
+    <div class="modal-head">
+      <h3 id="qbModalTitle">افزودن سؤال</h3>
+      <button class="modal-close" id="qbModalClose" type="button">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label for="qbText">متن سؤال</label>
+      <textarea id="qbText" maxlength="1000"></textarea>
+      <label style="margin-top:14px;">گزینه‌ها (۲ تا ۴ گزینه؛ گزینه‌ی صحیح را علامت بزنید)</label>
+      <div id="qbOpts"></div>
+      <button type="button" class="qb-btn light" id="qbAddOpt" style="margin-top:10px;">+ گزینه</button>
+      <div class="qb-err" id="qbErr"></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn-cancel" id="qbModalCancel">انصراف</button>
+      <button type="button" class="btn-save" id="qbModalSave">ذخیره</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="scoreEntryModalOverlay">
   <div class="modal-box">
@@ -276,6 +330,7 @@
       tag.hidden = false;
 
       loadMyClasses();
+      qbLoadLessons();
     })
     .catch(() => {
       window.location.href = '/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname);
@@ -546,6 +601,126 @@
         document.getElementById(`rosterBody-${index}`).innerHTML = `<tr class="empty-row"><td colspan="5">خطا در دریافت لیست</td></tr>`;
       });
   }
+
+  // ================= بانک سوالات (بر اساس «ویرایش مجوزها») =================
+  let QB_LESSONS = [], QB_QUESTIONS = [], QB_EDIT_ID = null;
+  const qbEsc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function qbHeaders(){ return { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' }; }
+
+  function qbLoadLessons(){
+    // اطمینان از وجود کوکی CSRF برای درخواست‌های ثبت/ویرایش/حذف
+    fetch(`${API_BASE_URL}/auth/csrf/`, { credentials: 'include' }).catch(() => {});
+    fetch(`${API_BASE_URL}/classmgmt/my-lessons/`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(list => {
+        QB_LESSONS = list || [];
+        const sel = document.getElementById('qbLesson');
+        sel.innerHTML = '<option value="">انتخاب درس...</option>' + QB_LESSONS.map(l =>
+          `<option value="${l.id}">${qbEsc(l.name)} (${qbEsc(l.department)})</option>`).join('');
+        const sec = document.getElementById('qbSection');
+        sec.hidden = false;
+        if(!QB_LESSONS.length){
+          document.getElementById('qbList').innerHTML = '<div class="empty-classes">هنوز مجوز درج سؤال برای هیچ درسی به شما داده نشده است.</div>';
+          sel.disabled = true;
+        }
+      }).catch(() => {});
+  }
+
+  function qbLoadQuestions(){
+    const id = document.getElementById('qbLesson').value;
+    document.getElementById('qbAddBtn').disabled = !id;
+    const box = document.getElementById('qbList');
+    if(!id){ box.innerHTML = '<div class="empty-classes">یک درس را انتخاب کنید.</div>'; return; }
+    box.innerHTML = '<div class="state-box"><div class="spinner"></div></div>';
+    fetch(`${API_BASE_URL}/classmgmt/questions/?lesson=${id}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : [])
+      .then(list => { QB_QUESTIONS = Array.isArray(list) ? list : (list.results || []); qbRender(); })
+      .catch(() => { box.innerHTML = '<div class="empty-classes">خطا در دریافت سؤال‌ها</div>'; });
+  }
+
+  function qbRender(){
+    const box = document.getElementById('qbList');
+    if(!QB_QUESTIONS.length){ box.innerHTML = '<div class="empty-classes">برای این درس هنوز سؤالی ثبت نشده است.</div>'; return; }
+    box.innerHTML = QB_QUESTIONS.map((q, i) => `
+      <div class="qb-item">
+        <div class="qb-q">${toPersianDigits(i + 1)}. ${qbEsc(q.text)}</div>
+        ${(q.options || []).map(o => `<div class="qb-opt ${o.is_correct ? 'ok' : ''}">${o.is_correct ? '✔' : '○'} ${qbEsc(o.text)}</div>`).join('')}
+        <div class="qb-actions">
+          <button type="button" class="qb-btn light" data-qedit="${q.id}">ویرایش</button>
+          <button type="button" class="qb-btn danger" data-qdel="${q.id}">حذف</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function qbOptRow(text, correct){
+    const d = document.createElement('div');
+    d.className = 'qb-optrow';
+    d.innerHTML = `<input type="checkbox" class="qb-correct" title="گزینه‌ی صحیح" ${correct ? 'checked' : ''}>
+      <input type="text" class="qb-opttext" maxlength="300" placeholder="متن گزینه" value="${qbEsc(text)}">
+      <button type="button" class="qb-btn light qb-rm" style="padding:6px 10px;">✕</button>`;
+    d.querySelector('.qb-rm').onclick = () => {
+      if(document.querySelectorAll('#qbOpts .qb-optrow').length > 2) d.remove();
+      else document.getElementById('qbErr').textContent = 'حداقل ۲ گزینه لازم است.';
+    };
+    return d;
+  }
+
+  function qbOpen(q){
+    QB_EDIT_ID = q ? q.id : null;
+    document.getElementById('qbModalTitle').textContent = q ? 'ویرایش سؤال' : 'افزودن سؤال';
+    document.getElementById('qbText').value = q ? q.text : '';
+    const opts = document.getElementById('qbOpts');
+    opts.innerHTML = '';
+    const src = q ? q.options : [{text:'',is_correct:true},{text:'',is_correct:false}];
+    src.forEach(o => opts.appendChild(qbOptRow(o.text, o.is_correct)));
+    document.getElementById('qbErr').textContent = '';
+    document.getElementById('qbModalOverlay').classList.add('open');
+  }
+  function qbClose(){ document.getElementById('qbModalOverlay').classList.remove('open'); }
+
+  function qbSave(){
+    const err = document.getElementById('qbErr');
+    const text = document.getElementById('qbText').value.trim();
+    const options = [...document.querySelectorAll('#qbOpts .qb-optrow')].map(r => ({
+      text: r.querySelector('.qb-opttext').value.trim(), is_correct: r.querySelector('.qb-correct').checked }));
+    if(!text){ err.textContent = 'متن سؤال را وارد کنید.'; return; }
+    if(options.some(o => !o.text)){ err.textContent = 'متن همه‌ی گزینه‌ها را پر کنید.'; return; }
+    const nc = options.filter(o => o.is_correct).length;
+    if(nc < 1){ err.textContent = 'حداقل یک گزینه باید صحیح باشد.'; return; }
+    if(nc === options.length){ err.textContent = 'همه‌ی گزینه‌ها نمی‌توانند صحیح باشند.'; return; }
+    const lesson = Number(document.getElementById('qbLesson').value);
+    const btn = document.getElementById('qbModalSave');
+    btn.disabled = true;
+    const url = `${API_BASE_URL}/classmgmt/questions/` + (QB_EDIT_ID ? `${QB_EDIT_ID}/` : '');
+    fetch(url, { method: QB_EDIT_ID ? 'PUT' : 'POST', credentials: 'include', headers: qbHeaders(),
+                 body: JSON.stringify({ lesson, text, options }) })
+      .then(async r => {
+        if(r.ok){ qbClose(); qbLoadQuestions(); return; }
+        let d = {}; try { d = await r.json(); } catch(e){}
+        err.textContent = d.detail || (d.options && [].concat(d.options).join(' ')) || (d.text && [].concat(d.text).join(' ')) || 'ذخیره انجام نشد.';
+      })
+      .catch(() => { err.textContent = 'خطا در ارتباط با سرور.'; })
+      .finally(() => { btn.disabled = false; });
+  }
+
+  document.getElementById('qbLesson').addEventListener('change', qbLoadQuestions);
+  document.getElementById('qbAddBtn').addEventListener('click', () => qbOpen(null));
+  document.getElementById('qbAddOpt').addEventListener('click', () => {
+    const opts = document.getElementById('qbOpts');
+    if(opts.querySelectorAll('.qb-optrow').length >= 4){ document.getElementById('qbErr').textContent = 'حداکثر ۴ گزینه مجاز است.'; return; }
+    opts.appendChild(qbOptRow('', false));
+  });
+  document.getElementById('qbModalClose').addEventListener('click', qbClose);
+  document.getElementById('qbModalCancel').addEventListener('click', qbClose);
+  document.getElementById('qbModalSave').addEventListener('click', qbSave);
+  document.getElementById('qbList').addEventListener('click', e => {
+    const ed = e.target.closest('[data-qedit]'), de = e.target.closest('[data-qdel]');
+    if(ed){ qbOpen(QB_QUESTIONS.find(q => String(q.id) === ed.dataset.qedit)); }
+    if(de && confirm('این سؤال حذف شود؟')){
+      fetch(`${API_BASE_URL}/classmgmt/questions/${de.dataset.qdel}/`, { method: 'DELETE', credentials: 'include', headers: qbHeaders() })
+        .then(r => { if(r.ok) qbLoadQuestions(); else alert('حذف انجام نشد.'); });
+    }
+  });
 </script>
 </body>
 </html>
