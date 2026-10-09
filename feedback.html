@@ -1491,7 +1491,11 @@
   .sv-loading{text-align:center;color:#8a9a9a;padding:26px 0;font-size:13px;}
   .sv-done{display:none;align-items:center;gap:10px;margin-bottom:14px;padding:12px 16px;border-radius:12px;background:#e5f4ea;color:#1d7a46;font-size:13.5px;}
   .sv-done.show{display:flex;}
-  .contact-col{flex:0 1 330px;min-width:0;}
+  .contact-col{flex:0 1 480px;min-width:0;}
+  /* contact-grid2: نمایش اطلاعات تماس در دو ستون */
+  .contact-col ul{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;}
+  .contact-col li{margin-bottom:0 !important;}
+  @media (max-width:560px){.contact-col ul{grid-template-columns:1fr;}}
   .contact-col li{line-height:1.9;color:rgba(255,255,255,.85);font-size:13.5px;margin-bottom:8px;}
   .contact-col .cl{display:block;font-size:12px;color:var(--gold-light,#d8bd6c);}
   .contact-col a{color:#fff;display:block;white-space:nowrap;text-align:right;}

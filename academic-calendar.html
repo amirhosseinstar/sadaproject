@@ -1444,7 +1444,11 @@
   nav.main-nav .nav-tools .active{border-bottom:2.5px solid var(--gold-light);font-weight:700;}
   /* «انتقادات» وقتی hidden است نباید دیده شود */
   nav.main-nav .nav-tools .panel-gold-btn[hidden]{display:none;}
-  .contact-col{flex:0 1 330px;min-width:0;}
+  .contact-col{flex:0 1 480px;min-width:0;}
+  /* contact-grid2: نمایش اطلاعات تماس در دو ستون */
+  .contact-col ul{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;}
+  .contact-col li{margin-bottom:0 !important;}
+  @media (max-width:560px){.contact-col ul{grid-template-columns:1fr;}}
   .contact-col li{line-height:1.9;color:rgba(255,255,255,.85);font-size:13.5px;margin-bottom:8px;}
   .contact-col .cl{display:block;font-size:12px;color:var(--gold-light,#d8bd6c);}
   .contact-col a{color:#fff;display:block;white-space:nowrap;text-align:right;}

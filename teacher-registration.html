@@ -561,7 +561,11 @@
 .shamsi-dp-footer{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #eef2f2;}
 .shamsi-dp-link{background:none;border:none;color:var(--teal,#1f7a7a);font-size:12px;cursor:pointer;font-family:inherit;}
 .shamsi-dp-link:hover{text-decoration:underline;}
-  .contact-col{flex:0 1 330px;min-width:0;}
+  .contact-col{flex:0 1 480px;min-width:0;}
+  /* contact-grid2: نمایش اطلاعات تماس در دو ستون */
+  .contact-col ul{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;}
+  .contact-col li{margin-bottom:0 !important;}
+  @media (max-width:560px){.contact-col ul{grid-template-columns:1fr;}}
   .contact-col li{line-height:1.9;color:rgba(255,255,255,.85);font-size:13.5px;margin-bottom:8px;}
   .contact-col .cl{display:block;font-size:12px;color:var(--gold-light,#d8bd6c);}
   .contact-col a{color:#fff;display:block;white-space:nowrap;text-align:right;}

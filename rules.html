@@ -390,7 +390,11 @@
   .rules-empty{color:#7a8a8a;text-align:center;white-space:normal;}
   .rules-meta{margin-top:10px;font-size:12px;color:#8a9a9a;}
   @media (max-width:600px){.rules-box{padding:18px 16px;font-size:14px;}}
-  .contact-col{flex:0 1 330px;min-width:0;}
+  .contact-col{flex:0 1 480px;min-width:0;}
+  /* contact-grid2: نمایش اطلاعات تماس در دو ستون */
+  .contact-col ul{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;}
+  .contact-col li{margin-bottom:0 !important;}
+  @media (max-width:560px){.contact-col ul{grid-template-columns:1fr;}}
   .contact-col li{line-height:1.9;color:rgba(255,255,255,.85);font-size:13.5px;margin-bottom:8px;}
   .contact-col .cl{display:block;font-size:12px;color:var(--gold-light,#d8bd6c);}
   .contact-col a{color:#fff;display:block;white-space:nowrap;text-align:right;}
