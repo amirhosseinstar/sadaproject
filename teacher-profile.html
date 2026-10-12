@@ -311,12 +311,18 @@
 
   let CURRENT_PROFILE = null;
 
+  // رفع باگ دکمه‌ی «بازگشت» مرورگر: صفحه از حافظه‌ی برگشت (bfcache) با وضعیت
+  // «در حال بررسی ورود» بازیابی می‌شد و برای همیشه می‌ماند؛ در این حالت صفحه را دوباره بارگذاری می‌کنیم.
+  window.addEventListener('pageshow', function(e){
+    if(e.persisted) window.location.reload();
+  });
+
   // ---- گارد ورود: این صفحه فقط برای مدرسِ واردشده است ----
   fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
     .then(res => res.ok ? res.json() : null)
     .then(profile => {
       if(!profile || !profile.is_employee || profile.employee_role !== 'مدرس'){
-        window.location.href = '/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname);
+        window.location.replace('/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname));
         return;
       }
       CURRENT_PROFILE = profile;
@@ -333,14 +339,14 @@
       qbLoadLessons();
     })
     .catch(() => {
-      window.location.href = '/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname);
+      window.location.replace('/login?type=teacher&returnUrl=' + encodeURIComponent(window.location.pathname));
     });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
     fetch(`${API_BASE_URL}/auth/logout/`, {
       method: 'POST', credentials: 'include',
       headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
-    }).finally(() => { window.location.href = '/login?type=teacher'; });
+    }).finally(() => { window.location.replace('/login?type=teacher'); });
   });
 
   const DAY_ICON = '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';

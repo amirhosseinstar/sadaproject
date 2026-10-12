@@ -287,7 +287,7 @@
     color:var(--text-muted);
     transition:color .15s;
   }
-  .footer-col ul li a:hover{color:var(--gold-light);}
+  .footer-col ul li a:hover{color:#fff;text-decoration:underline;text-underline-offset:4px;}
 
   .footer-bottom{
     text-align:center;
@@ -529,7 +529,7 @@
   .contact-col .cl{display:block;font-size:12px;color:var(--gold-light,#d8bd6c);}
   .contact-col a{color:#fff;display:block;white-space:nowrap;text-align:right;}
   .site-footer .footer-inner{padding-inline:28px;}
-  .contact-col a:hover{color:var(--gold-light);}
+  .contact-col a:hover{color:#fff;text-decoration:underline;text-underline-offset:4px;}
 </style>
 </head>
 <body>
@@ -761,12 +761,18 @@
 
   let CURRENT_PROFILE = null;
 
+  // رفع باگ دکمه‌ی «بازگشت» مرورگر: صفحه از حافظه‌ی برگشت (bfcache) با وضعیت
+  // «در حال بررسی ورود» بازیابی می‌شد و برای همیشه می‌ماند؛ در این حالت صفحه را دوباره بارگذاری می‌کنیم.
+  window.addEventListener('pageshow', function(e){
+    if(e.persisted) window.location.reload();
+  });
+
   // ---- گارد ورود: این صفحه فقط برای دانش‌پژوهِ واردشده است ----
   fetch(`${API_BASE_URL}/auth/me/`, { credentials: 'include' })
     .then(res => res.ok ? res.json() : null)
     .then(profile => {
       if(!profile || !profile.is_member){
-        window.location.href = '/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+        window.location.replace('/login?returnUrl=' + encodeURIComponent(window.location.pathname));
         return;
       }
       CURRENT_PROFILE = profile;
@@ -776,7 +782,7 @@
       if(location.hash === '#certificates'){ showView(certView); loadCertRecords(); }
     })
     .catch(() => {
-      window.location.href = '/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+      window.location.replace('/login?returnUrl=' + encodeURIComponent(window.location.pathname));
     });
 
   // ---- ناوبری بین بخش‌ها ----

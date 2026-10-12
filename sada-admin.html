@@ -11074,7 +11074,23 @@
   }
 
   // ---- view switching ----
+  // ---- تاریخچه‌ی مرورگر: هر بخش یک مرحله در تاریخچه است تا دکمه‌ی «بازگشت» مرورگر
+  // به بخش/داشبورد قبلی برگردد (و نه به صفحه‌ی ورود) ----
+  let currentViewName = 'dashboard';
   function goToView(name){
+    if(name !== currentViewName){
+      try{ history.pushState({ view: name }, '', location.href); }catch(e){}
+    }
+    goToViewCore(name);
+  }
+  window.addEventListener('popstate', function(e){
+    const name = (e.state && e.state.view) || 'dashboard';
+    if(document.getElementById('view-' + name)) goToViewCore(name);
+  });
+  try{ history.replaceState({ view: 'dashboard' }, '', location.href); }catch(e){}
+
+  function goToViewCore(name){
+    currentViewName = name;
     if(name === 'rules'){ rulesLoad(); rulesSetEditing(false); }
     if(name === 'slideshow') loadSlideshow();
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
