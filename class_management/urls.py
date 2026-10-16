@@ -2,7 +2,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from . import views
+from . import analytics, views
 
 router = DefaultRouter()
 router.register('departments', views.DepartmentViewSet, basename='department')
@@ -19,6 +19,7 @@ urlpatterns = [
     path('site-settings/', views.SiteSettingsView.as_view(), name='site-settings'),
     path('teacher-permissions/', views.TeacherLessonPermissionView.as_view(), name='teacher-permissions'),
     path('slideshow/public/', views.PublicSlidesView.as_view(), name='slideshow-public'),
+    path('analytics/', analytics.AnalyticsView.as_view(), name='analytics'),
     path('dashboard-stats/', views.DashboardStatsView.as_view(), name='dashboard-stats'),
     path('slideshow/settings/', views.SlideSettingsView.as_view(), name='slideshow-settings'),
     path('announcements-public/', views.PublicAnnouncementsView.as_view(), name='announcements-public'),

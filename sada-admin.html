@@ -228,6 +228,62 @@
   .dash-legend b{color:var(--teal-dark);}
   .dash-stat-error{font-size:13px;color:#8a5a5a;}
 
+  /* ===== گزارشات تحلیلی (نمودارها و آمار) ===== */
+  .an-wrap{--an-blue:#2a78d6;--an-orange:#eb6834;--an-aqua:#1baf7a;--an-good:#0ca30c;--an-crit:#d03b3b;--an-serious:#ec835a;--an-muted:#9aa5a6;
+    --an-ink:#1d2b2d;--an-ink2:#5b6b6d;--an-ink3:#8a9a9c;--an-grid:#e8eeee;}
+  .an-toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 18px;}
+  .an-toolbar .an-term{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--an-ink2);}
+  .an-toolbar select{padding:9px 12px;border:1px solid #d9e3e3;border-radius:10px;background:#fff;font-size:13px;color:var(--an-ink);min-width:170px;}
+  .an-section-title{font-size:15px;font-weight:700;color:var(--teal-dark);margin:30px 0 12px;display:flex;align-items:center;gap:8px;}
+  .an-section-title::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--gold);}
+  .an-section-title .an-link{margin-inline-start:auto;font-size:12.5px;font-weight:600;color:var(--teal);cursor:pointer;background:none;border:none;}
+  .an-hero{display:grid;grid-template-columns:minmax(240px,1fr) minmax(300px,2fr);gap:18px;}
+  .an-grid{display:grid;gap:16px;}
+  .an-grid.c4{grid-template-columns:repeat(4,1fr);}
+  .an-grid.c3{grid-template-columns:repeat(3,1fr);}
+  .an-grid.c2{grid-template-columns:repeat(2,1fr);}
+  .an-grid.c5{grid-template-columns:repeat(5,1fr);}
+  @media (max-width:1100px){.an-grid.c4,.an-grid.c5{grid-template-columns:repeat(2,1fr);} .an-hero{grid-template-columns:1fr;}}
+  @media (max-width:760px){.an-grid.c4,.an-grid.c3,.an-grid.c2,.an-grid.c5{grid-template-columns:1fr;}}
+  .an-card{background:#fff;border:1px solid #e4ecec;border-radius:16px;padding:18px 20px;box-shadow:0 2px 10px rgba(11,75,84,.05);min-width:0;}
+  .an-card h4{font-size:13.5px;font-weight:700;color:var(--an-ink);margin-bottom:4px;}
+  .an-card .an-sub{font-size:12px;color:var(--an-ink3);margin-bottom:12px;}
+  .an-tile .an-label{font-size:12.5px;color:var(--an-ink2);display:flex;align-items:center;gap:6px;}
+  .an-tile .an-value{font-size:30px;font-weight:800;color:var(--an-ink);line-height:1.25;margin:6px 0 2px;}
+  .an-tile .an-note{font-size:12px;color:var(--an-ink3);}
+  .an-hero-card{background:linear-gradient(135deg,#0b4b54,#23848a);color:#fff;border:none;display:flex;flex-direction:column;justify-content:center;}
+  .an-hero-card .an-label{font-size:13px;opacity:.85;}
+  .an-hero-card .an-hero-value{font-size:56px;font-weight:800;line-height:1.15;margin:6px 0;}
+  .an-delta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.16);}
+  .an-delta.up{color:#c8f5c8;} .an-delta.down{color:#ffd2d2;}
+  .an-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .an-chip.up{background:#e4f6e4;color:#006300;} .an-chip.down{background:#fbe6e6;color:#a82a2a;} .an-chip.flat{background:#eef2f2;color:var(--an-ink2);}
+  .an-actions{display:flex;gap:10px;flex-wrap:wrap;margin:-4px 0 14px;}
+  .an-chart{width:100%;} .an-chart svg{width:100%;height:auto;display:block;overflow:visible;} #anFbChart svg{max-height:300px;}
+  .an-chart text{font-family:inherit;}
+  .an-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--an-ink2);margin-top:10px;}
+  .an-legend .k{display:inline-flex;align-items:center;gap:6px;}
+  .an-legend .sw{width:10px;height:10px;border-radius:3px;display:inline-block;}
+  .an-legend b{color:var(--an-ink);}
+  .an-hbar{display:flex;flex-direction:column;gap:12px;}
+  .an-hbar .row{display:grid;grid-template-columns:minmax(80px,120px) 1fr auto;gap:10px;align-items:center;font-size:12.5px;color:var(--an-ink2);}
+  .an-hbar .track{height:14px;background:#f0f4f4;border-radius:7px;overflow:hidden;}
+  .an-hbar .fill{height:100%;border-radius:7px;background:var(--an-blue);min-width:3px;}
+  .an-hbar .val{font-weight:700;color:var(--an-ink);min-width:28px;text-align:left;}
+  .an-donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .an-donut-wrap svg{width:150px;height:150px;flex:0 0 auto;}
+  .an-meter{height:12px;border-radius:6px;background:#dfeaf8;overflow:hidden;margin:10px 0 6px;}
+  .an-meter .fill{height:100%;background:var(--an-blue);border-radius:6px;}
+  .an-empty{padding:26px 10px;text-align:center;color:var(--an-ink3);font-size:13px;}
+  .an-tip{position:fixed;z-index:9999;pointer-events:none;background:#fff;border:1px solid #d9e3e3;border-radius:10px;padding:8px 12px;font-size:12.5px;color:var(--an-ink);box-shadow:0 6px 20px rgba(0,0,0,.12);display:none;min-width:120px;}
+  .an-tip .t{font-weight:700;margin-bottom:4px;} .an-tip .r{display:flex;justify-content:space-between;gap:14px;align-items:center;}
+  .an-tip .sw{width:9px;height:9px;border-radius:50%;display:inline-block;margin-inline-end:6px;}
+  .an-table-toggle{background:none;border:none;color:var(--teal);font-size:12.5px;cursor:pointer;margin-top:8px;padding:0;}
+  table.an-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px;}
+  table.an-table th,table.an-table td{padding:7px 10px;border-bottom:1px solid #eef2f2;text-align:center;color:var(--an-ink2);}
+  table.an-table th{color:var(--an-ink);font-weight:700;background:#f7fafa;}
+  .an-loading{padding:60px 10px;text-align:center;color:var(--an-ink3);}
+
   .section-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -1404,10 +1460,9 @@
       <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
       لاگ
     </div>
-    <div class="side-link is-soon" data-soon="1">
+    <div class="side-link" data-view="analytics">
       <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
       گزارشات
-      <span class="side-soon">به‌زودی</span>
     </div>
     <div class="side-link" data-view="slideshow">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -1511,9 +1566,9 @@
           </div>
         </div>
 
-        <div class="section-card card-reports" data-soon="1">
+        <div class="section-card card-reports" data-goto="analytics">
           <div class="card-watermark"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
-          <span class="card-soon-badge">به‌زودی</span>
+          
           <div>
             <div class="card-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
             <h3>گزارشات</h3>
@@ -2854,17 +2909,13 @@
 
       <div class="section-disabled-banner" id="feedbackDisabledBanner" style="display:none;">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        ثبت انتقادات و پیشنهادات توسط مدیر آموزش غیرفعال شده است؛ «بررسی و پاسخ» غیرفعال است، ولی «گزارش‌ها» و «نظرسنجی» همچنان فعال‌اند.
+        ثبت انتقادات و پیشنهادات توسط مدیر آموزش غیرفعال شده است؛ «بررسی و پاسخ» غیرفعال است، ولی «نظرسنجی» همچنان فعال است.
       </div>
 
       <div class="skeleton-grid" id="feedbackSkeletonGrid">
         <div class="skeleton-card nav-card" data-goto="review">
           <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
           <h4>بررسی و پاسخ</h4>
-        </div>
-        <div class="skeleton-card nav-card" data-goto="reports">
-          <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg></div>
-          <h4>گزارش‌ها</h4>
         </div>
         <div class="skeleton-card nav-card" data-goto="survey">
           <div class="icon-circle"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
@@ -3027,75 +3078,6 @@
       </div>
     </section>
 
-    <!-- ============ REPORTS (subsection of feedback) ============ -->
-    <section id="view-reports" class="view">
-      <div class="back-row">
-        <button class="btn-back" data-goto="feedback">
-          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          بازگشت به انتقادات و پیشنهادات
-        </button>
-      </div>
-      <div class="page-title">گزارش‌ها</div>
-      <div class="page-sub">آمار انتقادها، پیشنهادها و نظرسنجی‌های شعبه‌ی انتخاب‌شده.</div>
-      <div class="dept-branch-picked-bar hide" id="reportBranchBar">
-        <div>شعبه‌ی انتخاب‌شده: <b id="reportBranchName"></b></div>
-        <button class="btn-ghost" id="btnChangeReportBranch" type="button">تغییر شعبه</button>
-      </div>
-
-      <div id="reportContentWrap" class="hide">
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
-          <div class="stat-number" id="statComplaintsCount">۰</div>
-          <div class="stat-label">تعداد انتقادها</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path><path d="M15 6l3 6-3 6"></path></svg></div>
-          <div class="stat-number" id="statSuggestionsCount">۰</div>
-          <div class="stat-label">تعداد پیشنهادها</div>
-        </div>
-        <div class="stat-card stat-card-clickable" id="statRespondedCard">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <div class="stat-number" id="statRespondedCount">۰</div>
-          <div class="stat-label">پاسخگویی مسئولان به انتقادها</div>
-        </div>
-        <div class="stat-card stat-card-clickable" id="statSuggestionsRespondedCard">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          <div class="stat-number" id="statSuggestionsRespondedCount">۰</div>
-          <div class="stat-label">پاسخگویی مسئولان به پیشنهادها</div>
-        </div>
-      </div>
-
-      <div class="survey-stats-heading">آمار نظرسنجی‌ها</div>
-      <div class="review-subtabs" id="reportScopeTabs" style="margin-bottom:12px;">
-        <div class="review-subtab" data-rscope="national">ملی (همه‌ی شعب و استان‌ها)</div>
-        <div class="review-subtab active" data-rscope="branch">شعبه‌ی انتخاب‌شده</div>
-      </div>
-      <div class="page-sub" id="reportScopeHint">آمار کلی همه‌ی نظرسنجی‌های شعبه‌ی انتخاب‌شده (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.</div>
-
-      <div class="survey-hero-stat">
-        <div class="survey-hero-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
-        <div class="survey-hero-number" id="statSurveysHeldCount">۰</div>
-        <div class="survey-hero-label">تعداد نظرسنجی‌های برگزار شده</div>
-      </div>
-
-      <div class="survey-stats-grid">
-        <div class="survey-stat-card" data-tone="neutral"><div class="survey-stat-number" id="statVotersCount">۰</div><div class="survey-stat-label">تعداد رأی‌دهندگان</div></div>
-        <div class="survey-stat-card" data-tone="excellent"><div class="survey-stat-number" id="statVoteExcellentCount">۰</div><div class="survey-stat-label">رأی «خیلی خوب»</div></div>
-        <div class="survey-stat-card" data-tone="good"><div class="survey-stat-number" id="statVoteGoodCount">۰</div><div class="survey-stat-label">رأی «خوب»</div></div>
-        <div class="survey-stat-card" data-tone="average"><div class="survey-stat-number" id="statVoteAverageCount">۰</div><div class="survey-stat-label">رأی «متوسط»</div></div>
-        <div class="survey-stat-card" data-tone="bad"><div class="survey-stat-number" id="statVoteBadCount">۰</div><div class="survey-stat-label">رأی «بد»</div></div>
-        <div class="survey-stat-card" data-tone="verybad"><div class="survey-stat-number" id="statVoteVeryBadCount">۰</div><div class="survey-stat-label">رأی «خیلی بد»</div></div>
-      </div>
-
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn-primary" id="btnSurveyDetails" type="button">جزئیات</button>
-        <button class="btn-ghost" id="btnExportSurveyStats" type="button">خروجی اکسل</button>
-      </div>
-      </div>
-    </section>
-
     <!-- ============ REVIEW & RESPOND (subsection of feedback) ============ -->
     <section id="view-review" class="view">
       <div class="back-row">
@@ -3233,6 +3215,56 @@
           </thead>
           <tbody id="announceTableBody"></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- ============ گزارشات تحلیلی ============ -->
+    <section id="view-analytics" class="view">
+      <div class="page-head">
+        <button class="btn-back" data-goto="dashboard">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          بازگشت به داشبورد
+        </button>
+      </div>
+      <div class="page-title">گزارشات</div>
+      <div class="page-sub">آمار و نمودارهای آموزش: ثبت‌نام‌ها، کلاس‌ها، آزمون و نمرات، دانش‌پژوهان، مدرسین و انتقادات و پیشنهادات.</div>
+
+      <div class="an-toolbar">
+        <div class="dept-branch-picked-bar hide" id="anScopeBar" style="margin:0;">
+          <div>محدوده‌ی گزارش: <b id="anScopeName"></b></div>
+          <button class="btn-ghost" id="btnChangeAnBranch" type="button">تغییر شعبه</button>
+        </div>
+        <label class="an-term hide" id="anTermWrap">دوره:
+          <select id="anTermSelect"></select>
+        </label>
+      </div>
+
+      <div id="anContent" class="an-wrap hide"></div>
+      <div id="anLoading" class="an-loading hide">در حال دریافت گزارش…</div>
+
+      <!-- نظرسنجی‌ها: به‌جای صفحه‌ی قدیمیِ «گزارش‌ها» اینجا و بر اساس همان شعبه/ملیِ بالای صفحه نمایش داده می‌شود -->
+      <div id="anSurveyWrap" class="hide">
+      <div class="survey-stats-heading">نظرسنجی‌ها</div>
+      <div class="page-sub" id="reportScopeHint"></div>
+      <div class="survey-hero-stat">
+        <div class="survey-hero-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="13" y2="13"></line></svg></div>
+        <div class="survey-hero-number" id="statSurveysHeldCount">۰</div>
+        <div class="survey-hero-label">تعداد نظرسنجی‌های برگزار شده</div>
+      </div>
+
+      <div class="survey-stats-grid">
+        <div class="survey-stat-card" data-tone="neutral"><div class="survey-stat-number" id="statVotersCount">۰</div><div class="survey-stat-label">تعداد رأی‌دهندگان</div></div>
+        <div class="survey-stat-card" data-tone="excellent"><div class="survey-stat-number" id="statVoteExcellentCount">۰</div><div class="survey-stat-label">رأی «خیلی خوب»</div></div>
+        <div class="survey-stat-card" data-tone="good"><div class="survey-stat-number" id="statVoteGoodCount">۰</div><div class="survey-stat-label">رأی «خوب»</div></div>
+        <div class="survey-stat-card" data-tone="average"><div class="survey-stat-number" id="statVoteAverageCount">۰</div><div class="survey-stat-label">رأی «متوسط»</div></div>
+        <div class="survey-stat-card" data-tone="bad"><div class="survey-stat-number" id="statVoteBadCount">۰</div><div class="survey-stat-label">رأی «بد»</div></div>
+        <div class="survey-stat-card" data-tone="verybad"><div class="survey-stat-number" id="statVoteVeryBadCount">۰</div><div class="survey-stat-label">رأی «خیلی بد»</div></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-primary" id="btnSurveyDetails" type="button">جزئیات</button>
+        <button class="btn-ghost" id="btnExportSurveyStats" type="button">خروجی اکسل</button>
+      </div>
       </div>
     </section>
 
@@ -5655,7 +5687,6 @@
   function renderFeedback(){
     renderFeedbackRows('complaint', 'complaintsTbody', 'complaintsEmpty');
     renderFeedbackRows('suggestion', 'suggestionsTbody', 'suggestionsEmpty');
-    if(typeof updateReportsStats === 'function') updateReportsStats();
   }
 
   function loadFeedback(){
@@ -5819,7 +5850,9 @@
 
   // ---- پاپ‌آپ آمار: پاسخگویی مسئولان (از موارد واقعیِ پاسخ‌داده‌شده ساخته می‌شود) ----
   function feedbackAnsweredCards(kind){
-    return feedbackItemsOf(kind, pickedReportBranch)
+    // ملی = همه‌ی شعب؛ وگرنه فقط شعبه‌ی انتخاب‌شده در گزارشات
+    const base = reportScope === 'national' ? FEEDBACK_ITEMS.filter(function(it){ return it.kind === kind; }) : feedbackItemsOf(kind, pickedReportBranch);
+    return base
       .filter(function(it){ return it.status === 'answered'; })
       .map(function(it){
         return {
@@ -5868,12 +5901,6 @@
   }
   function closeQaModal(){ qaOverlay.classList.remove('open'); }
 
-  document.getElementById('statRespondedCard').addEventListener('click', () => {
-    openQaModal('پاسخگویی مسئولان به انتقادها', feedbackAnsweredCards('complaint'));
-  });
-  document.getElementById('statSuggestionsRespondedCard').addEventListener('click', () => {
-    openQaModal('پاسخگویی مسئولان به پیشنهادها', feedbackAnsweredCards('suggestion'));
-  });
   document.getElementById('qaModalClose').addEventListener('click', closeQaModal);
   qaOverlay.addEventListener('click', (e) => { if(e.target === qaOverlay) closeQaModal(); });
 
@@ -6475,7 +6502,6 @@
   // نوار «شعبه‌ی انتخاب‌شده» و نمایش محتوا برای بخش‌های بررسی و پاسخ / گزارش‌ها / نظرسنجی کلاسی
   function renderBranchBars(){
     [['review', pickedReviewBranch, 'reviewBranchBar', 'reviewBranchName', 'reviewContentWrap'],
-     ['reports', pickedReportBranch, 'reportBranchBar', 'reportBranchName', 'reportContentWrap'],
      ['cs', pickedSurveyBranch, 'csBranchBar', 'csBranchName', null]].forEach(function(r){
       const bar = document.getElementById(r[2]);
       if(!bar) return;
@@ -6510,12 +6536,18 @@
     const q = deptBranchSearchInModal.value.trim();
     const filtered = BRANCHES.filter(b => !q || b.name.includes(q));
 
-    if(filtered.length === 0){
+    if(filtered.length === 0 && !(branchModalMode === 'analytics' && (!q || 'ملی'.includes(q)))){
       deptBranchChecklist.innerHTML = `<div class="no-match">شعبه‌ای یافت نشد</div>`;
       return;
     }
 
-    deptBranchChecklist.innerHTML = filtered.map(b => `
+    // گزینه‌ی «ملی» فقط در گزارشات و بالای فهرست (بدون جستجو یا وقتی جستجو با «ملی» می‌خواند)
+    const nationalOpt = (branchModalMode === 'analytics' && (!q || 'ملی'.includes(q) || 'همه'.includes(q))) ? `
+      <label style="background:#eef6f6;font-weight:700;">
+        <input type="radio" name="deptBranchPick" value="__national__" ${pendingPickedBranch === '__national__' ? 'checked' : ''}>
+        <span>ملی (همه‌ی شعب)</span>
+      </label>` : '';
+    deptBranchChecklist.innerHTML = nationalOpt + filtered.map(b => `
       <label>
         <input type="radio" name="deptBranchPick" value="${b.name}" ${pendingPickedBranch === b.name ? 'checked' : ''}>
         <span>${b.name}</span>
@@ -6528,13 +6560,15 @@
     pendingPickedBranch = branchModalMode === 'classManagement' ? pickedClassBranch
       : branchModalMode === 'survey' ? pickedSurveyBranch
       : branchModalMode === 'review' ? pickedReviewBranch
-      : branchModalMode === 'reports' ? pickedReportBranch
       : branchModalMode === 'classExam' ? pickedExamBranch
       : branchModalMode === 'teachers' ? pickedTeachersBranch
       : branchModalMode === 'finance' ? pickedFinanceBranch
       : branchModalMode === 'logsClass' ? pickedLogsClassBranch
+      : branchModalMode === 'analytics' ? pickedAnalyticsBranch
       : pickedDeptBranch;
     deptBranchSearchInModal.value = '';
+    // در «گزارشات» عنوان سؤالی است و گزینه‌ی «ملی» هم وجود دارد
+    document.getElementById('deptBranchModalTitle').textContent = branchModalMode === 'analytics' ? 'کدام شعبه هستید؟' : 'انتخاب شعبه';
     renderDeptBranchPickList();
     deptBranchOverlay.classList.add('open');
   }
@@ -6544,9 +6578,9 @@
   deptBranchChecklist.addEventListener('change', (e) => {
     if(e.target.name === 'deptBranchPick') pendingPickedBranch = e.target.value;
   });
-  document.getElementById('deptBranchModalClose').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
-  document.getElementById('deptBranchModalCancel').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); });
-  deptBranchOverlay.addEventListener('click', (e) => { if(e.target === deptBranchOverlay){ closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'reports' && !pickedReportBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); } });
+  document.getElementById('deptBranchModalClose').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); if(branchModalMode === 'analytics' && !pickedAnalyticsBranch) goToView('dashboard'); });
+  document.getElementById('deptBranchModalCancel').addEventListener('click', () => { closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); if(branchModalMode === 'analytics' && !pickedAnalyticsBranch) goToView('dashboard'); });
+  deptBranchOverlay.addEventListener('click', (e) => { if(e.target === deptBranchOverlay){ closeDeptBranchModal(); if(branchModalMode === 'classExam' && !pickedExamBranch) goToView('training'); if(branchModalMode === 'review' && !pickedReviewBranch) goToView('feedback'); if(branchModalMode === 'survey' && !pickedSurveyBranch) goToView('feedback'); if(branchModalMode === 'teachers' && !pickedTeachersBranch) goToView('hr'); if(branchModalMode === 'analytics' && !pickedAnalyticsBranch) goToView('dashboard'); } });
   document.getElementById('deptBranchModalSave').addEventListener('click', () => {
     if(!pendingPickedBranch){
       showToast('لطفاً یک شعبه را انتخاب کنید');
@@ -6569,13 +6603,6 @@
       showToast(`شعبه‌ی «${pickedReviewBranch}» تأیید شد`);
       renderBranchBars();
       renderFeedback();
-    } else if(branchModalMode === 'reports'){
-      pickedReportBranch = pendingPickedBranch;
-      closeDeptBranchModal();
-      showToast(`شعبه‌ی «${pickedReportBranch}» تأیید شد`);
-      renderBranchBars();
-      updateReportsStats();
-      loadReportSurveyOptions();
     } else if(branchModalMode === 'survey'){
       pickedSurveyBranch = pendingPickedBranch;
       closeDeptBranchModal();
@@ -6602,6 +6629,13 @@
       closeDeptBranchModal();
       showToast(`شعبه‌ی «${pickedFinanceBranch}» تأیید شد`);
       loadFinance();
+    } else if(branchModalMode === 'analytics'){
+      pickedAnalyticsBranch = pendingPickedBranch;
+      anTermId = null;                      // با عوض شدن شعبه، دوره‌ی جاری دوباره تشخیص داده می‌شود
+      closeDeptBranchModal();
+      showToast(pickedAnalyticsBranch === AN_NATIONAL ? 'گزارش ملی انتخاب شد' : `شعبه‌ی «${pickedAnalyticsBranch}» تأیید شد`);
+      anRenderScopeBar();
+      anLoad();
     } else if(branchModalMode === 'logsClass'){
       pickedLogsClassBranch = pendingPickedBranch;
       closeDeptBranchModal();
@@ -6621,7 +6655,6 @@
   const btnPickClassBranch = document.getElementById('btnPickClassBranch');
   if(btnPickClassBranch) btnPickClassBranch.addEventListener('click', () => openDeptBranchModal('classManagement'));
   document.getElementById('btnChangeReviewBranch').addEventListener('click', () => openDeptBranchModal('review'));
-  document.getElementById('btnChangeReportBranch').addEventListener('click', () => openDeptBranchModal('reports'));
   document.getElementById('btnChangeCsBranch').addEventListener('click', () => openDeptBranchModal('survey'));
   const btnChangeSurveyBranch = document.getElementById('btnChangeSurveyBranch');
   if(btnChangeSurveyBranch) btnChangeSurveyBranch.addEventListener('click', () => openDeptBranchModal('survey'));
@@ -6645,16 +6678,22 @@
   // ---- تبدیل کد دوره‌ی فعلی (مثلاً «۰۵»، از pickedTerm) به id واقعی همان
   // AcademicTerm در دیتابیس - هم «درج کلاس» و هم «ویرایش کلاس» از همین
   // یک تابع مشترک استفاده می‌کنند ----
+  // نکته: اگر چند سال در تقویم باشد، دوره‌ی «جدیدترین سال» انتخاب می‌شود (نه قدیمی‌ترین)
+  // و اگر ارتباط با سرور قطع باشد، علتِ درست در lastTermResolveError ثبت می‌شود
+  let lastTermResolveError = '';
   function resolveCurrentTermId(){
-    if(!pickedTerm) return Promise.resolve(null);
+    lastTermResolveError = '';
+    if(!pickedTerm){ lastTermResolveError = 'دوره‌ی فعلی مشخص نیست؛ از «مدیریت دوره و دپارتمان‌ها» یک دوره انتخاب کنید'; return Promise.resolve(null); }
     return fetch(`${API_BASE_URL}/calendar/terms/`, { credentials: 'include' })
-      .then(res => res.ok ? res.json() : [])
+      .then(res => res.ok ? res.json() : Promise.reject(new Error('http')))
       .then(terms => {
         const termNumber = parseInt(toEnglishDigits(pickedTerm), 10);
-        const match = (terms || []).find(t => t.order === termNumber);
+        const match = (terms || []).filter(t => Number(t.order) === termNumber)
+          .sort((a, b) => b.year - a.year)[0];
+        if(!match) lastTermResolveError = `دوره‌ی ${pickedTerm} در تقویم آموزشی ثبت نشده است؛ ابتدا آن را در «ویرایش تقویم» اضافه کنید`;
         return match ? match.id : null;
       })
-      .catch(() => null);
+      .catch(() => { lastTermResolveError = 'ارتباط با سرور برقرار نشد؛ از روشن بودن سرور مطمئن شوید و دوباره تلاش کنید'; return null; });
   }
 
   function getTermsFromCalendar(){
@@ -8363,7 +8402,7 @@
       insertBtn.disabled = true;
       resolveCurrentTermId().then(term => {
         if(!term){
-          showToast('دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید');
+          showToast(lastTermResolveError || 'دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید');
           insertBtn.disabled = false;
           return;
         }
@@ -8447,7 +8486,7 @@
       // دوره و دپارتمان‌ها» انتخاب شده (pickedTerm) خودکار برای این کلاس هم ذخیره می‌شود
       resolveCurrentTermId().then(term => {
         if(!term){
-          showToast('دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید');
+          showToast(lastTermResolveError || 'دوره‌ی انتخاب‌شده در تقویم آموزشی پیدا نشد؛ دوباره تلاش کنید');
           insertBtn.disabled = false;
           return;
         }
@@ -11149,6 +11188,390 @@
   }
   loadDashboardStats();
 
+  // ===================================================================
+  // گزارشات تحلیلی (پنل مدیر): آمار آموزش + انتقادات و پیشنهادات، با نمودار
+  // همه‌ی نمودارها SVG/HTML ساده‌اند (بدون کتابخانه‌ی بیرونی) و داده را از
+  // /api/classmgmt/analytics/ می‌گیرند. شعبه با مودال انتخاب می‌شود؛ گزینه‌ی
+  // «ملی» یعنی همه‌ی شعب.
+  // ===================================================================
+  const AN_NATIONAL = '__national__';
+  let pickedAnalyticsBranch = null;   // null = هنوز انتخاب نشده؛ AN_NATIONAL = ملی؛ وگرنه نام شعبه
+  let anTermId = null;                // دوره‌ی انتخاب‌شده (null = دوره‌ی جاری که سرور تشخیص می‌دهد)
+  let anData = null;
+
+  const anFa = n => toPersianDigits(Number(n || 0).toLocaleString('en-US'));
+  const anEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // ---- راهنمای شناور (tooltip) مشترک ----
+  const anTip = document.createElement('div');
+  anTip.className = 'an-tip';
+  document.body.appendChild(anTip);
+  function anShowTip(ev, title, rows){
+    // rows: [{color, name, value}]
+    anTip.innerHTML = `<div class="t">${anEsc(title)}</div>` + rows.map(r =>
+      `<div class="r"><span>${r.color ? `<i class="sw" style="background:${r.color}"></i>` : ''}${anEsc(r.name)}</span><b>${anEsc(r.value)}</b></div>`).join('');
+    anTip.style.display = 'block';
+    const pad = 14, w = anTip.offsetWidth, h = anTip.offsetHeight;
+    let x = ev.clientX + pad, y = ev.clientY - h - pad;
+    if(x + w > window.innerWidth - 8) x = ev.clientX - w - pad;
+    if(y < 8) y = ev.clientY + pad;
+    anTip.style.left = x + 'px'; anTip.style.top = y + 'px';
+  }
+  function anHideTip(){ anTip.style.display = 'none'; }
+
+  // ---- ارقام گرد برای محور عمودی ----
+  function anNiceMax(v){
+    if(v <= 4) return 4;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 4 ? 4 : n <= 5 ? 5 : 10) * p;
+  }
+
+  // ---- نمودار خطی (خط شکسته) با چند سری؛ قدیمی‌ترین دوره در سمت راست (جهت خواندن فارسی) ----
+  function anLineChart(el, labels, series, opts){
+    opts = opts || {};
+    const W = 640, H = 270, m = { l: 14, r: 46, t: 18, b: 34 };
+    const n = labels.length;
+    const all = series.flatMap(s => s.values);
+    const max = anNiceMax(Math.max(1, ...all));
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const step = n > 1 ? pw / (n - 1) : 0;
+    const x = i => W - m.r - (n > 1 ? i * step : pw / 2);        // i=0 قدیمی‌ترین ← راست
+    const y = v => m.t + ph - (v / max) * ph;
+    let g = '';
+    for(let k = 0; k <= 4; k++){
+      const v = max * k / 4, yy = y(v);
+      g += `<line x1="${m.l}" x2="${W - m.r + 8}" y1="${yy}" y2="${yy}" stroke="#e8eeee" stroke-width="1"></line>
+            <text x="${W - m.r + 14}" y="${yy + 4}" font-size="11" fill="#8a9a9c">${anFa(Math.round(v))}</text>`;
+    }
+    labels.forEach((lb, i) => {
+      g += `<text x="${x(i)}" y="${H - 10}" font-size="11.5" text-anchor="middle" fill="${opts.hi === i ? '#1d2b2d' : '#5b6b6d'}" font-weight="${opts.hi === i ? 700 : 400}">${anEsc(lb)}</text>`;
+    });
+    let lines = '';
+    series.forEach((s, si) => {
+      const pts = s.values.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+      if(series.length === 1 && n > 1){
+        lines += `<polygon points="${x(0)},${y(0)} ${pts} ${x(n - 1)},${y(0)}" fill="${s.color}" opacity=".10"></polygon>`;
+      }
+      lines += `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>`;
+      s.values.forEach((v, i) => {
+        lines += `<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="${s.color}" stroke="#fff" stroke-width="2"></circle>`;
+      });
+      // برچسب مستقیم: فقط آخرین نقطه (تازه‌ترین) و، اگر خواسته شد، نقطه‌ی قبلی
+      const show = (opts.labelIdx || [n - 1]);
+      show.forEach(i => {
+        if(i < 0 || i >= n) return;
+        lines += `<text x="${x(i)}" y="${y(s.values[i]) - 11}" font-size="12.5" font-weight="700" text-anchor="middle" fill="#1d2b2d">${anFa(s.values[i])}</text>`;
+      });
+    });
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${anEsc(opts.aria || 'نمودار خطی')}">
+      ${g}${lines}
+      <line class="an-xhair" x1="0" x2="0" y1="${m.t}" y2="${m.t + ph}" stroke="#9aa5a6" stroke-width="1" style="display:none"></line>
+      ${labels.map((_, i) => `<rect class="an-hit" data-i="${i}" x="${x(i) - (step || pw) / 2}" y="${m.t}" width="${step || pw}" height="${ph + 20}" fill="transparent"></rect>`).join('')}
+    </svg>`;
+    const svg = el.querySelector('svg'), xh = svg.querySelector('.an-xhair');
+    svg.addEventListener('mousemove', ev => {
+      const hit = ev.target.closest('.an-hit');
+      if(!hit) return;
+      const i = Number(hit.dataset.i);
+      xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.style.display = '';
+      anShowTip(ev, labels[i], series.map(s => ({ color: s.color, name: s.name, value: anFa(s.values[i]) })));
+    });
+    svg.addEventListener('mouseleave', () => { xh.style.display = 'none'; anHideTip(); });
+  }
+
+  // ---- ستونی دوتایی (مثلاً قبولی در برابر مردودی هر دوره) ----
+  function anGroupedColumns(el, labels, series, opts){
+    opts = opts || {};
+    const W = 640, H = 250, m = { l: 14, r: 46, t: 20, b: 34 };
+    const n = labels.length, k = series.length;
+    const max = anNiceMax(Math.max(1, ...series.flatMap(s => s.values)));
+    const pw = W - m.l - m.r, ph = H - m.t - m.b, slot = pw / Math.max(n, 1);
+    const bw = Math.min(24, (slot - 14) / k - 2);
+    const y = v => m.t + ph - (v / max) * ph;
+    let g = '';
+    for(let t = 0; t <= 4; t++){
+      const v = max * t / 4;
+      g += `<line x1="${m.l}" x2="${W - m.r + 8}" y1="${y(v)}" y2="${y(v)}" stroke="#e8eeee"></line>
+            <text x="${W - m.r + 14}" y="${y(v) + 4}" font-size="11" fill="#8a9a9c">${anFa(Math.round(v))}</text>`;
+    }
+    let bars = '';
+    labels.forEach((lb, i) => {
+      const cx = W - m.r - slot * (i + .5);                       // قدیمی‌ترین ← راست
+      bars += `<text x="${cx}" y="${H - 10}" font-size="11.5" text-anchor="middle" fill="${opts.hi === i ? '#1d2b2d' : '#5b6b6d'}" font-weight="${opts.hi === i ? 700 : 400}">${anEsc(lb)}</text>`;
+      series.forEach((s, si) => {
+        const bx = cx - (k * (bw + 2) - 2) / 2 + si * (bw + 2);
+        const v = s.values[i], top = y(v), hgt = Math.max(m.t + ph - top, v > 0 ? 2 : 0);
+        // ستون با سر گرد ۴ پیکسلی و کف صاف
+        const r = Math.min(4, bw / 2, hgt);
+        bars += `<path d="M${bx},${m.t + ph} V${top + r} Q${bx},${top} ${bx + r},${top} H${bx + bw - r} Q${bx + bw},${top} ${bx + bw},${top + r} V${m.t + ph} Z" fill="${s.color}"></path>`;
+        if(opts.hi === i && v > 0) bars += `<text x="${bx + bw / 2}" y="${top - 6}" font-size="12" font-weight="700" text-anchor="middle" fill="#1d2b2d">${anFa(v)}</text>`;
+      });
+      bars += `<rect class="an-hit" data-i="${i}" x="${cx - slot / 2}" y="${m.t}" width="${slot}" height="${ph + 20}" fill="transparent"></rect>`;
+    });
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${anEsc(opts.aria || 'نمودار ستونی')}">${g}${bars}</svg>`;
+    const svg = el.querySelector('svg');
+    svg.addEventListener('mousemove', ev => {
+      const hit = ev.target.closest('.an-hit'); if(!hit) return;
+      const i = Number(hit.dataset.i);
+      anShowTip(ev, labels[i], series.map(s => ({ color: s.color, name: s.name, value: anFa(s.values[i]) })));
+    });
+    svg.addEventListener('mouseleave', anHideTip);
+  }
+
+  // ---- نمودار دایره‌ای (دونات) با فاصله‌ی ۲ پیکسلی بین قطعه‌ها ----
+  function anDonut(el, parts, centerTop, centerBottom){
+    const total = parts.reduce((s, p) => s + p.value, 0);
+    const R = 45, C = 2 * Math.PI * R;
+    let acc = 0, arcs = '';
+    if(total > 0){
+      parts.forEach(p => {
+        if(p.value <= 0) return;
+        const len = C * p.value / total, gap = parts.filter(q => q.value > 0).length > 1 ? 2 : 0;
+        arcs += `<circle class="an-slice" data-name="${anEsc(p.name)}" data-val="${p.value}" data-color="${p.color}" cx="60" cy="60" r="${R}" fill="none" stroke="${p.color}" stroke-width="22"
+          stroke-dasharray="${Math.max(len - gap, 0.5)} ${C - Math.max(len - gap, 0.5)}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"></circle>`;
+        acc += len;
+      });
+    } else {
+      arcs = `<circle cx="60" cy="60" r="${R}" fill="none" stroke="#e8eeee" stroke-width="22"></circle>`;
+    }
+    el.innerHTML = `<svg viewBox="0 0 120 120" role="img" aria-label="نمودار دایره‌ای">${arcs}
+      <text x="60" y="${centerBottom ? 58 : 65}" text-anchor="middle" font-size="19" font-weight="800" fill="#1d2b2d">${centerTop}</text>
+      ${centerBottom ? `<text x="60" y="74" text-anchor="middle" font-size="9" fill="#5b6b6d">${centerBottom}</text>` : ''}</svg>`;
+    el.querySelectorAll('.an-slice').forEach(c => {
+      c.addEventListener('mousemove', ev => anShowTip(ev, c.dataset.name, [{ color: c.dataset.color, name: 'تعداد', value: anFa(c.dataset.val) + ' (' + toPersianDigits(Math.round(c.dataset.val * 100 / total)) + '٪)' }]));
+      c.addEventListener('mouseleave', anHideTip);
+    });
+  }
+
+  // ---- میله‌ای افقی (HTML) برای دپارتمان‌ها ----
+  function anHBars(el, items){
+    if(!items.length){ el.innerHTML = '<div class="an-empty">برای این دوره داده‌ای ثبت نشده است.</div>'; return; }
+    const max = Math.max(...items.map(i => i.count), 1);
+    el.innerHTML = `<div class="an-hbar">${items.map(i => `
+      <div class="row" data-name="${anEsc(i.name)}" data-val="${i.count}">
+        <span>${anEsc(i.name)}</span>
+        <div class="track"><div class="fill" style="width:${Math.round(i.count * 100 / max)}%"></div></div>
+        <span class="val">${anFa(i.count)}</span>
+      </div>`).join('')}</div>`;
+    el.querySelectorAll('.row').forEach(r => {
+      r.addEventListener('mousemove', ev => anShowTip(ev, r.dataset.name, [{ color: '#2a78d6', name: 'ثبت‌نام', value: anFa(r.dataset.val) }]));
+      r.addEventListener('mouseleave', anHideTip);
+    });
+  }
+
+  function anDeltaInfo(cur, prev){
+    // خروجی: { cls, text } برای مقایسه با دوره‌ی قبل
+    if(prev == null) return { cls: 'flat', text: 'دوره‌ی قبلی برای مقایسه وجود ندارد' };
+    if(prev === 0) return cur > 0 ? { cls: 'up', text: 'جدید (دوره‌ی قبل ثبت‌نامی نداشت)' } : { cls: 'flat', text: 'بدون تغییر نسبت به دوره‌ی قبل' };
+    const pct = Math.round((cur - prev) * 100 / prev);
+    if(pct === 0) return { cls: 'flat', text: 'بدون تغییر نسبت به دوره‌ی قبل' };
+    return { cls: pct > 0 ? 'up' : 'down', text: `${toPersianDigits(Math.abs(pct))}٪ ${pct > 0 ? 'افزایش' : 'کاهش'} نسبت به دوره‌ی قبل` };
+  }
+
+  function anTile(label, value, note){
+    return `<div class="an-card an-tile"><div class="an-label">${label}</div><div class="an-value">${value}</div><div class="an-note">${note || ''}</div></div>`;
+  }
+
+  function anRender(){
+    const d = anData, box = document.getElementById('anContent');
+    if(!d){ return; }
+    const cur = d.current || {}, prev = d.previous, det = d.details, ppl = d.people, fb = d.feedback;
+    const delta = anDeltaInfo(cur.enrollments || 0, prev ? prev.enrollments : null);
+    const termLabel = d.term ? d.term.label : '—';
+    const hasTrend = d.series.length > 0;
+    const arrow = delta.cls === 'up' ? '▲' : delta.cls === 'down' ? '▼' : '●';
+    const passRate = (cur.passed + cur.failed_low + cur.absent) > 0 ? Math.round(cur.passed * 100 / (cur.passed + cur.failed_low + cur.absent)) : null;
+
+    box.innerHTML = `
+      <div class="an-hero">
+        <div class="an-card an-hero-card">
+          <div class="an-label">ثبت‌نامی‌های ${anEsc(termLabel)}</div>
+          <div class="an-hero-value">${anFa(cur.enrollments)}</div>
+          <div><span class="an-delta ${delta.cls}">${arrow} ${delta.text}</span></div>
+          <div class="an-label" style="margin-top:12px;">${anFa(cur.students)} دانش‌پژوه یکتا${prev ? ' · دوره‌ی قبل: ' + anFa(prev.enrollments) + ' ثبت‌نام' : ''}</div>
+        </div>
+        <div class="an-card">
+          <h4>روند ثبت‌نام در دوره‌ها</h4>
+          <div class="an-sub">تعداد ثبت‌نام‌ها در هر دوره؛ دوره‌ی انتخاب‌شده پررنگ است و با دوره‌ی قبل مقایسه می‌شود.</div>
+          <div class="an-chart" id="anTrendChart"></div>
+          <button class="an-table-toggle" id="anTrendToggle" type="button">نمایش جدولی</button>
+          <div id="anTrendTable" class="hide"></div>
+        </div>
+      </div>
+
+      <div class="an-section-title">آموزش در ${anEsc(termLabel)}</div>
+      <div class="an-grid c4">
+        ${anTile('کلاس‌های برگزارشده', anFa(cur.classes), det.capacity ? `ظرفیت کل ${anFa(det.capacity)} نفر` : 'کلاسی ثبت نشده')}
+        ${anTile('درصد پر شدن ظرفیت', det.fill_rate == null ? '—' : toPersianDigits(det.fill_rate) + '٪', 'ثبت‌نام‌ها نسبت به ظرفیت کلاس‌ها')}
+        ${anTile('کلاس‌های دارای آزمون آنلاین', anFa(det.exam_classes), `${anFa(det.scored)} نمره ثبت‌شده${det.avg_score != null ? ' · میانگین ' + toPersianDigits(det.avg_score) : ''}`)}
+        ${anTile('سمینار و کارگاه', anFa(det.seminars), `${anFa(det.seminar_enrollments)} ثبت‌نام`)}
+      </div>
+
+      <div class="an-section-title">نتایج آزمون و نمرات</div>
+      <div class="an-grid c2">
+        <div class="an-card">
+          <h4>وضعیت نتیجه‌ی ثبت‌نام‌ها</h4>
+          <div class="an-sub">قبولی: نمره‌ی حداقل ۷۵ · مردودی: نمره‌ی زیر ۷۵ یا غیبت در کلاس</div>
+          <div class="an-donut-wrap">
+            <div id="anResultDonut"></div>
+            <div class="an-legend" style="flex-direction:column;margin-top:0;gap:10px;">
+              <span class="k"><i class="sw" style="background:#0ca30c"></i>✓ قبول: <b>${anFa(cur.passed)}</b></span>
+              <span class="k"><i class="sw" style="background:#d03b3b"></i>✕ مردود (نمره‌ی ناکافی): <b>${anFa(cur.failed_low)}</b></span>
+              <span class="k"><i class="sw" style="background:#ec835a"></i>⊘ مردود (غایب): <b>${anFa(cur.absent)}</b></span>
+              <span class="k"><i class="sw" style="background:#9aa5a6"></i>◔ در انتظار ثبت نمره: <b>${anFa(cur.pending)}</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="an-card">
+          <h4>قبولی و مردودی به تفکیک دوره</h4>
+          <div class="an-sub">مردودی شامل نمره‌ی ناکافی و غیبت است.</div>
+          <div class="an-chart" id="anPassChart"></div>
+          <div class="an-legend">
+            <span class="k"><i class="sw" style="background:#2a78d6"></i>قبول</span>
+            <span class="k"><i class="sw" style="background:#eb6834"></i>مردود</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="an-section-title">توزیع ثبت‌نام‌ها</div>
+      <div class="an-grid c2">
+        <div class="an-card">
+          <h4>ثبت‌نام به تفکیک دپارتمان</h4>
+          <div class="an-sub">پرثبت‌نام‌ترین دپارتمان‌ها در این دوره</div>
+          <div id="anDeptBars"></div>
+        </div>
+        <div class="an-card">
+          <h4>نوع برگزاری کلاس‌ها</h4>
+          <div class="an-sub">ثبت‌نام‌ها به تفکیک کلاس‌های حضوری و مجازی</div>
+          <div class="an-donut-wrap"><div id="anTypeDonut"></div><div class="an-legend" id="anTypeLegend" style="flex-direction:column;margin-top:0;gap:10px;"></div></div>
+        </div>
+      </div>
+
+      <div class="an-section-title">دانش‌پژوهان و مدرسین</div>
+      <div class="an-grid c5">
+        ${anTile('دانش‌پژوهان ثبت‌شده در سیستم', anFa(ppl.members_total), 'کل اعضای این محدوده')}
+        ${anTile('ثبت‌نام‌کرده در کلاس‌ها', anFa(ppl.members_enrolled_ever), ppl.members_total ? `${toPersianDigits(Math.round(ppl.members_enrolled_ever * 100 / Math.max(ppl.members_total, 1)))}٪ از کل دانش‌پژوهان` : '')}
+        ${anTile('دانش‌پژوهان محروم', anFa(ppl.members_banned), 'محروم از ثبت‌نام')}
+        ${anTile('مدرسین', anFa(ppl.teachers_total), `${anFa(ppl.teachers_active)} مدرس فعال در این دوره`)}
+        ${anTile('مدرسین متقاضی', anFa(ppl.applicants), 'درخواست‌های همکاری')}
+      </div>
+
+      <div class="an-section-title">انتقادات و پیشنهادات <button class="an-link" type="button" id="anGoReview">بررسی و پاسخ ←</button></div>
+      <div class="an-grid c4" style="margin-bottom:16px;">
+        ${anTile('انتقادات', anFa(fb.complaints), 'ثبت‌شده در این محدوده')}
+        ${anTile('پیشنهادات', anFa(fb.suggestions), 'ثبت‌شده در این محدوده')}
+        ${anTile('پاسخ داده‌شده', anFa(fb.answered), `${anFa(fb.pending)} مورد منتظر پاسخ`)}
+        <div class="an-card an-tile"><div class="an-label">نرخ پاسخگویی</div><div class="an-value">${fb.answer_rate == null ? '—' : toPersianDigits(fb.answer_rate) + '٪'}</div>
+          <div class="an-meter"><div class="fill" style="width:${fb.answer_rate || 0}%"></div></div><div class="an-note">${anFa(fb.answered)} از ${anFa(fb.total)} مورد</div></div>
+      </div>
+      <div class="an-actions">
+        <button class="btn-ghost" type="button" data-an-qa="complaint">مشاهده‌ی پاسخ‌های مسئولان به انتقادات</button>
+        <button class="btn-ghost" type="button" data-an-qa="suggestion">مشاهده‌ی پاسخ‌های مسئولان به پیشنهادات</button>
+      </div>
+      <div class="an-card">
+        <h4>روند ماهانه‌ی انتقادات و پیشنهادات</h4>
+        <div class="an-sub">شش ماه اخیر (ماه شمسی)</div>
+        <div class="an-chart" id="anFbChart"></div>
+        <div class="an-legend">
+          <span class="k"><i class="sw" style="background:#eb6834"></i>انتقادات</span>
+          <span class="k"><i class="sw" style="background:#2a78d6"></i>پیشنهادات</span>
+        </div>
+      </div>`;
+
+    // ---- نمودارها ----
+    const curIdx = d.series.findIndex(s => d.term && s.term_id === d.term.id);
+    const prevIdx = curIdx > 0 ? curIdx - 1 : -1;
+    const trend = document.getElementById('anTrendChart');
+    if(!hasTrend || d.series.every(s => s.enrollments === 0)){
+      trend.innerHTML = '<div class="an-empty">هنوز ثبت‌نامی برای نمایش روند ثبت نشده است.</div>';
+    } else {
+      anLineChart(trend, d.series.map(s => s.short), [{ name: 'ثبت‌نام', color: '#2a78d6', values: d.series.map(s => s.enrollments) }],
+        { hi: curIdx, labelIdx: [curIdx, prevIdx].filter(i => i >= 0), aria: 'روند ثبت‌نام در دوره‌ها' });
+    }
+    document.getElementById('anTrendTable').innerHTML = `<table class="an-table"><thead><tr><th>دوره</th><th>ثبت‌نام</th><th>کلاس</th><th>قبول</th><th>مردود</th></tr></thead><tbody>${
+      d.series.slice().reverse().map(s => `<tr><td>${anEsc(s.label)}</td><td>${anFa(s.enrollments)}</td><td>${anFa(s.classes)}</td><td>${anFa(s.passed)}</td><td>${anFa(s.failed)}</td></tr>`).join('')}</tbody></table>`;
+    document.getElementById('anTrendToggle').addEventListener('click', e => {
+      const t = document.getElementById('anTrendTable'); t.classList.toggle('hide');
+      e.target.textContent = t.classList.contains('hide') ? 'نمایش جدولی' : 'پنهان کردن جدول';
+    });
+
+    anDonut(document.getElementById('anResultDonut'), [
+      { name: 'قبول', value: cur.passed || 0, color: '#0ca30c' },
+      { name: 'مردود (نمره‌ی ناکافی)', value: cur.failed_low || 0, color: '#d03b3b' },
+      { name: 'مردود (غایب)', value: cur.absent || 0, color: '#ec835a' },
+      { name: 'در انتظار ثبت نمره', value: cur.pending || 0, color: '#9aa5a6' },
+    ], passRate == null ? '—' : toPersianDigits(passRate) + '٪', 'نرخ قبولی');
+
+    const passChart = document.getElementById('anPassChart');
+    if(d.series.every(s => s.passed + s.failed === 0)) passChart.innerHTML = '<div class="an-empty">هنوز نمره‌ای ثبت نشده است.</div>';
+    else anGroupedColumns(passChart, d.series.map(s => s.short), [
+      { name: 'قبول', color: '#2a78d6', values: d.series.map(s => s.passed) },
+      { name: 'مردود', color: '#eb6834', values: d.series.map(s => s.failed) }], { hi: curIdx, aria: 'قبولی و مردودی به تفکیک دوره' });
+
+    anHBars(document.getElementById('anDeptBars'), det.by_department);
+
+    const typeColors = { 'حضوری': '#2a78d6', 'مجازی': '#eb6834' };
+    const typeParts = det.enrollments_by_type.map(t => ({ name: t.type, value: t.count, color: typeColors[t.type] || '#1baf7a' }));
+    anDonut(document.getElementById('anTypeDonut'), typeParts, anFa(typeParts.reduce((s, p) => s + p.value, 0)), 'ثبت‌نام');
+    document.getElementById('anTypeLegend').innerHTML = typeParts.length
+      ? typeParts.map(p => `<span class="k"><i class="sw" style="background:${p.color}"></i>${anEsc(p.name)}: <b>${anFa(p.value)}</b></span>`).join('')
+      : '<span class="an-empty" style="padding:0">داده‌ای ثبت نشده</span>';
+
+    const fbChart = document.getElementById('anFbChart');
+    if(fb.monthly.every(m => m.complaint + m.suggestion === 0)) fbChart.innerHTML = '<div class="an-empty">در شش ماه اخیر انتقاد یا پیشنهادی ثبت نشده است.</div>';
+    else anLineChart(fbChart, fb.monthly.map(m => m.label), [
+      { name: 'انتقادات', color: '#eb6834', values: fb.monthly.map(m => m.complaint) },
+      { name: 'پیشنهادات', color: '#2a78d6', values: fb.monthly.map(m => m.suggestion) }], { aria: 'روند ماهانه‌ی انتقادات و پیشنهادات' });
+    document.getElementById('anGoReview').addEventListener('click', () => goToView('review'));
+  }
+
+  function anLoad(){
+    if(!pickedAnalyticsBranch) return;
+    const q = new URLSearchParams();
+    q.set('branch', pickedAnalyticsBranch === AN_NATIONAL ? '' : pickedAnalyticsBranch);
+    if(anTermId) q.set('term', anTermId);
+    document.getElementById('anLoading').textContent = 'در حال دریافت گزارش…';
+    document.getElementById('anLoading').classList.remove('hide');
+    document.getElementById('anContent').classList.add('hide');
+    fetch(`${API_BASE_URL}/classmgmt/analytics/?${q}`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => {
+        anData = d;
+        anTermId = d.term ? d.term.id : null;
+        const sel = document.getElementById('anTermSelect');
+        sel.innerHTML = d.terms.map(t => `<option value="${t.id}" ${d.term && t.id === d.term.id ? 'selected' : ''}>${anEsc(t.label)}</option>`).join('');
+        document.getElementById('anTermWrap').classList.remove('hide');
+        document.getElementById('anLoading').classList.add('hide');
+        document.getElementById('anContent').classList.remove('hide');
+        anRender();
+        // آمار نظرسنجی‌ها هم‌دامنه با گزارش (ملی یا شعبه‌ی انتخاب‌شده)
+        reportScope = pickedAnalyticsBranch === AN_NATIONAL ? 'national' : 'branch';
+        pickedReportBranch = reportScope === 'national' ? null : pickedAnalyticsBranch;
+        document.getElementById('reportScopeHint').textContent = reportScope === 'national'
+          ? 'آمار کلی همه‌ی نظرسنجی‌ها در تمام شعب و استان‌ها.' : 'آمار کلی همه‌ی نظرسنجی‌های ' + scopeLabel() + '.';
+        document.getElementById('anSurveyWrap').classList.remove('hide');
+        loadReportSurveyOptions();
+      })
+      .catch(() => {
+        document.getElementById('anLoading').textContent = 'دریافت گزارش ممکن نشد؛ دوباره تلاش کنید.';
+      });
+  }
+  function anRenderScopeBar(){
+    const bar = document.getElementById('anScopeBar');
+    if(!pickedAnalyticsBranch){ bar.classList.add('hide'); return; }
+    bar.classList.remove('hide');
+    document.getElementById('anScopeName').textContent = pickedAnalyticsBranch === AN_NATIONAL ? 'ملی (همه‌ی شعب)' : 'شعبه‌ی ' + pickedAnalyticsBranch;
+  }
+  // پاپ‌آپ پاسخ‌های مسئولان (همان پاپ‌آپ قبلی، حالا از صفحه‌ی گزارشات باز می‌شود)
+  document.getElementById('anContent').addEventListener('click', e => {
+    const b = e.target.closest('[data-an-qa]'); if(!b) return;
+    const kind = b.dataset.anQa;
+    openQaModal(kind === 'complaint' ? 'پاسخگویی مسئولان به انتقادها' : 'پاسخگویی مسئولان به پیشنهادها', feedbackAnsweredCards(kind));
+  });
+  document.getElementById('anTermSelect').addEventListener('change', e => { anTermId = Number(e.target.value); anLoad(); });
+  document.getElementById('btnChangeAnBranch').addEventListener('click', () => openDeptBranchModal('analytics'));
+
   // ---- view switching ----
   // ---- تاریخچه‌ی مرورگر: هر بخش یک مرحله در تاریخچه است تا دکمه‌ی «بازگشت» مرورگر
   // به بخش/داشبورد قبلی برگردد (و نه به صفحه‌ی ورود) ----
@@ -11168,18 +11591,16 @@
   function goToViewCore(name){
     currentViewName = name;
     if(name === 'dashboard') loadDashboardStats();
+    if(name === 'analytics'){ anRenderScopeBar(); if(!pickedAnalyticsBranch) openDeptBranchModal('analytics'); else anLoad(); }
     if(name === 'rules'){ rulesLoad(); rulesSetEditing(false); }
     if(name === 'slideshow') loadSlideshow();
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
     document.querySelectorAll('.side-link').forEach(l => l.classList.toggle('active', l.dataset.view === name));
-    if(name === 'reports' && !pickedReportBranch) openDeptBranchModal('reports');
     if(name === 'review' && !pickedReviewBranch) openDeptBranchModal('review');
     if((name === 'survey' || name === 'classSurvey') && !pickedSurveyBranch) openDeptBranchModal('survey');
     renderBranchBars();
-    if(name === 'reports') updateReportsStats();
-    if(name === 'reports') loadReportSurveyOptions();
-    if(name === 'review' || name === 'reports') loadFeedback();
+    if(name === 'review') loadFeedback();
     if(name === 'departments' && !pickedDeptBranch) openDeptBranchModal('departments');
     if(name === 'classManagement' && !pickedClassBranch) openDeptBranchModal('classManagement');
     if(name === 'lessons' && !pickedClassBranch) openDeptBranchModal('classManagement');
@@ -11199,16 +11620,6 @@
   }
   function toPersianDigits(n){
     return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-  }
-  function updateReportsStats(){
-    // شمارش‌ها از همان داده‌ی واقعیِ دریافت‌شده از سرور (FEEDBACK_ITEMS) محاسبه می‌شود
-    const complaints = feedbackItemsOf('complaint', pickedReportBranch);
-    const suggestions = feedbackItemsOf('suggestion', pickedReportBranch);
-    const answered = function(list){ return list.filter(function(it){ return it.status === 'answered'; }).length; };
-    document.getElementById('statComplaintsCount').textContent = toPersianDigits(complaints.length);
-    document.getElementById('statSuggestionsCount').textContent = toPersianDigits(suggestions.length);
-    document.getElementById('statRespondedCount').textContent = toPersianDigits(answered(complaints));
-    document.getElementById('statSuggestionsRespondedCount').textContent = toPersianDigits(answered(suggestions));
   }
 
   // ---- گزارش نظرسنجی‌ها (صفحه‌ی گزارش‌ها) ----
@@ -11363,17 +11774,9 @@
       .catch(() => renderSurveyResultsInto(rdBody, null, title));
   }
 
-  document.querySelectorAll('[data-rscope]').forEach(t => t.addEventListener('click', () => {
-    reportScope = t.dataset.rscope;
-    document.querySelectorAll('[data-rscope]').forEach(x => x.classList.toggle('active', x === t));
-    document.getElementById('reportScopeHint').textContent = reportScope === 'national'
-      ? 'آمار کلی همه‌ی نظرسنجی‌ها در تمام شعب و استان‌ها (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.'
-      : 'آمار کلی همه‌ی نظرسنجی‌های شعبه‌ی انتخاب‌شده (کلاسی، سمینار و کلی)؛ رأی‌ها از گزینه‌های استاندارد «خیلی خوب» تا «خیلی بد» سؤال‌های تستی شمرده می‌شود.';
-    loadReportSurveyOptions();
-  }));
 
   document.getElementById('btnSurveyDetails').addEventListener('click', () => {
-    if(!pickedReportBranch){ openDeptBranchModal('reports'); return; }
+    if(!pickedReportBranch){ showToast('برای دیدن جزئیات، یک شعبه‌ی مشخص انتخاب کنید (در حالت ملی جزئیات نمایش داده نمی‌شود)'); return; }
     rdTerm = null;
     rdShowTerms();
     rdOverlay.classList.add('open');
