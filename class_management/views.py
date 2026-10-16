@@ -619,6 +619,24 @@ class EnrollmentViewSet(AuditedMixin, viewsets.ModelViewSet):
                 return Response({'detail': 'مدرس فقط نمره و غیبت را می‌تواند تغییر دهد.'}, status=status.HTTP_403_FORBIDDEN)
         return super().partial_update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        enrollment = serializer.save()
+        # غایب‌شدن در کلاس = محرومیت خودکار از ثبت‌نام (همان سیستم محرومیت اعضا).
+        # دلیل و «محروم‌شده توسط» خودکار پر می‌شود: دلیل = عدم حضور در کلاسِ ترم/سالِ آن کلاس،
+        # و توسط = شعبه‌ای که کلاس در آن برگزار شده (نه نام مدرس). اگر فرد از قبل محروم باشد، دست نمی‌خورد.
+        if enrollment.absent:
+            from members.models import MemberBan
+            cls = enrollment.class_obj
+            term = cls.term if cls is not None else None
+            reason = 'عدم حضور در کلاس'
+            if term is not None:
+                reason += f' ترم {term.order:02d} سال {term.year}'
+            branch = (cls.branch if cls is not None else (enrollment.lesson.branch if enrollment.lesson else '')) or ''
+            MemberBan.objects.get_or_create(
+                member=enrollment.member,
+                defaults={'reason': reason, 'banned_by': f'شعبه {branch}' if branch else ''},
+            )
+
 
 def _branch_key(name):
     """نام شعبه برای مقایسه: نام استانداردِ جدول شعب، وگرنه خودِ متن (بدون فاصله‌ی اضافه)."""
@@ -1085,3 +1103,35 @@ class PublicAnnouncementsView(APIView):
             {'id': a.id, 'title': a.title, 'text': a.text, 'date': a.jalali_date, 'branch': a.branch}
             for a in qs[:50]
         ])
+
+
+class DashboardStatsView(APIView):
+    """
+    آمار بالای داشبورد پنل مدیر آموزش:
+    - تعداد ورودهای موفق به سایت (از لاگ ورود و خروج؛ هر رویداد «login_success» یک ورود موفق است)
+    - از کل دانش‌پژوهان ثبت‌شده در سامانه، چند نفر حداقل در یک کلاس ثبت‌نام کرده‌اند
+    """
+    permission_classes = [IsEducationManager]
+
+    def get(self, request):
+        from datetime import timedelta
+        from django.utils import timezone
+        from logs.models import AuditLog
+        from .models import Enrollment
+
+        logins = AuditLog.objects.filter(
+            category=AuditLog.CATEGORY_AUTH, action='login_success', status=AuditLog.STATUS_SUCCESS,
+        )
+        now = timezone.now()
+        start_of_today = timezone.localtime(now).replace(hour=0, minute=0, second=0, microsecond=0)
+        total_members = Member.objects.count()
+        # دانش‌پژوهِ «ثبت‌نام‌کرده» = دست‌کم یک ثبت‌نام در کلاس دارد (هر نفر یک بار شمرده می‌شود)
+        enrolled_members = Enrollment.objects.values('member_id').distinct().count()
+        return Response({
+            'logins_total': logins.count(),
+            'logins_today': logins.filter(created_at__gte=start_of_today).count(),
+            'logins_7d': logins.filter(created_at__gte=now - timedelta(days=7)).count(),
+            'members_total': total_members,
+            'members_enrolled': enrolled_members,
+            'members_not_enrolled': max(total_members - enrolled_members, 0),
+        })

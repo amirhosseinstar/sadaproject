@@ -301,6 +301,7 @@ class TeacherApplicantSerializer(serializers.ModelSerializer):
     core/services.py::approve_teacher_applicant).
     """
     name = serializers.SerializerMethodField()
+    created_jalali = serializers.SerializerMethodField()
     depts = DeptListField()
     reqtype = DeptListField()
     branch = serializers.CharField(allow_blank=False, max_length=100)
@@ -336,12 +337,23 @@ class TeacherApplicantSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'first_name', 'last_name', 'name', 'depts', 'reqtype', 'regtype',
             'branch', 'phone', 'national_id', 'education_level', 'father_name', 'birth_date', 'address',
-            'photo', 'resume', 'message', 'status', 'created_at',
+            'photo', 'resume', 'message', 'status', 'created_at', 'created_jalali',
         ]
-        read_only_fields = ['status', 'created_at']
+        read_only_fields = ['status', 'created_at', 'created_jalali']
 
     def get_name(self, obj):
         return f'{obj.first_name} {obj.last_name}'.strip()
+
+    def get_created_jalali(self, obj):
+        # تاریخ و ساعت ثبت درخواست به شمسی (به وقت تهران)، مثل «1405/07/24 - 21:45»؛
+        # در بک‌اند محاسبه می‌شود تا به تنظیمات تقویم مرورگر وابسته نباشد
+        from django.utils import timezone
+        from sada_project.utils import gregorian_to_jalali
+        if not obj.created_at:
+            return ''
+        dt = timezone.localtime(obj.created_at)
+        jy, jm, jd = gregorian_to_jalali(dt.year, dt.month, dt.day)
+        return f'{jy:04d}/{jm:02d}/{jd:02d} - {dt:%H:%M}'
 
     def validate_branch(self, value):
         return _canonical_branch_or_error(value)

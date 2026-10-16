@@ -136,6 +136,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     member_phone = serializers.CharField(source='member.phone', read_only=True)
     is_banned = serializers.SerializerMethodField()
     ban_reason = serializers.SerializerMethodField()
+    ban_by = serializers.SerializerMethodField()
     class_name = serializers.SerializerMethodField()
     lesson_name = serializers.SerializerMethodField()
     department_name = serializers.SerializerMethodField()
@@ -152,7 +153,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         model = Enrollment
         fields = [
             'id', 'class_obj', 'lesson', 'member', 'member_name', 'member_national_id', 'member_phone',
-            'is_banned', 'ban_reason', 'enrolled_at', 'score', 'absent',
+            'is_banned', 'ban_reason', 'ban_by', 'enrolled_at', 'score', 'absent',
             'class_name', 'lesson_name', 'department_name', 'branch', 'term_order', 'term_year', 'class_exists', 'class_is_published',
             'class_type', 'duration_hours',
         ]
@@ -216,6 +217,9 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
     def get_ban_reason(self, obj):
         return obj.member.ban.reason if hasattr(obj.member, 'ban') else ''
+
+    def get_ban_by(self, obj):
+        return obj.member.ban.banned_by if hasattr(obj.member, 'ban') else ''
 
 
 class QuestionSerializer(serializers.ModelSerializer):

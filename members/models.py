@@ -92,6 +92,8 @@ class MemberBan(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE, related_name='ban')
     reason = models.CharField('دلیل محرومیت', max_length=300, blank=True)
     banned_at = models.DateTimeField('تاریخ محرومیت', auto_now_add=True)
+    # چه کسی محروم کرده: «مدیر آموزش»، «شعبه X» (اگر مسئول آموزش آن شعبه محروم کرده) یا «مدرس: نام»
+    banned_by = models.CharField('محروم‌شده توسط', max_length=150, blank=True, default='')
 
     class Meta:
         verbose_name = 'محرومیت عضو'

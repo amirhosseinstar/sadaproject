@@ -19,6 +19,7 @@ urlpatterns = [
     path('site-settings/', views.SiteSettingsView.as_view(), name='site-settings'),
     path('teacher-permissions/', views.TeacherLessonPermissionView.as_view(), name='teacher-permissions'),
     path('slideshow/public/', views.PublicSlidesView.as_view(), name='slideshow-public'),
+    path('dashboard-stats/', views.DashboardStatsView.as_view(), name='dashboard-stats'),
     path('slideshow/settings/', views.SlideSettingsView.as_view(), name='slideshow-settings'),
     path('announcements-public/', views.PublicAnnouncementsView.as_view(), name='announcements-public'),
     path('rules/', views.RulesView.as_view(), name='rules'),

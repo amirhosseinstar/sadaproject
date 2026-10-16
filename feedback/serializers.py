@@ -100,6 +100,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'is_membership_valid': member.is_membership_valid,
             'is_banned': ban is not None,
             'ban_reason': ban.reason if ban is not None else '',
+            'ban_by': ban.banned_by if ban is not None else '',
         }
 
 

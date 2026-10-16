@@ -25,6 +25,7 @@ class MemberSearchSerializer(serializers.ModelSerializer):
     is_membership_valid = serializers.BooleanField(read_only=True)
     is_banned = serializers.SerializerMethodField()
     ban_reason = serializers.SerializerMethodField()
+    ban_by = serializers.SerializerMethodField()
     # اطلاعات ناقص عضو (فهرست فارسی؛ خالی یعنی کامل) - برای نشان «اطلاعات ناقص» در پنل
     missing_fields = serializers.SerializerMethodField()
 
@@ -33,7 +34,7 @@ class MemberSearchSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'national_id', 'membership_code', 'phone', 'province', 'branch',
             'first_name', 'last_name', 'father_name', 'birth_date', 'card_expires_at', 'is_membership_valid',
-            'is_banned', 'ban_reason', 'missing_fields',
+            'is_banned', 'ban_reason', 'ban_by', 'missing_fields',
         ]
         read_only_fields = ['card_expires_at']
 
@@ -45,6 +46,10 @@ class MemberSearchSerializer(serializers.ModelSerializer):
 
     def get_ban_reason(self, obj):
         return obj.ban.reason if hasattr(obj, 'ban') else ''
+
+    def get_ban_by(self, obj):
+        # چه کسی محروم کرده (مدیر آموزش / شعبه X / مدرس)
+        return obj.ban.banned_by if hasattr(obj, 'ban') else ''
 
 
 # نام و نام‌خانوادگی/نام پدر: حرف انگلیسی و هیچ نوع رقمی مجاز نیست (همان قاعده‌ی فرم‌های پنل)

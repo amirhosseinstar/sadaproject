@@ -574,13 +574,7 @@
       body: JSON.stringify({ score: u.score, absent: u.absent }),
     }).then(res => {
       if(!res.ok) throw new Error('خطا در ذخیره‌ی نمره');
-      if(u.absent && u.memberId){
-        return fetch(`${API_BASE_URL}/members/${u.memberId}/ban/`, {
-          method: 'POST', credentials: 'include',
-          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
-          body: JSON.stringify({ reason: `عدم حضور در کلاس «${cls.name}»` }),
-        }).catch(() => {});
-      }
+      // محرومیتِ غیبت را سرور خودکار ثبت می‌کند
     })))
       .then(() => {
         loadedRosters.delete(classIndex);

@@ -47,7 +47,7 @@ from .models import Member, MemberBan, OTPCode, EmployeeOTPCode
 from .serializers import MemberSearchSerializer, MemberUpdateSerializer, build_profile_payload
 from .sms import send_sms
 from core.models import Employee
-from core.permissions import IsEducationStaff, branch_values, officer_branch_name, staff_role, teacher_employee
+from core.permissions import IsEducationStaff, ROLE_MANAGER, branch_values, officer_branch_name, staff_role, teacher_employee
 from logs import throttle
 from logs.mixins import AuditedMixin, audit
 from logs.models import AuditLog
@@ -56,6 +56,20 @@ from logs.recorder import record
 
 # کد چند دقیقه معتبر است - بعد از این مدت باید دوباره درخواست کد جدید بدهید
 OTP_VALID_MINUTES = 5
+
+
+def _ban_actor_label(user):
+    """
+    برچسب «محروم‌شده توسط»: مدیر آموزش ← «مدیر آموزش»؛ مسئول آموزش ← «شعبه <نام شعبه‌اش>»؛
+    (محرومیت خودکار غیبت در ثبت نمره‌ی کلاس انجام می‌شود، نه اینجا).
+    """
+    role = staff_role(user)
+    if role == ROLE_MANAGER:
+        return 'مدیر آموزش'
+    if role is not None:
+        branch = officer_branch_name(user)
+        return f'شعبه {branch}' if branch else 'مسئول آموزش'
+    return ''
 
 
 @method_decorator(ensure_csrf_cookie, name='get')
@@ -511,18 +525,12 @@ class MemberViewSet(AuditedMixin, viewsets.ModelViewSet):
         reason = request.data.get('reason', '')
         is_staff = staff_role(request.user) is not None
         if not is_staff:
-            # مدرس: فقط برای دانش‌پژوهی که در یکی از «کلاس‌های خودِ همین مدرس» غایب ثبت شده
-            from class_management.models import Enrollment
-            teacher = teacher_employee(request.user)
-            allowed = teacher is not None and Enrollment.objects.filter(
-                member=member, class_obj__teacher=teacher, absent=True,
-            ).exists()
-            if not allowed:
-                return Response({'detail': 'شما اجازه‌ی محروم‌کردن این دانش‌پژوه را ندارید.'}, status=403)
-        MemberBan.objects.update_or_create(member=member, defaults={'reason': reason})
+            # مدرس نمی‌تواند مستقیم محروم کند؛ محرومیتِ غیبت هنگام ثبت «عدم حضور» خودکار انجام می‌شود
+            return Response({'detail': 'شما اجازه‌ی محروم‌کردن این دانش‌پژوه را ندارید.'}, status=403)
+        MemberBan.objects.update_or_create(member=member, defaults={'reason': reason, 'banned_by': _ban_actor_label(request.user)})
         if not is_staff:
             # به مدرس اطلاعات شخصی (کد عضویت و ...) برگردانده نمی‌شود
-            return Response({'id': member.id, 'is_banned': True, 'ban_reason': reason})
+            return Response({'id': member.id, 'is_banned': True, 'ban_reason': reason, 'ban_by': _ban_actor_label(request.user)})
         return Response(self.get_serializer(member).data)
 
     @action(detail=True, methods=['post'])
